@@ -3,6 +3,7 @@ import { AppShell } from '@/components/layout/AppShell'
 import Placeholder from '@/pages/Placeholder'
 import WorkersPage from '@/pages/Workers'
 import CustomersPage from '@/pages/Customers'
+import ProjectsPage from '@/pages/Projects'
 
 export const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
       { path: 'customers', element: <CustomersPage /> },
       { path: 'sites', element: <Placeholder title="Công trường / Xưởng" /> },
       { path: 'workers', element: <WorkersPage /> },
-      { path: 'projects', element: <Placeholder title="Dự án" /> },
+      { path: 'projects', element: <ProjectsPage /> },
       { path: 'quotes', element: <Placeholder title="Báo giá" /> },
       { path: 'quotes/:id/preview', element: <Placeholder title="Xem trước báo giá" /> },
       { path: 'assign', element: <Placeholder title="Giao việc Kanban" /> },
