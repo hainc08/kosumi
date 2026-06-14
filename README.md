@@ -10,7 +10,7 @@ workshop_pro_agentspace/
 │
 ├── design/                         ← Upload vào Knowledge Base
 │   ├── design-system.md            Color tokens, typography, component specs
-│   ├── tailwind.config.ts          Tailwind token mapping
+│   ├── tokens.css                  CSS variables (design tokens) — import global
 │   └── component-library.md       Component interfaces & folder structure
 │
 ├── agents/                         ← System prompts cho từng agent
@@ -34,8 +34,7 @@ workshop_pro_agentspace/
 
 Kèm theo (file riêng):
 ├── workshop_pro_spec.md            Product spec đầy đủ
-├── workshop_pro.html               Mock UI (reference cho design)
-└── giao_viec.html                  Kanban mock (reference)
+└── workshop_pro.html               Mock UI đầy đủ 10 module (reference cho design + Kanban)
 ```
 
 ---
@@ -50,7 +49,7 @@ Kèm theo (file riêng):
    - `context/types.ts`
    - `design/design-system.md`
    - `design/component-library.md`
-   - `design/tailwind.config.ts`
+   - `design/tokens.css`
    - `workshop_pro_spec.md`
 
 ### Bước 2: Tạo các Agents

@@ -1,0 +1,5 @@
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; }
+.cell-cust__name { font-size: 12px; font-weight: 600; color: var(--color-text); }
+.cell-cust__code { font-size: 10px; color: var(--color-text-3); }
+.cell-cust__sub { font-size: 10px; color: var(--color-text-3); }
