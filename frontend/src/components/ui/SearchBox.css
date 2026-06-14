@@ -1,0 +1,5 @@
+.searchbox { position: relative; display: inline-flex; align-items: center; }
+.searchbox__icon { position: absolute; left: 9px; color: var(--color-text-3); }
+.searchbox__input { height: 32px; padding: 7px 10px 7px 30px; font-size: 12px; width: 100%;
+  border: 1px solid var(--color-border); border-radius: var(--radius-sm); outline: none; background: var(--color-surface); }
+.searchbox__input:focus { border-color: var(--color-border-focus); }

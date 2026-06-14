@@ -27,3 +27,6 @@ out/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Playwright MCP artifacts
+.playwright-mcp/
