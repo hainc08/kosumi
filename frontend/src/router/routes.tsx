@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import Placeholder from '@/pages/Placeholder'
+import WorkersPage from '@/pages/Workers'
 
 export const router = createBrowserRouter([
   {
@@ -10,7 +11,7 @@ export const router = createBrowserRouter([
       { path: 'dashboard', element: <Placeholder title="Dashboard" /> },
       { path: 'customers', element: <Placeholder title="Khách hàng" /> },
       { path: 'sites', element: <Placeholder title="Công trường / Xưởng" /> },
-      { path: 'workers', element: <Placeholder title="Công nhân" /> },
+      { path: 'workers', element: <WorkersPage /> },
       { path: 'projects', element: <Placeholder title="Dự án" /> },
       { path: 'quotes', element: <Placeholder title="Báo giá" /> },
       { path: 'quotes/:id/preview', element: <Placeholder title="Xem trước báo giá" /> },

@@ -1,0 +1,7 @@
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; }
+.cell-worker { display: flex; align-items: center; gap: 10px; }
+.cell-worker__avatar { width: 30px; height: 30px; border-radius: 50%; color: #fff; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
+.cell-worker__name { font-size: 12px; font-weight: 600; color: var(--color-text); }
+.cell-worker__code { font-size: 10px; color: var(--color-text-3); }
