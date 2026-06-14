@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import Placeholder from '@/pages/Placeholder'
 import WorkersPage from '@/pages/Workers'
+import CustomersPage from '@/pages/Customers'
 
 export const router = createBrowserRouter([
   {
@@ -9,7 +10,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/workers" replace /> },
       { path: 'dashboard', element: <Placeholder title="Dashboard" /> },
-      { path: 'customers', element: <Placeholder title="Khách hàng" /> },
+      { path: 'customers', element: <CustomersPage /> },
       { path: 'sites', element: <Placeholder title="Công trường / Xưởng" /> },
       { path: 'workers', element: <WorkersPage /> },
       { path: 'projects', element: <Placeholder title="Dự án" /> },
