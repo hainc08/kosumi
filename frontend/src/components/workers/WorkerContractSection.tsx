@@ -1,38 +1,27 @@
-import type { UseFormReturn } from 'react-hook-form'
+import { Controller, type UseFormReturn } from 'react-hook-form'
 import { CONTRACT_TYPE_LABELS, type ContractType } from '@/types'
-import { estimateMonthlyPay } from '@/utils/pay-calculator'
 import { formatCurrency } from '@/utils/format'
 import { FormField } from '@/components/ui/FormField'
+import { CurrencyInput } from '@/components/ui/CurrencyInput'
 import type { WorkerFormShape } from './workerFormShape'
 import './WorkerContractSection.css'
 
 const num = (s: string): number | undefined => (s.trim() === '' ? undefined : Number(s))
 
 export function WorkerContractSection({ form }: { form: UseFormReturn<WorkerFormShape> }) {
-  const { register, watch, formState: { errors } } = form
-  const type = watch('contractType')
+  const { register, control, watch, formState: { errors } } = form
+  const type = watch('contractType') as ContractType
 
-  const estimate = (() => {
-    const ct = type as ContractType
-    if (ct === 'hourly' || ct === 'daily') {
-      const r = num(watch('rateNormal'))
-      return r ? estimateMonthlyPay({ contractType: ct, rateNormal: r }) : 0
-    }
-    if (ct === 'monthly') {
-      return estimateMonthlyPay({
-        contractType: 'monthly', baseSalary: num(watch('baseSalary')) ?? 0, allowance: num(watch('allowance')) ?? 0,
-      })
-    }
-    return 0
+  const totalMonthly = (() => {
+    const base = num(watch('baseSalary')) ?? 0
+    const resp = num(watch('allowanceResponsibility')) ?? 0
+    const att  = num(watch('allowanceAttendance')) ?? 0
+    return base + resp + att
   })()
-
-  const estimateNote = type === 'hourly' || type === 'daily'
-    ? '(26 ngày × 8 giờ/ngày)'
-    : type === 'monthly' ? '(lương cơ bản + phụ cấp)' : ''
 
   return (
     <div className="contract-section">
-      <div className="contract-section__title">Hợp đồng & Tiền công</div>
+      <div className="contract-section__title">Hợp đồng &amp; Tiền lương</div>
       <div className="form-grid">
         <FormField label="Loại hợp đồng" required>
           <select {...register('contractType')}>
@@ -45,30 +34,30 @@ export function WorkerContractSection({ form }: { form: UseFormReturn<WorkerForm
           <input type="date" {...register('startDate')} />
         </FormField>
 
-        {(type === 'hourly' || type === 'daily') && (
-          <>
-            <FormField label={type === 'hourly' ? 'Đơn giá / giờ (đ)' : 'Đơn giá / ngày (đ)'} required error={errors.rateNormal?.message}>
-              <input inputMode="numeric" placeholder="VD: 45000" {...register('rateNormal')} />
-            </FormField>
-            <FormField label="Đơn giá OT (đ)" hint="Mặc định = đơn giá × 1.5">
-              <input inputMode="numeric" placeholder="VD: 67500" {...register('rateOvertime')} />
-            </FormField>
-          </>
-        )}
-        {type === 'monthly' && (
+        {/* Lương cơ bản – áp dụng cho HĐ chính thức & thử việc */}
+        {(type === 'official' || type === 'probation') && (
           <>
             <FormField label="Lương cơ bản / tháng (đ)" required error={errors.baseSalary?.message}>
-              <input inputMode="numeric" placeholder="VD: 9000000" {...register('baseSalary')} />
+              <Controller control={control} name="baseSalary"
+                render={({ field }) => <CurrencyInput {...field} placeholder="VD: 9.000.000" />} />
             </FormField>
-            <FormField label="Phụ cấp / tháng (đ)">
-              <input inputMode="numeric" placeholder="VD: 800000" {...register('allowance')} />
+            <FormField label="Phụ cấp trách nhiệm / tháng (đ)" hint="Tùy theo chức vụ">
+              <Controller control={control} name="allowanceResponsibility"
+                render={({ field }) => <CurrencyInput {...field} placeholder="VD: 500.000" />} />
+            </FormField>
+            <FormField label="Phụ cấp chuyên cần / tháng (đ)" hint="Thưởng đi làm đầy đủ">
+              <Controller control={control} name="allowanceAttendance"
+                render={({ field }) => <CurrencyInput {...field} placeholder="VD: 300.000" />} />
             </FormField>
           </>
         )}
-        {type === 'piece' && (
+
+        {/* HĐ giao khoán – theo đơn giá / đơn vị */}
+        {type === 'piece_rate' && (
           <>
             <FormField label="Đơn giá / đơn vị (đ)" required error={errors.ratePerUnit?.message}>
-              <input inputMode="numeric" placeholder="VD: 150000" {...register('ratePerUnit')} />
+              <Controller control={control} name="ratePerUnit"
+                render={({ field }) => <CurrencyInput {...field} placeholder="VD: 150.000" />} />
             </FormField>
             <FormField label="Tên đơn vị" required error={errors.unitName?.message}>
               <input placeholder="VD: sản phẩm, m², bộ" {...register('unitName')} />
@@ -77,9 +66,10 @@ export function WorkerContractSection({ form }: { form: UseFormReturn<WorkerForm
         )}
       </div>
 
-      {type !== 'piece' && (
+      {(type === 'official' || type === 'probation') && totalMonthly > 0 && (
         <div className="contract-section__estimate">
-          Ước tính: <strong>{estimate > 0 ? formatCurrency(estimate) : '—'}</strong> <span>{estimateNote}</span>
+          Tổng thu nhập ước tính: <strong>{formatCurrency(totalMonthly)}</strong>
+          <span> (lương + phụ cấp trách nhiệm + chuyên cần)</span>
         </div>
       )}
     </div>

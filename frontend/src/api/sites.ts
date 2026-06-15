@@ -18,11 +18,11 @@ function nextSiteCode(existing: string[]): string {
   return 'CS' + String(max + 1).padStart(3, '0')
 }
 
-/** Đếm công nhân & dự án thực tế đang gắn vào xưởng (từ db). */
+/** Đếm dự án thực tế đang gắn vào xưởng (từ db). */
 export function enrichSite(s: Site): Site {
   return {
     ...s,
-    workerCount: db.workers.filter((w) => w.siteId === s.id).length,
+    workerCount: db.workers.filter((w) => w.status === 'working').length, // global count
     projectCount: db.projects.filter((p) => p.siteId === s.id).length,
   }
 }

@@ -3,7 +3,7 @@ import './FormModal.css'
 
 interface FormModalProps {
   open: boolean; onClose: () => void; title: string; icon?: React.ReactNode
-  size?: 'md' | 'lg'; children: React.ReactNode; footer?: React.ReactNode
+  size?: 'md' | 'lg' | 'xl'; children: React.ReactNode; footer?: React.ReactNode
 }
 
 export function FormModal({ open, onClose, title, icon, size = 'md', children, footer }: FormModalProps) {

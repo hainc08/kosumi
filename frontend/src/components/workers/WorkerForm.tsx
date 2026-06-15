@@ -1,8 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconUserPlus } from '@tabler/icons-react'
-import { PRIMARY_SKILL_LABELS, type PrimarySkill, type Worker } from '@/types'
-import { useSites } from '@/api/sites'
+import { POSITION_LABELS, type Position, type Worker } from '@/types'
 import { useCreateWorker, useUpdateWorker } from '@/api/workers'
 import { useToastStore } from '@/stores/toastStore'
 import { FormModal } from '@/components/ui/FormModal'
@@ -15,7 +14,6 @@ import './WorkerForm.css'
 interface WorkerFormProps { open: boolean; onClose: () => void; worker?: Worker | null }
 
 export function WorkerForm({ open, onClose, worker }: WorkerFormProps) {
-  const { data: sites = [] } = useSites()
   const createWorker = useCreateWorker()
   const updateWorker = useUpdateWorker()
   const toast = useToastStore((s) => s.show)
@@ -73,21 +71,15 @@ export function WorkerForm({ open, onClose, worker }: WorkerFormProps) {
           <FormField label="CCCD">
             <input inputMode="numeric" placeholder="VD: 001090012345" {...register('idNumber')} />
           </FormField>
-          <FormField label="Kỹ năng chính" required>
-            <select {...register('primarySkill')}>
-              {(Object.keys(PRIMARY_SKILL_LABELS) as PrimarySkill[]).map((k) => (
-                <option key={k} value={k}>{PRIMARY_SKILL_LABELS[k]}</option>
+          <FormField label="Chức vụ" required>
+            <select {...register('position')}>
+              {(Object.keys(POSITION_LABELS) as Position[]).map((k) => (
+                <option key={k} value={k}>{POSITION_LABELS[k]}</option>
               ))}
             </select>
           </FormField>
           <FormField label="Số năm kinh nghiệm" required error={errors.experienceYears?.message}>
             <input inputMode="numeric" {...register('experienceYears')} />
-          </FormField>
-          <FormField label="Xưởng">
-            <select {...register('siteId')}>
-              <option value="">— Chọn xưởng —</option>
-              {sites.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
           </FormField>
           <FormField label="Số điện thoại" error={errors.phone?.message}>
             <input inputMode="numeric" placeholder="VD: 0901234567" {...register('phone')} />

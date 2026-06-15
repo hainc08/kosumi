@@ -44,10 +44,10 @@ export function busyWorkerIds(): Set<string> {
   return new Set(db.taskAssignments.filter((a) => a.isActive).map((a) => a.workerId))
 }
 
-/** Công nhân sẵn sàng nhận việc tại 1 xưởng (đang làm việc & chưa bận). */
-export function availableWorkersAtSite(siteId: string): Worker[] {
+/** Công nhân sẵn sàng nhận việc (đang làm việc & chưa bận). */
+export function availableWorkersAtSite(_siteId: string): Worker[] {
   const busy = busyWorkerIds()
-  return db.workers.filter((w) => w.siteId === siteId && w.status === 'working' && !busy.has(w.id))
+  return db.workers.filter((w) => w.status === 'working' && !busy.has(w.id))
 }
 
 export function assignWorkerInDb(taskId: string, workerId: string): TaskAssignment {

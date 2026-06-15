@@ -72,21 +72,20 @@ export interface CreateSiteDto {
 // ─── WORKER ──────────────────────────────────────────────────────────────────
 
 export type WorkerStatus  = 'working' | 'on_leave' | 'absent' | 'resigned'
-export type PrimarySkill  =
-  | 'welding_electric' | 'welding_tig'
-  | 'cnc_cutting'      | 'laser_cutting'
-  | 'assembly'         | 'painting'
-  | 'qc_inspection'    | 'other'
+export type Position =
+  | 'team_leader'   | 'senior_worker'
+  | 'worker'        | 'apprentice'
+  | 'technician'    | 'supervisor'
+  | 'other'
 
-export const PRIMARY_SKILL_LABELS: Record<PrimarySkill, string> = {
-  welding_electric: 'Hàn điện',
-  welding_tig:      'Hàn TIG',
-  cnc_cutting:      'Cắt CNC',
-  laser_cutting:    'Cắt laser',
-  assembly:         'Lắp ráp',
-  painting:         'Sơn phủ',
-  qc_inspection:    'Kiểm tra QC',
-  other:            'Khác',
+export const POSITION_LABELS: Record<Position, string> = {
+  team_leader:   'Tổ trưởng',
+  senior_worker: 'Thợ chính',
+  worker:        'Công nhân',
+  apprentice:    'Học việc',
+  technician:    'Kỹ thuật viên',
+  supervisor:    'Giám sát',
+  other:         'Khác',
 }
 
 export const WORKER_STATUS_LABELS: Record<WorkerStatus, string> = {
@@ -104,13 +103,11 @@ export interface Worker extends BaseEntity {
   idNumber:         string | null
   phone:            string | null
   address:          string | null
-  siteId:           string | null
-  primarySkill:     PrimarySkill
+  position:         Position
   experienceYears:  number
   status:           WorkerStatus
   notes:            string | null
   // joined
-  site?:            Pick<Site, 'id' | 'name'>
   activeContract?:  WorkerContract
   // computed (for UI)
   initials:         string   // first letters of name
@@ -119,42 +116,39 @@ export interface Worker extends BaseEntity {
 
 // ─── CONTRACT ────────────────────────────────────────────────────────────────
 
-export type ContractType = 'hourly' | 'daily' | 'monthly' | 'piece'
+export type ContractType = 'piece_rate' | 'official' | 'probation'
 
 export const CONTRACT_TYPE_LABELS: Record<ContractType, string> = {
-  hourly:  'Theo giờ',
-  daily:   'Theo ngày công',
-  monthly: 'Cố định tháng',
-  piece:   'Khoán sản phẩm',
+  piece_rate: 'HĐ giao khoán',
+  official:   'HĐ chính thức',
+  probation:  'HĐ thử việc',
 }
 
 export interface WorkerContract extends BaseEntity {
-  workerId:      string
-  contractType:  ContractType
-  startDate:     string
-  endDate:       string | null
-  // hourly / daily
-  rateNormal:    number | null
-  rateOvertime:  number | null
-  // monthly
-  baseSalary:    number | null
-  allowance:     number | null
-  // piece
-  ratePerUnit:   number | null
-  unitName:      string | null
-  isActive:      boolean
+  workerId:                 string
+  contractType:             ContractType
+  startDate:                string
+  endDate:                  string | null
+  // salary
+  baseSalary:               number | null
+  // phụ cấp / tháng
+  allowanceResponsibility:  number | null   // Phụ cấp trách nhiệm
+  allowanceAttendance:      number | null   // Phụ cấp chuyên cần
+  // piece-rate (HĐ giao khoán)
+  ratePerUnit:              number | null
+  unitName:                 string | null
+  isActive:                 boolean
 }
 
 export interface CreateContractDto {
-  contractType:  ContractType
-  startDate:     string
-  endDate?:      string
-  rateNormal?:   number
-  rateOvertime?: number
-  baseSalary?:   number
-  allowance?:    number
-  ratePerUnit?:  number
-  unitName?:     string
+  contractType:            ContractType
+  startDate:               string
+  endDate?:                string
+  baseSalary?:             number
+  allowanceResponsibility?: number
+  allowanceAttendance?:    number
+  ratePerUnit?:            number
+  unitName?:               string
 }
 
 // ─── CUSTOMER (Module 5) ─────────────────────────────────────────────────────

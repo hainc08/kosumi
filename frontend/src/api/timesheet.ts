@@ -35,7 +35,6 @@ export function monthlySummaries(f: TimesheetFilters): MonthlySummary[] {
   for (const [workerId, entries] of byWorker) {
     const w = db.workers.find((x) => x.id === workerId)
     if (!w) continue
-    if (f.siteId && w.siteId !== f.siteId) continue
     if (f.search && !w.fullName.toLowerCase().includes(f.search.toLowerCase()) && !w.code.toLowerCase().includes(f.search.toLowerCase())) continue
 
     const c = w.activeContract
@@ -49,7 +48,7 @@ export function monthlySummaries(f: TimesheetFilters): MonthlySummary[] {
       totalAbsentDays: entries.filter((e) => e.dayType === 'absent').length,
       totalPay: entries.reduce((s, e) => s + e.payAmount, 0),
       baseSalary: c?.baseSalary ?? null,
-      allowance: c?.allowance ?? null,
+      allowance: (c?.allowanceResponsibility ?? 0) + (c?.allowanceAttendance ?? 0) || null,
       status: anyPending ? 'submitted' : 'approved',
       worker: { id: w.id, code: w.code, fullName: w.fullName },
     })

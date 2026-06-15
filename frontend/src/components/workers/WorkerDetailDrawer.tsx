@@ -1,8 +1,7 @@
 import { IconEdit } from '@tabler/icons-react'
 import {
-  WORKER_STATUS_LABELS, PRIMARY_SKILL_LABELS, CONTRACT_TYPE_LABELS, type Worker, type WorkerStatus,
+  WORKER_STATUS_LABELS, POSITION_LABELS, CONTRACT_TYPE_LABELS, type Worker, type WorkerStatus,
 } from '@/types'
-import { estimateMonthlyPay } from '@/utils/pay-calculator'
 import { formatCurrency, formatDate } from '@/utils/format'
 import { DetailDrawer } from '@/components/ui/DetailDrawer'
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
@@ -27,10 +26,10 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 export function WorkerDetailDrawer({ worker, open, onClose, onEdit }: Props) {
   if (!worker) return null
   const c = worker.activeContract
-  const estimate = c ? estimateMonthlyPay({
-    contractType: c.contractType, rateNormal: c.rateNormal ?? undefined,
-    baseSalary: c.baseSalary ?? undefined, allowance: c.allowance ?? undefined,
-  }) : 0
+
+  const totalMonthly = c
+    ? (c.baseSalary ?? 0) + (c.allowanceResponsibility ?? 0) + (c.allowanceAttendance ?? 0)
+    : 0
 
   return (
     <DetailDrawer
@@ -49,36 +48,32 @@ export function WorkerDetailDrawer({ worker, open, onClose, onEdit }: Props) {
       </div>
 
       <div className="wd-section">Thông tin cá nhân</div>
-      <Row label="Kỹ năng chính" value={PRIMARY_SKILL_LABELS[worker.primarySkill]} />
+      <Row label="Chức vụ" value={POSITION_LABELS[worker.position]} />
       <Row label="Số năm kinh nghiệm" value={`${worker.experienceYears} năm`} />
-      <Row label="Xưởng" value={worker.site?.name} />
       <Row label="Giới tính" value={worker.gender === 'male' ? 'Nam' : 'Nữ'} />
       <Row label="Ngày sinh" value={formatDate(worker.dateOfBirth)} />
       <Row label="CCCD" value={worker.idNumber} />
       <Row label="Số điện thoại" value={worker.phone} />
       <Row label="Địa chỉ" value={worker.address} />
 
-      <div className="wd-section">Hợp đồng & Tiền công</div>
+      <div className="wd-section">Hợp đồng &amp; Tiền lương</div>
       {c ? (
         <>
           <Row label="Loại hợp đồng" value={<Badge variant="blue">{CONTRACT_TYPE_LABELS[c.contractType]}</Badge>} />
           <Row label="Ngày bắt đầu" value={formatDate(c.startDate)} />
-          {(c.contractType === 'hourly' || c.contractType === 'daily') && (
-            <>
-              <Row label="Đơn giá thường" value={c.rateNormal ? formatCurrency(c.rateNormal) : '—'} />
-              <Row label="Đơn giá OT" value={c.rateOvertime ? formatCurrency(c.rateOvertime) : '—'} />
-            </>
-          )}
-          {c.contractType === 'monthly' && (
+
+          {(c.contractType === 'official' || c.contractType === 'probation') && (
             <>
               <Row label="Lương cơ bản" value={c.baseSalary ? formatCurrency(c.baseSalary) : '—'} />
-              <Row label="Phụ cấp" value={c.allowance ? formatCurrency(c.allowance) : '—'} />
+              <Row label="Phụ cấp trách nhiệm" value={c.allowanceResponsibility ? formatCurrency(c.allowanceResponsibility) : '—'} />
+              <Row label="Phụ cấp chuyên cần" value={c.allowanceAttendance ? formatCurrency(c.allowanceAttendance) : '—'} />
+              {totalMonthly > 0 && <Row label="Tổng thu nhập / tháng" value={<strong>{formatCurrency(totalMonthly)}</strong>} />}
             </>
           )}
-          {c.contractType === 'piece' && (
+
+          {c.contractType === 'piece_rate' && (
             <Row label="Đơn giá khoán" value={c.ratePerUnit ? `${formatCurrency(c.ratePerUnit)} / ${c.unitName}` : '—'} />
           )}
-          {estimate > 0 && <Row label="Ước tính lương tháng" value={<strong>{formatCurrency(estimate)}</strong>} />}
         </>
       ) : <p className="wd-empty">Chưa có hợp đồng.</p>}
 
