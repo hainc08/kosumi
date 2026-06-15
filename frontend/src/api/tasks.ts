@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost } from './http'
 import { db, nextId } from '@/mocks/db'
 import type { Task, TaskAssignment, Worker } from '@/types'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 const now = () => new Date().toISOString()
 
@@ -92,7 +95,9 @@ export function saveAssignmentsInDb(draft: Record<string, string[]>): number {
 export function useQuoteTasks(quoteId: string | null) {
   return useQuery<Task[]>({
     queryKey: ['tasks', 'quote', quoteId],
-    queryFn: () => mockRequest(() => tasksForQuote(quoteId!)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => tasksForQuote(quoteId!))
+      : apiGet<Task[]>('/tasks', { params: { quoteId } }),
     enabled: !!quoteId,
   })
 }
@@ -100,7 +105,9 @@ export function useQuoteTasks(quoteId: string | null) {
 export function useAvailableWorkers(siteId: string | null) {
   return useQuery<Worker[]>({
     queryKey: ['tasks', 'available-workers', siteId],
-    queryFn: () => mockRequest(() => availableWorkersAtSite(siteId!)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => availableWorkersAtSite(siteId!))
+      : apiGet<Worker[]>('/tasks/available-workers', { params: { siteId } }),
     enabled: !!siteId,
   })
 }
@@ -109,15 +116,18 @@ export function useAvailableWorkers(siteId: string | null) {
 export function useActiveTasks() {
   return useQuery<Task[]>({
     queryKey: ['tasks', 'active'],
-    queryFn: () => mockRequest(() => db.tasks.map(enrichTask)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => db.tasks.map(enrichTask))
+      : apiGet<Task[]>('/tasks/active'),
   })
 }
 
 export function useAssignWorker() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ taskId, workerId }: { taskId: string; workerId: string }) =>
-      mockRequest(() => assignWorkerInDb(taskId, workerId)),
+    mutationFn: ({ taskId, workerId }: { taskId: string; workerId: string }) => USE_MOCK
+      ? mockRequest(() => assignWorkerInDb(taskId, workerId))
+      : apiPost(`/tasks/${taskId}/assign`, { workerId }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }
@@ -125,8 +135,9 @@ export function useAssignWorker() {
 export function useUnassignWorker() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ taskId, workerId }: { taskId: string; workerId: string }) =>
-      mockRequest(() => unassignWorkerInDb(taskId, workerId)),
+    mutationFn: ({ taskId, workerId }: { taskId: string; workerId: string }) => USE_MOCK
+      ? mockRequest(() => unassignWorkerInDb(taskId, workerId))
+      : apiPost(`/tasks/${taskId}/unassign`, { workerId }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }
@@ -134,8 +145,9 @@ export function useUnassignWorker() {
 export function useTransferWorker() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ workerId, fromTaskId, toTaskId }: { workerId: string; fromTaskId: string; toTaskId: string }) =>
-      mockRequest(() => transferWorkerInDb(workerId, fromTaskId, toTaskId)),
+    mutationFn: ({ workerId, fromTaskId, toTaskId }: { workerId: string; fromTaskId: string; toTaskId: string }) => USE_MOCK
+      ? mockRequest(() => transferWorkerInDb(workerId, fromTaskId, toTaskId))
+      : apiPost('/tasks/transfer', { workerId, fromTaskId, toTaskId }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }
@@ -143,7 +155,9 @@ export function useTransferWorker() {
 export function useSaveAssignments() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (draft: Record<string, string[]>) => mockRequest(() => saveAssignmentsInDb(draft)),
+    mutationFn: (draft: Record<string, string[]>) => USE_MOCK
+      ? mockRequest(() => saveAssignmentsInDb(draft))
+      : apiPost('/tasks/assignments/bulk', draft),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }
