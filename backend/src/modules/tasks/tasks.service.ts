@@ -63,7 +63,9 @@ export class TasksService {
   }
 
   /** Các task của 1 báo giá (qua quoteItemId), sắp theo sortOrder. */
-  async tasksForQuote(quoteId: string): Promise<TaskWithRelations[]> {
+  async tasksForQuote(quoteId?: string): Promise<TaskWithRelations[]> {
+    // Thiếu quoteId -> trả rỗng (tránh TypeORM bỏ qua filter và trả TẤT CẢ task).
+    if (!quoteId) return []
     const items = await this.quoteItemRepo.find({ where: { quoteId } })
     if (items.length === 0) return []
     const itemIds = items.map((i) => i.id)
