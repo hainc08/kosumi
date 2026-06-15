@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost, apiPut } from './http'
 import { db, nextId } from '@/mocks/db'
 import type { Customer, CustomerContact, CreateCustomerDto } from '@/types'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export interface CustomerFilters { search?: string; type?: string; status?: string }
 
@@ -76,14 +79,18 @@ export function updateCustomerInDb(id: string, dto: CreateCustomerDto): Customer
 export function useCustomers(filters: CustomerFilters = {}) {
   return useQuery<Customer[]>({
     queryKey: ['customers', filters],
-    queryFn: () => mockRequest(() => filterCustomers(db.customers, filters)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => filterCustomers(db.customers, filters))
+      : apiGet<Customer[]>('/customers', { params: filters }),
   })
 }
 
 export function useCustomer(id: string | null) {
   return useQuery<Customer | undefined>({
     queryKey: ['customers', id],
-    queryFn: () => mockRequest(() => db.customers.find((c) => c.id === id)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => db.customers.find((c) => c.id === id))
+      : apiGet<Customer>(`/customers/${id}`),
     enabled: !!id,
   })
 }
@@ -91,7 +98,9 @@ export function useCustomer(id: string | null) {
 export function useCreateCustomer() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (dto: CreateCustomerDto) => mockRequest(() => createCustomerInDb(dto)),
+    mutationFn: (dto: CreateCustomerDto) => USE_MOCK
+      ? mockRequest(() => createCustomerInDb(dto))
+      : apiPost<Customer>('/customers', dto),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['customers'] }),
   })
 }
@@ -99,8 +108,9 @@ export function useCreateCustomer() {
 export function useUpdateCustomer() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, dto }: { id: string; dto: CreateCustomerDto }) =>
-      mockRequest(() => updateCustomerInDb(id, dto)),
+    mutationFn: ({ id, dto }: { id: string; dto: CreateCustomerDto }) => USE_MOCK
+      ? mockRequest(() => updateCustomerInDb(id, dto))
+      : apiPut<Customer>(`/customers/${id}`, dto),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['customers'] }),
   })
 }
