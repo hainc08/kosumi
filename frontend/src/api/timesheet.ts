@@ -1,8 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost } from './http'
 import { db } from '@/mocks/db'
 import type { TimesheetEntry, MonthlySummary } from '@/types'
 import { isPaidDay } from '@/utils/timesheet-calc'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export interface TimesheetFilters { yearMonth?: string; siteId?: string; search?: string }
 
@@ -35,7 +38,6 @@ export function monthlySummaries(f: TimesheetFilters): MonthlySummary[] {
   for (const [workerId, entries] of byWorker) {
     const w = db.workers.find((x) => x.id === workerId)
     if (!w) continue
-    if (f.siteId && w.siteId !== f.siteId) continue
     if (f.search && !w.fullName.toLowerCase().includes(f.search.toLowerCase()) && !w.code.toLowerCase().includes(f.search.toLowerCase())) continue
 
     const c = w.activeContract
@@ -49,7 +51,7 @@ export function monthlySummaries(f: TimesheetFilters): MonthlySummary[] {
       totalAbsentDays: entries.filter((e) => e.dayType === 'absent').length,
       totalPay: entries.reduce((s, e) => s + e.payAmount, 0),
       baseSalary: c?.baseSalary ?? null,
-      allowance: c?.allowance ?? null,
+      allowance: (c?.allowanceResponsibility ?? 0) + (c?.allowanceAttendance ?? 0) || null,
       status: anyPending ? 'submitted' : 'approved',
       worker: { id: w.id, code: w.code, fullName: w.fullName },
     })
@@ -70,20 +72,29 @@ export function approveMonthInDb(workerId: string, yearMonth: string): void {
 // ─── HOOKS ───────────────────────────────────────────────────────────────────
 
 export function useAvailableMonths() {
-  return useQuery<string[]>({ queryKey: ['timesheet', 'months'], queryFn: () => mockRequest(() => availableMonths()) })
+  return useQuery<string[]>({
+    queryKey: ['timesheet', 'months'],
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => availableMonths())
+      : apiGet<string[]>('/timesheet/months'),
+  })
 }
 
 export function useMonthlySummaries(filters: TimesheetFilters) {
   return useQuery<MonthlySummary[]>({
     queryKey: ['timesheet', 'summary', filters],
-    queryFn: () => mockRequest(() => monthlySummaries(filters)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => monthlySummaries(filters))
+      : apiGet<MonthlySummary[]>('/timesheet/summaries', { params: filters }),
   })
 }
 
 export function useTimesheetEntries(workerId: string | null, yearMonth: string) {
   return useQuery<TimesheetEntry[]>({
     queryKey: ['timesheet', 'entries', workerId, yearMonth],
-    queryFn: () => mockRequest(() => entriesFor(workerId!, yearMonth)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => entriesFor(workerId!, yearMonth))
+      : apiGet<TimesheetEntry[]>('/timesheet/entries', { params: { workerId, yearMonth } }),
     enabled: !!workerId,
   })
 }
@@ -91,8 +102,9 @@ export function useTimesheetEntries(workerId: string | null, yearMonth: string) 
 export function useApproveMonth() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ workerId, yearMonth }: { workerId: string; yearMonth: string }) =>
-      mockRequest(() => approveMonthInDb(workerId, yearMonth)),
+    mutationFn: ({ workerId, yearMonth }: { workerId: string; yearMonth: string }) => USE_MOCK
+      ? mockRequest(() => approveMonthInDb(workerId, yearMonth))
+      : apiPost('/timesheet/approve', { workerId, yearMonth }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['timesheet'] }),
   })
 }

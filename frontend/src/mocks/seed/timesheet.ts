@@ -8,16 +8,16 @@ const WORKDAYS = ['01', '02', '03', '04', '05', '08', '09', '10', '11', '12'].ma
 
 const iso = (d: string) => `${d}T17:30:00.000Z`
 
-// Kịch bản chấm công riêng cho từng công nhân (giờ OT + ngày nghỉ/vắng).
-const SCENARIOS: Record<string, { ot: Record<number, number>; days: Record<number, DayType> }> = {
-  'w-1': { ot: { 2: 2, 4: 2, 9: 2 }, days: {} },
-  'w-2': { ot: {}, days: { 5: 'leave_paid' } },
-  'w-3': { ot: {}, days: { 0: 'leave_paid', 1: 'leave_paid', 2: 'leave_paid', 3: 'leave_paid', 4: 'leave_paid', 5: 'leave_paid', 6: 'leave_paid', 7: 'leave_paid', 8: 'leave_paid', 9: 'leave_paid' } },
-  'w-4': { ot: { 1: 2, 8: 1.5 }, days: {} },
-  'w-5': { ot: {}, days: {} },
-  'w-6': { ot: { 0: 2, 3: 2, 7: 2 }, days: {} },
-  'w-7': { ot: {}, days: { 9: 'holiday' } },
-  'w-8': { ot: {}, days: { 6: 'absent', 7: 'absent' } },
+// Kịch bản chấm công riêng cho từng công nhân (ngày nghỉ/vắng).
+const SCENARIOS: Record<string, { days: Record<number, DayType> }> = {
+  'w-1': { days: {} },
+  'w-2': { days: { 5: 'leave_paid' } },
+  'w-3': { days: { 0: 'leave_paid', 1: 'leave_paid', 2: 'leave_paid', 3: 'leave_paid', 4: 'leave_paid', 5: 'leave_paid', 6: 'leave_paid', 7: 'leave_paid', 8: 'leave_paid', 9: 'leave_paid' } },
+  'w-4': { days: {} },
+  'w-5': { days: {} },
+  'w-6': { days: {} },
+  'w-7': { days: { 9: 'holiday' } },
+  'w-8': { days: { 6: 'absent', 7: 'absent' } },
 }
 
 function buildEntries(): TimesheetEntry[] {
@@ -27,7 +27,7 @@ function buildEntries(): TimesheetEntry[] {
     if (w.status === 'resigned') continue
     const c = w.activeContract
     if (!c) continue
-    const sc = SCENARIOS[w.id] ?? { ot: {}, days: {} }
+    const sc = SCENARIOS[w.id] ?? { days: {} }
     // 2 người gần nhất chưa duyệt để minh hoạ workflow
     const status: TimesheetStatus = w.id === 'w-6' || w.id === 'w-8' ? 'pending_approval' : 'approved'
 
@@ -35,16 +35,18 @@ function buildEntries(): TimesheetEntry[] {
       const dayType: DayType = sc.days[idx] ?? 'workday'
       const isWork = dayType === 'workday'
       const regularHours = isWork ? 8 : dayType === 'leave_paid' || dayType === 'holiday' ? 8 : 0
-      const overtimeHours = isWork ? sc.ot[idx] ?? 0 : 0
+      const overtimeHours = 0
       const payAmount = computeDayPay({
         contractType: c.contractType, dayType, regularHours: isWork ? 8 : 0, overtimeHours,
-        rateNormal: c.rateNormal, rateOvertime: c.rateOvertime, baseSalary: c.baseSalary, allowance: c.allowance,
+        baseSalary: c.baseSalary,
+        allowanceResponsibility: c.allowanceResponsibility,
+        allowanceAttendance: c.allowanceAttendance,
       })
       n += 1
       entries.push({
-        id: `ts-${n}`, workerId: w.id, workDate: date, siteId: w.siteId,
+        id: `ts-${n}`, workerId: w.id, workDate: date, siteId: null,
         regularHours, overtimeHours, dayType, contractType: c.contractType,
-        rateNormal: c.rateNormal, rateOvertime: c.rateOvertime, payAmount, status,
+        rateNormal: null, rateOvertime: null, payAmount, status,
         createdAt: iso(date), updatedAt: iso(date),
       })
     })

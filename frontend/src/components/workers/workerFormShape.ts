@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { PrimarySkill, ContractType, Worker } from '@/types'
+import type { Position, ContractType, Worker } from '@/types'
 import type { WorkerFormValues } from '@/api/workers'
 
 /** Form dùng input text cho mọi field số (convert sang number khi submit). */
@@ -10,16 +10,14 @@ export interface WorkerFormShape {
   idNumber: string
   phone: string
   address: string
-  siteId: string
-  primarySkill: PrimarySkill
+  position: Position
   experienceYears: string
   notes: string
   contractType: ContractType
   startDate: string
-  rateNormal: string
-  rateOvertime: string
   baseSalary: string
-  allowance: string
+  allowanceResponsibility: string
+  allowanceAttendance: string
   ratePerUnit: string
   unitName: string
 }
@@ -34,34 +32,28 @@ export const workerSchema = z
     idNumber: z.string(),
     phone: z.string().refine((v) => v === '' || /^(0[3-9]\d{8})$/.test(v), 'Số điện thoại không hợp lệ'),
     address: z.string(),
-    siteId: z.string(),
-    primarySkill: z.enum([
-      'welding_electric', 'welding_tig', 'cnc_cutting', 'laser_cutting',
-      'assembly', 'painting', 'qc_inspection', 'other',
+    position: z.enum([
+      'team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other',
     ]),
     experienceYears: z.string().refine((v) => {
       const n = Number(v)
       return v !== '' && !Number.isNaN(n) && n >= 0 && n <= 50
     }, 'Kinh nghiệm phải từ 0–50 năm'),
     notes: z.string(),
-    contractType: z.enum(['hourly', 'daily', 'monthly', 'piece']),
+    contractType: z.enum(['piece_rate', 'official', 'probation']),
     startDate: z.string().min(1, 'Bắt buộc chọn ngày bắt đầu'),
-    rateNormal: z.string(),
-    rateOvertime: z.string(),
     baseSalary: z.string(),
-    allowance: z.string(),
+    allowanceResponsibility: z.string(),
+    allowanceAttendance: z.string(),
     ratePerUnit: z.string(),
     unitName: z.string(),
   })
   .superRefine((v, ctx) => {
-    const rn = num(v.rateNormal)
-    if ((v.contractType === 'hourly' || v.contractType === 'daily') && (!rn || rn < 1000)) {
-      ctx.addIssue({ code: 'custom', path: ['rateNormal'], message: 'Đơn giá tối thiểu 1.000đ' })
+    if ((v.contractType === 'official' || v.contractType === 'probation') &&
+        (!num(v.baseSalary) || (num(v.baseSalary) ?? 0) < 1000)) {
+      ctx.addIssue({ code: 'custom', path: ['baseSalary'], message: 'Nhập lương cơ bản (tối thiểu 1.000đ)' })
     }
-    if (v.contractType === 'monthly' && (!num(v.baseSalary) || (num(v.baseSalary) ?? 0) < 1000)) {
-      ctx.addIssue({ code: 'custom', path: ['baseSalary'], message: 'Nhập lương cơ bản' })
-    }
-    if (v.contractType === 'piece') {
+    if (v.contractType === 'piece_rate') {
       if (!num(v.ratePerUnit)) ctx.addIssue({ code: 'custom', path: ['ratePerUnit'], message: 'Nhập đơn giá/đơn vị' })
       if (v.unitName.trim() === '') ctx.addIssue({ code: 'custom', path: ['unitName'], message: 'Nhập tên đơn vị' })
     }
@@ -69,9 +61,10 @@ export const workerSchema = z
 
 export const emptyWorkerForm: WorkerFormShape = {
   fullName: '', gender: 'male', dateOfBirth: '', idNumber: '', phone: '', address: '',
-  siteId: '', primarySkill: 'welding_electric', experienceYears: '0', notes: '',
-  contractType: 'hourly', startDate: new Date().toISOString().slice(0, 10),
-  rateNormal: '', rateOvertime: '', baseSalary: '', allowance: '', ratePerUnit: '', unitName: '',
+  position: 'worker', experienceYears: '0', notes: '',
+  contractType: 'official', startDate: new Date().toISOString().slice(0, 10),
+  baseSalary: '', allowanceResponsibility: '', allowanceAttendance: '',
+  ratePerUnit: '', unitName: '',
 }
 
 export function workerToForm(w: Worker): WorkerFormShape {
@@ -80,11 +73,12 @@ export function workerToForm(w: Worker): WorkerFormShape {
   return {
     fullName: w.fullName, gender: w.gender, dateOfBirth: w.dateOfBirth ?? '',
     idNumber: w.idNumber ?? '', phone: w.phone ?? '', address: w.address ?? '',
-    siteId: w.siteId ?? '', primarySkill: w.primarySkill,
+    position: w.position,
     experienceYears: String(w.experienceYears), notes: w.notes ?? '',
-    contractType: c?.contractType ?? 'hourly', startDate: c?.startDate ?? emptyWorkerForm.startDate,
-    rateNormal: s(c?.rateNormal), rateOvertime: s(c?.rateOvertime),
-    baseSalary: s(c?.baseSalary), allowance: s(c?.allowance),
+    contractType: c?.contractType ?? 'official', startDate: c?.startDate ?? emptyWorkerForm.startDate,
+    baseSalary: s(c?.baseSalary),
+    allowanceResponsibility: s(c?.allowanceResponsibility),
+    allowanceAttendance: s(c?.allowanceAttendance),
     ratePerUnit: s(c?.ratePerUnit), unitName: c?.unitName ?? '',
   }
 }
@@ -94,11 +88,12 @@ export function formToValues(v: WorkerFormShape): WorkerFormValues {
     fullName: v.fullName, gender: v.gender,
     dateOfBirth: v.dateOfBirth || undefined, idNumber: v.idNumber || undefined,
     phone: v.phone || undefined, address: v.address || undefined,
-    siteId: v.siteId || undefined, primarySkill: v.primarySkill,
+    position: v.position,
     experienceYears: Number(v.experienceYears), notes: v.notes || undefined,
     contractType: v.contractType, startDate: v.startDate,
-    rateNormal: num(v.rateNormal), rateOvertime: num(v.rateOvertime),
-    baseSalary: num(v.baseSalary), allowance: num(v.allowance),
+    baseSalary: num(v.baseSalary),
+    allowanceResponsibility: num(v.allowanceResponsibility),
+    allowanceAttendance: num(v.allowanceAttendance),
     ratePerUnit: num(v.ratePerUnit), unitName: v.unitName || undefined,
   }
 }

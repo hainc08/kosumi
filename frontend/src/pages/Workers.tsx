@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react'
 import { IconUsers, IconUserCheck, IconUserOff, IconTrendingUp, IconUserPlus } from '@tabler/icons-react'
 import {
-  PRIMARY_SKILL_LABELS, WORKER_STATUS_LABELS, CONTRACT_TYPE_LABELS,
+  POSITION_LABELS, WORKER_STATUS_LABELS, CONTRACT_TYPE_LABELS,
   type Worker, type WorkerStatus,
 } from '@/types'
 import { useWorkers } from '@/api/workers'
-import { useSites } from '@/api/sites'
 import { formatCurrency } from '@/utils/format'
 import { PageShell } from '@/components/layout/PageShell'
 import { KpiCard } from '@/components/ui/KpiCard'
@@ -25,24 +24,20 @@ const STATUS_VARIANT: Record<WorkerStatus, BadgeVariant> = {
 function rateLabel(w: Worker): string {
   const c = w.activeContract
   if (!c) return '—'
-  if (c.contractType === 'hourly') return c.rateNormal ? `${formatCurrency(c.rateNormal)}/giờ` : '—'
-  if (c.contractType === 'daily') return c.rateNormal ? `${formatCurrency(c.rateNormal)}/ngày` : '—'
-  if (c.contractType === 'monthly') return c.baseSalary ? `${formatCurrency(c.baseSalary)}/tháng` : '—'
-  return c.ratePerUnit ? `${formatCurrency(c.ratePerUnit)}/${c.unitName}` : '—'
+  if (c.contractType === 'piece_rate') return c.ratePerUnit ? `${formatCurrency(c.ratePerUnit)}/${c.unitName ?? 'đv'}` : '—'
+  return c.baseSalary ? `${formatCurrency(c.baseSalary)}/tháng` : '—'
 }
 
 export default function WorkersPage() {
   const [search, setSearch] = useState('')
-  const [siteId, setSiteId] = useState('')
   const [status, setStatus] = useState('')
-  const [skill, setSkill] = useState('')
+  const [position, setPosition] = useState('')
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Worker | null>(null)
   const [selected, setSelected] = useState<Worker | null>(null)
 
-  const { data: sites = [] } = useSites()
   const { data: all = [] } = useWorkers({})
-  const { data: workers = [], isLoading } = useWorkers({ search, siteId, status, skill })
+  const { data: workers = [], isLoading } = useWorkers({ search, status, position })
 
   const kpis = useMemo(() => ({
     total: all.length,
@@ -63,11 +58,10 @@ export default function WorkersPage() {
         </div>
       ),
     },
-    { key: 'skill', header: 'Kỹ năng', render: (w) => PRIMARY_SKILL_LABELS[w.primarySkill] },
+    { key: 'position', header: 'Chức vụ', render: (w) => POSITION_LABELS[w.position] },
     { key: 'exp', header: 'KN', render: (w) => `${w.experienceYears} năm` },
-    { key: 'site', header: 'Xưởng', render: (w) => w.site?.name ?? '—' },
     { key: 'contract', header: 'Loại HĐ', render: (w) => w.activeContract ? <Badge variant="blue">{CONTRACT_TYPE_LABELS[w.activeContract.contractType]}</Badge> : '—' },
-    { key: 'rate', header: 'Đơn giá', render: rateLabel },
+    { key: 'rate', header: 'Lương/tháng', render: rateLabel },
     { key: 'status', header: 'Trạng thái', render: (w) => <Badge variant={STATUS_VARIANT[w.status]} dot>{WORKER_STATUS_LABELS[w.status]}</Badge> },
   ]
 
@@ -88,12 +82,10 @@ export default function WorkersPage() {
 
       <div className="toolbar">
         <SearchBox value={search} onChange={setSearch} placeholder="Tìm theo tên, mã..." width="240px" />
-        <FilterSelect value={siteId} onChange={setSiteId} placeholder="Tất cả xưởng"
-          options={sites.map((s) => ({ value: s.id, label: s.name }))} />
         <FilterSelect value={status} onChange={setStatus} placeholder="Tất cả trạng thái"
           options={(Object.keys(WORKER_STATUS_LABELS) as WorkerStatus[]).map((k) => ({ value: k, label: WORKER_STATUS_LABELS[k] }))} />
-        <FilterSelect value={skill} onChange={setSkill} placeholder="Tất cả kỹ năng"
-          options={Object.entries(PRIMARY_SKILL_LABELS).map(([v, l]) => ({ value: v, label: l }))} />
+        <FilterSelect value={position} onChange={setPosition} placeholder="Tất cả chức vụ"
+          options={Object.entries(POSITION_LABELS).map(([v, l]) => ({ value: v, label: l }))} />
       </div>
 
       <DataTable

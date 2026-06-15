@@ -61,7 +61,8 @@
   --drawer-w:            460px;
   --drawer-sm-w:         420px;
   --modal-w:             520px;
-  --modal-lg-w:          580px;
+  --modal-lg-w:          720px;
+  --modal-xl-w:          960px;
 
   /* === Elevation === */
   --shadow-drawer: -6px 0 24px rgba(15, 23, 42, 0.08);

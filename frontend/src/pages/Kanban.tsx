@@ -6,7 +6,7 @@ import {
   IconDragDrop, IconCircleCheck,
 } from '@tabler/icons-react'
 import {
-  PRIMARY_SKILL_LABELS, TASK_PRIORITY_LABELS, type TaskPriority,
+  POSITION_LABELS, TASK_PRIORITY_LABELS, type TaskPriority,
 } from '@/types'
 import { useSites } from '@/api/sites'
 import { useProjects } from '@/api/projects'
@@ -63,7 +63,7 @@ export default function KanbanPage() {
     return availableWorkers.filter((w) => {
       if (draftWorkerIds.has(w.id)) return false
       if (!q) return true
-      return w.fullName.toLowerCase().includes(q) || PRIMARY_SKILL_LABELS[w.primarySkill].toLowerCase().includes(q)
+      return w.fullName.toLowerCase().includes(q) || POSITION_LABELS[w.position].toLowerCase().includes(q)
     })
   }, [availableWorkers, draftWorkerIds, search])
 
@@ -202,7 +202,7 @@ export default function KanbanPage() {
                                 <span className="wk-card__av" style={{ background: w.avatarColor }}>{w.initials}</span>
                                 <div className="wk-card__info">
                                   <div className="wk-card__name">{w.fullName}</div>
-                                  <div className="wk-card__role">{PRIMARY_SKILL_LABELS[w.primarySkill]}</div>
+                                  <div className="wk-card__role">{POSITION_LABELS[w.position]}</div>
                                 </div>
                                 <span className="wk-card__dot" />
                               </div>

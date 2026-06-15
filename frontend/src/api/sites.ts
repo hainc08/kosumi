@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost, apiPut, apiPatch } from './http'
 import { db, nextId } from '@/mocks/db'
 import type { Site, SiteType, SiteStatus } from '@/types'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export interface SiteFilters { search?: string; status?: string; type?: string }
 export interface SiteFormValues {
@@ -18,11 +21,11 @@ function nextSiteCode(existing: string[]): string {
   return 'CS' + String(max + 1).padStart(3, '0')
 }
 
-/** Đếm công nhân & dự án thực tế đang gắn vào xưởng (từ db). */
+/** Đếm dự án thực tế đang gắn vào xưởng (từ db). */
 export function enrichSite(s: Site): Site {
   return {
     ...s,
-    workerCount: db.workers.filter((w) => w.siteId === s.id).length,
+    workerCount: db.workers.filter((w) => w.status === 'working').length, // global count
     projectCount: db.projects.filter((p) => p.siteId === s.id).length,
   }
 }
@@ -76,14 +79,18 @@ export function setSiteStatusInDb(id: string, status: SiteStatus): Site | undefi
 export function useSites(filters: SiteFilters = {}) {
   return useQuery<Site[]>({
     queryKey: ['sites', filters],
-    queryFn: () => mockRequest(() => filterSites(db.sites, filters)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => filterSites(db.sites, filters))
+      : apiGet<Site[]>('/sites', { params: filters }),
   })
 }
 
 export function useCreateSite() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (v: SiteFormValues) => mockRequest(() => createSiteInDb(v)),
+    mutationFn: (v: SiteFormValues) => USE_MOCK
+      ? mockRequest(() => createSiteInDb(v))
+      : apiPost<Site>('/sites', v),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['sites'] }),
   })
 }
@@ -91,7 +98,9 @@ export function useCreateSite() {
 export function useUpdateSite() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, values }: { id: string; values: SiteFormValues }) => mockRequest(() => updateSiteInDb(id, values)),
+    mutationFn: ({ id, values }: { id: string; values: SiteFormValues }) => USE_MOCK
+      ? mockRequest(() => updateSiteInDb(id, values))
+      : apiPut<Site>(`/sites/${id}`, values),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['sites'] }),
   })
 }
@@ -99,7 +108,9 @@ export function useUpdateSite() {
 export function useSetSiteStatus() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: SiteStatus }) => mockRequest(() => setSiteStatusInDb(id, status)),
+    mutationFn: ({ id, status }: { id: string; status: SiteStatus }) => USE_MOCK
+      ? mockRequest(() => setSiteStatusInDb(id, status))
+      : apiPatch<Site>(`/sites/${id}/status`, { status }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['sites'] }),
   })
 }

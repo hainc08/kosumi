@@ -1,15 +1,16 @@
 import { useEffect, useMemo } from 'react'
-import { useForm, useFieldArray, type Control, type UseFormRegister, type FieldErrors } from 'react-hook-form'
+import { useForm, useFieldArray, Controller, type Control, type UseFormRegister, type FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconFileInvoice, IconPlus, IconTrash, IconSend } from '@tabler/icons-react'
 import { PAYMENT_TERMS_LABELS, type PaymentTermsPreset, type Quote } from '@/types'
-import { useCreateQuote, useUpdateQuote, useUpdateQuoteStatus, peekNextQuoteCode } from '@/api/quotes'
+import { useCreateQuote, useUpdateQuote, useUpdateQuoteStatus, useNextQuoteCode } from '@/api/quotes'
 import { useProjects } from '@/api/projects'
 import { useCustomers } from '@/api/customers'
 import { useToastStore } from '@/stores/toastStore'
 import { FormModal } from '@/components/ui/FormModal'
 import { FormField } from '@/components/ui/FormField'
 import { Button } from '@/components/ui/Button'
+import { CurrencyInput } from '@/components/ui/CurrencyInput'
 import { CustomerCombobox } from './CustomerCombobox'
 import {
   quoteSchema, emptyQuoteForm, quoteToForm, formToValues, addDaysStr, type QuoteFormShape,
@@ -53,7 +54,8 @@ export function QuoteForm({ open, onClose, quote }: Props) {
     }
   }, [quoteDate, validityDays, setValue])
 
-  const code = useMemo(() => (quote ? quote.code : peekNextQuoteCode()), [quote, open])
+  const { data: nextCode } = useNextQuoteCode()
+  const code = useMemo(() => (quote ? quote.code : (nextCode ?? '— tự sinh —')), [quote, nextCode])
   const saving = createQuote.isPending || updateQuote.isPending || updateStatus.isPending
 
   const persist = async (data: QuoteFormShape): Promise<string> => {
@@ -81,7 +83,7 @@ export function QuoteForm({ open, onClose, quote }: Props) {
 
   return (
     <FormModal
-      open={open} onClose={onClose} size="lg"
+      open={open} onClose={onClose} size="xl"
       title={isEdit ? 'Sửa báo giá' : 'Tạo báo giá mới'}
       icon={<IconFileInvoice size={18} />}
       footer={
@@ -133,7 +135,7 @@ export function QuoteForm({ open, onClose, quote }: Props) {
           <input placeholder="VD: Hệ thống lan can toàn bộ dự án" {...register('title')} />
         </FormField>
 
-        <div className="form-grid">
+        <div className="form-grid form-grid--3">
           <FormField label="Ngày báo giá" required error={errors.quoteDate?.message}>
             <input type="date" {...register('quoteDate')} />
           </FormField>
@@ -254,7 +256,13 @@ function SectionLines({ control, register, errors, sectionIndex }: {
               <input inputMode="numeric" {...register(`sections.${sectionIndex}.items.${li}.quantity` as const)} />
             </FormField>
             <FormField label="Đơn giá" required error={errors.sections?.[sectionIndex]?.items?.[li]?.unitPrice?.message}>
-              <input inputMode="numeric" {...register(`sections.${sectionIndex}.items.${li}.unitPrice` as const)} />
+              <Controller
+                control={control}
+                name={`sections.${sectionIndex}.items.${li}.unitPrice` as const}
+                render={({ field }) => (
+                  <CurrencyInput {...field} placeholder="VD: 1.500.000" />
+                )}
+              />
             </FormField>
             <button type="button" className="quote-item-del qf-line__del" onClick={() => lines.remove(li)} aria-label="Xóa danh mục"><IconTrash size={15} /></button>
           </div>

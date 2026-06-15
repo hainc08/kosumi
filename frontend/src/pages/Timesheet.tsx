@@ -26,10 +26,12 @@ function rateDisplay(w?: Worker): string {
   const c = w?.activeContract
   if (!c) return '—'
   switch (c.contractType) {
-    case 'hourly':  return `${formatCurrency(c.rateNormal ?? 0)}/h`
-    case 'daily':   return `${formatCurrency(c.rateNormal ?? 0)}/ngày`
-    case 'monthly': return `${formatCurrency((c.baseSalary ?? 0) + (c.allowance ?? 0))}/tháng`
-    case 'piece':   return `${formatCurrency(c.ratePerUnit ?? 0)}/${c.unitName ?? 'sp'}`
+    case 'official':
+    case 'probation': {
+      const total = (c.baseSalary ?? 0) + (c.allowanceResponsibility ?? 0) + (c.allowanceAttendance ?? 0)
+      return `${formatCurrency(total)}/tháng`
+    }
+    case 'piece_rate':   return `${formatCurrency(c.ratePerUnit ?? 0)}/${c.unitName ?? 'sp'}`
   }
 }
 
@@ -66,7 +68,7 @@ export default function TimesheetPage() {
   }
 
   const handleExport = async () => {
-    await exportTimesheetXlsx(rows, yearMonth, (id) => workerMap.get(id)?.activeContract?.contractType ?? 'hourly')
+    await exportTimesheetXlsx(rows, yearMonth, (id) => workerMap.get(id)?.activeContract?.contractType ?? 'official')
     toast('✓ Đã xuất bảng chấm công ra Excel')
   }
 
@@ -83,12 +85,11 @@ export default function TimesheetPage() {
         )
       },
     },
-    { key: 'site', header: 'Xưởng', render: (r) => workerMap.get(r.workerId)?.site?.name ?? '—' },
-    { key: 'contract', header: 'Loại HĐ', render: (r) => CONTRACT_TYPE_LABELS[workerMap.get(r.workerId)?.activeContract?.contractType ?? 'hourly'] },
+    { key: 'contract', header: 'Loại HĐ', render: (r) => CONTRACT_TYPE_LABELS[workerMap.get(r.workerId)?.activeContract?.contractType ?? 'official'] },
     { key: 'workdays', header: 'Ngày công', render: (r) => <strong>{r.totalWorkdays}</strong> },
     { key: 'regular', header: 'Giờ thường', render: (r) => formatHours(r.totalRegularHours) },
     { key: 'ot', header: 'Giờ OT', render: (r) => r.totalOtHours ? <span className="cell-ts__ot">{formatHours(r.totalOtHours)}</span> : '—' },
-    { key: 'rate', header: 'Đơn giá', render: (r) => <span className="cell-ts__rate">{rateDisplay(workerMap.get(r.workerId))}</span> },
+    { key: 'rate', header: 'Thu nhập / tháng', render: (r) => <span className="cell-ts__rate">{rateDisplay(workerMap.get(r.workerId))}</span> },
     { key: 'pay', header: 'Thực lĩnh', render: (r) => <span className="cell-ts__pay">{formatCurrency(r.totalPay)}</span> },
     { key: 'status', header: 'Trạng thái', render: (r) => r.status === 'approved'
         ? <Badge variant="green" dot>Đã duyệt</Badge>

@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost, apiPut } from './http'
 import { db, nextId } from '@/mocks/db'
 import type { Project, ProjectStatus, ProjectType } from '@/types'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export interface ProjectFilters { search?: string; status?: string; siteId?: string }
 export interface ProjectFormValues {
@@ -69,14 +72,18 @@ export function updateProjectInDb(id: string, v: ProjectFormValues): Project | u
 export function useProjects(filters: ProjectFilters = {}) {
   return useQuery<Project[]>({
     queryKey: ['projects', filters],
-    queryFn: () => mockRequest(() => filterProjects(db.projects, filters)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => filterProjects(db.projects, filters))
+      : apiGet<Project[]>('/projects', { params: filters }),
   })
 }
 
 export function useProject(id: string | null) {
   return useQuery<Project | undefined>({
     queryKey: ['projects', id],
-    queryFn: () => mockRequest(() => db.projects.find((p) => p.id === id)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => db.projects.find((p) => p.id === id))
+      : apiGet<Project>(`/projects/${id}`),
     enabled: !!id,
   })
 }
@@ -84,7 +91,9 @@ export function useProject(id: string | null) {
 export function useCreateProject() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (v: ProjectFormValues) => mockRequest(() => createProjectInDb(v)),
+    mutationFn: (v: ProjectFormValues) => USE_MOCK
+      ? mockRequest(() => createProjectInDb(v))
+      : apiPost<Project>('/projects', v),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['projects'] }),
   })
 }
@@ -92,8 +101,9 @@ export function useCreateProject() {
 export function useUpdateProject() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, values }: { id: string; values: ProjectFormValues }) =>
-      mockRequest(() => updateProjectInDb(id, values)),
+    mutationFn: ({ id, values }: { id: string; values: ProjectFormValues }) => USE_MOCK
+      ? mockRequest(() => updateProjectInDb(id, values))
+      : apiPut<Project>(`/projects/${id}`, values),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['projects'] }),
   })
 }
