@@ -5,6 +5,7 @@ import { seedCustomers } from './customers.seed'
 import { seedProjects } from './projects.seed'
 import { seedQuotes } from './quotes.seed'
 import { seedTasks } from './tasks.seed'
+import { seedTimesheet } from './timesheet.seed'
 
 async function run() {
   await AppDataSource.initialize()
@@ -14,6 +15,7 @@ async function run() {
   await seedProjects(AppDataSource)
   await seedQuotes(AppDataSource)
   await seedTasks(AppDataSource)
+  await seedTimesheet(AppDataSource)
   await AppDataSource.destroy()
   console.log('Seed xong')
 }
