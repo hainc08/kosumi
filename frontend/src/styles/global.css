@@ -19,3 +19,22 @@ input, select, textarea { font-family: inherit; }
 @media print {
   .no-print { display: none !important; }
 }
+
+/* ─── Responsive: điện thoại (≤ 768px) ───────────────────────────────
+ * .kpi-row/.toolbar được định nghĩa lại trong CSS từng trang nên override
+ * ở đây phải scope dưới .page để đủ specificity thắng cascade. */
+@media (max-width: 768px) {
+  .page { padding: 14px 12px; }
+
+  /* KPI: 4 hoặc 3 cột → 2 cột trên mobile */
+  .page .kpi-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .page .kpi-row--3 { grid-template-columns: 1fr 1fr; }
+
+  /* Toolbar lọc: cho phép các control giãn rộng khi xuống dòng */
+  .page .toolbar > * { flex: 1 1 auto; min-width: 0; }
+
+  /* Drawer chi tiết & modal form: chiếm gần trọn màn hình */
+  .drawer--md, .drawer--sm { width: 100% !important; }
+  .modal--md, .modal--lg, .modal--xl { width: 100% !important; }
+  .modal__overlay { padding: 3vh 10px !important; }
+}

@@ -20,17 +20,17 @@ const NAV: NavItem[] = [
 ]
 
 export function Sidebar() {
-  const { sidebarCollapsed, user } = useAppStore()
+  const { sidebarCollapsed, mobileNavOpen, closeMobileNav, user } = useAppStore()
   const groups = [...new Set(NAV.map((n) => n.group))]
   return (
-    <aside className={`sidebar ${sidebarCollapsed ? 'sidebar--collapsed' : ''}`}>
+    <aside className={`sidebar ${sidebarCollapsed ? 'sidebar--collapsed' : ''} ${mobileNavOpen ? 'sidebar--mobile-open' : ''}`}>
       <div className="sidebar__brand">{sidebarCollapsed ? 'WS' : 'WorkShop Pro'}</div>
       <nav className="sidebar__nav">
         {groups.map((g) => (
           <div key={g} className="sidebar__group">
             {!sidebarCollapsed && <span className="sidebar__group-label">{g}</span>}
             {NAV.filter((n) => n.group === g).map((n) => (
-              <NavLink key={n.to} to={n.to}
+              <NavLink key={n.to} to={n.to} onClick={closeMobileNav}
                 className={({ isActive }) => `sidebar__item ${isActive ? 'sidebar__item--active' : ''} ${!n.ready ? 'sidebar__item--soon' : ''}`}
                 title={n.label}>
                 {n.icon}{!sidebarCollapsed && <span>{n.label}</span>}

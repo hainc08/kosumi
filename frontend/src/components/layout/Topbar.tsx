@@ -1,14 +1,18 @@
 import { IconMenu2, IconSearch, IconBell, IconChevronDown } from '@tabler/icons-react'
 import { useAppStore } from '@/stores/appStore'
+import { useIsMobile } from '@/hooks/useMediaQuery'
 import './Topbar.css'
 
 interface TopbarProps { title: string; subtitle?: string; actions?: React.ReactNode }
 
 export function Topbar({ title, subtitle, actions }: TopbarProps) {
-  const { toggleSidebar, user } = useAppStore()
+  const { toggleSidebar, openMobileNav, user } = useAppStore()
+  const isMobile = useIsMobile()
+  // Mobile: mở drawer; desktop: thu gọn sidebar
+  const onMenu = () => (isMobile ? openMobileNav() : toggleSidebar())
   return (
     <header className="topbar">
-      <button className="topbar__menu" onClick={toggleSidebar} aria-label="Thu gọn menu"><IconMenu2 size={18} /></button>
+      <button className="topbar__menu" onClick={onMenu} aria-label="Menu"><IconMenu2 size={18} /></button>
       <div className="topbar__title">
         <span className="topbar__title-main">{title}</span>
         {subtitle && <span className="topbar__title-sub">· {subtitle}</span>}
