@@ -528,7 +528,8 @@ export class SitesService {
 
   async create(dto: CreateSiteDto): Promise<Site> {
     return this.dataSource.transaction(async (m) => {
-      const count = await m.count(Site)
+      // Đếm CẢ bản đã xóa mềm (withDeleted) để mã tăng đơn điệu, tránh trùng `code` unique sau xóa mềm.
+      const count = await m.count(Site, { withDeleted: true })
       const site = m.create(Site, { ...dto, code: makeCode('CS', count + 1) })
       return m.save(site)
     })
