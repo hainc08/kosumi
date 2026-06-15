@@ -37,7 +37,7 @@ export function createProjectInDb(v: ProjectFormValues): Project {
   const customer = db.customers.find((c) => c.id === v.customerId)
   const project: Project = {
     id, code, name: v.name, customerId: v.customerId ?? null, projectType: v.projectType,
-    siteId: v.siteId ?? '', contractValue: v.contractValue ?? null,
+    siteId: v.siteId ?? null, contractValue: v.contractValue ?? null,
     startDate: v.startDate ?? null, deadline: v.deadline, actualEndDate: null,
     progressPct: v.progressPct ?? 0, status: v.status ?? 'planning',
     description: v.description ?? null, managerId: null, createdAt: now(), updatedAt: now(),

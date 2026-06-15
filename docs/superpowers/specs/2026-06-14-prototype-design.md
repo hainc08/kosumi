@@ -147,14 +147,14 @@ src/
 
 ## 7. Tiêu chí hoàn thành (review gate)
 
-- [ ] App chạy `npm run dev`, không lỗi console.
-- [ ] Điều hướng được tới cả 6 module qua sidebar; 3 module placeholder hiển thị đúng.
-- [ ] Mỗi module core: list + filter/search + tạo + sửa + xem chi tiết hoạt động trên mock (mutation phản ánh ngay).
-- [ ] Báo giá: tạo → gửi duyệt → duyệt/từ chối; xem Preview A4 in được (`window.print()`).
-- [ ] Kanban: chọn 4 bước → kéo worker vào task → chuyển việc qua Transfer Drawer.
-- [ ] Chấm công: xem bảng tháng, badge trạng thái đúng màu.
-- [ ] Giao diện khớp `workshop_pro.html`; mọi màu dùng CSS variables.
-- [ ] `src/api/*.ts` cô lập được phần mock (đổi sang axios không đụng component).
+- [x] App chạy `npm run dev`, không lỗi console (chỉ còn favicon 404 vô hại — đã gỡ link).
+- [x] Điều hướng được tới cả 6 module core qua sidebar; placeholder còn lại hiển thị đúng.
+- [x] Mỗi module core: list + filter/search + tạo + sửa + xem chi tiết hoạt động trên mock (mutation phản ánh ngay).
+- [x] Báo giá: tạo → gửi duyệt → duyệt/từ chối; xem Preview A4 song ngữ in được (`window.print()`).
+- [x] Kanban: chọn 4 bước → kéo worker vào task → chuyển việc qua Transfer Drawer (live timer chạy).
+- [x] Chấm công: xem bảng tháng, badge loại ngày đúng màu, duyệt bảng công, xuất Excel.
+- [x] Giao diện khớp `workshop_pro.html`; mọi màu dùng CSS variables.
+- [x] `src/api/*.ts` cô lập được phần mock (đổi sang axios không đụng component).
 
 ---
 

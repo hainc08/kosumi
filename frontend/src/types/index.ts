@@ -244,7 +244,7 @@ export interface Project extends BaseEntity {
   name:           string
   customerId:     string | null         // FK → customers (Module 5)
   projectType:    ProjectType
-  siteId:         string
+  siteId:         string | null         // có thể trống khi dự án tạo nhanh từ báo giá
   contractValue:  number | null
   startDate:      string | null
   deadline:       string
@@ -385,6 +385,21 @@ export interface Task extends BaseEntity {
 
 export type DayType       = 'workday' | 'leave_paid' | 'leave_unpaid' | 'holiday' | 'absent'
 export type TimesheetStatus = 'draft' | 'pending_approval' | 'approved' | 'rejected'
+
+export const DAY_TYPE_LABELS: Record<DayType, string> = {
+  workday:      'Đi làm',
+  leave_paid:   'Nghỉ có lương',
+  leave_unpaid: 'Nghỉ không lương',
+  holiday:      'Ngày lễ',
+  absent:       'Vắng',
+}
+
+export const TIMESHEET_STATUS_LABELS: Record<TimesheetStatus, string> = {
+  draft:            'Nháp',
+  pending_approval: 'Chờ duyệt',
+  approved:         'Đã duyệt',
+  rejected:         'Từ chối',
+}
 
 export interface TimesheetEntry extends BaseEntity {
   workerId:      string

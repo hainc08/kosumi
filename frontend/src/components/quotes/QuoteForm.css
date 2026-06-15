@@ -1,0 +1,45 @@
+.qf { display: block; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+.qf-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--color-text-3); margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--color-border); }
+.qf .qf-section-label:first-child { margin-top: 0; }
+
+.qf-readonly { background: var(--color-surface-2); color: var(--color-text-3); }
+
+.qf-check { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
+  color: var(--color-text); cursor: pointer; margin-bottom: 12px; }
+.qf-check input { width: 15px; height: 15px; accent-color: var(--color-blue); }
+
+.qf-hint { font-size: 12px; color: var(--color-blue-text); background: var(--color-blue-light);
+  border-radius: var(--radius-md); padding: 9px 12px; margin-bottom: 12px; }
+
+.quote-err { font-size: 12px; color: var(--color-red); margin-bottom: 12px; font-weight: 500; }
+
+.quote-item-del { background: none; border: none; color: var(--color-text-3); cursor: pointer; padding: 4px;
+  border-radius: var(--radius-sm); display: inline-flex; align-items: center; justify-content: center; transition: all .15s; }
+.quote-item-del:hover { background: var(--color-red-light); color: var(--color-red); }
+
+/* ── HẠNG MỤC (section) chứa DANH MỤC (lines) ── */
+.qf-sections { display: flex; flex-direction: column; gap: 14px; margin-bottom: 12px; }
+.qf-sec { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 14px; }
+.qf-sec__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.qf-sec__idx { font-size: 11px; font-weight: 700; color: var(--color-blue); text-transform: uppercase; letter-spacing: .05em; }
+
+.qf-lines { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.qf-line { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px; }
+.qf-line__main { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qf-line__calc { display: grid; grid-template-columns: 80px 80px 1fr auto; gap: 10px; align-items: end; margin-top: 6px; }
+.qf-line__del { margin-bottom: 6px; }
+
+.qf-add-line { display: inline-flex; align-items: center; gap: 5px; background: none; border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm); padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--color-blue); cursor: pointer; margin-top: 4px; }
+.qf-add-line:hover { background: var(--color-blue-light); border-color: var(--color-blue); }
+
+/* ── THANH TOÁN ── */
+.quote-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.quote-step-row { display: flex; gap: 12px; align-items: flex-start; background: var(--color-surface-2);
+  padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.quote-step-col-pct { width: 90px; }
+.quote-step-col-desc { flex: 1; }
+.quote-step-col-del { width: 30px; }

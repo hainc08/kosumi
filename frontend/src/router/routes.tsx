@@ -4,6 +4,10 @@ import Placeholder from '@/pages/Placeholder'
 import WorkersPage from '@/pages/Workers'
 import CustomersPage from '@/pages/Customers'
 import ProjectsPage from '@/pages/Projects'
+import QuotesPage from '@/pages/Quotes'
+import QuotePreviewPage from '@/pages/QuotePreview'
+import KanbanPage from '@/pages/Kanban'
+import TimesheetPage from '@/pages/Timesheet'
 
 export const router = createBrowserRouter([
   {
@@ -15,11 +19,14 @@ export const router = createBrowserRouter([
       { path: 'sites', element: <Placeholder title="Công trường / Xưởng" /> },
       { path: 'workers', element: <WorkersPage /> },
       { path: 'projects', element: <ProjectsPage /> },
-      { path: 'quotes', element: <Placeholder title="Báo giá" /> },
-      { path: 'quotes/:id/preview', element: <Placeholder title="Xem trước báo giá" /> },
-      { path: 'assign', element: <Placeholder title="Giao việc Kanban" /> },
-      { path: 'timesheet', element: <Placeholder title="Chấm công" /> },
+      { path: 'quotes', element: <QuotesPage /> },
+      { path: 'assign', element: <KanbanPage /> },
+      { path: 'timesheet', element: <TimesheetPage /> },
       { path: 'report', element: <Placeholder title="Hiệu suất" /> },
     ],
   },
+  {
+    path: '/quotes/:id/preview',
+    element: <QuotePreviewPage />
+  }
 ])
