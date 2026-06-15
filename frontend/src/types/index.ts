@@ -26,6 +26,18 @@ export interface ApiResponse<T> {
 export type SiteType   = 'factory' | 'construction' | 'warehouse'
 export type SiteStatus = 'active'  | 'paused'       | 'preparing'
 
+export const SITE_TYPE_LABELS: Record<SiteType, string> = {
+  factory:      'Xưởng sản xuất',
+  construction: 'Công trường',
+  warehouse:    'Kho bãi',
+}
+
+export const SITE_STATUS_LABELS: Record<SiteStatus, string> = {
+  active:    'Hoạt động',
+  paused:    'Tạm dừng',
+  preparing: 'Chuẩn bị',
+}
+
 export interface Site extends BaseEntity {
   code:           string
   name:           string

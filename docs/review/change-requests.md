@@ -12,22 +12,6 @@
 
 > ✅ **Đã xử lý toàn bộ 7 mục dưới đây** — xem plan `docs/superpowers/plans/2026-06-15-quotes-form-revamp.md`. Đã build + 39 test PASS + kiểm tra trình duyệt.
 
-ở màn Nhập thông tin báo giá 
-0- không tạo thành các tab 
-1- số báo giá tự động sinh 
-2- có thêm dấu check chọn dự án đã có 
-nếu không check thì mặc định phần tên gói thầu sẽ là một dự án mới được tạo 
-
-3- ô khách hàng cho phép nhập để tìm chọn những khách hàng đã có ( nếu không có phải quay lại nhập thông tin khách hàng trước)
-
-4- phần Hạng mục và danh mục 
-nhập tên hạng mục xong thì trong hạng mục cho nhập thông tin danh mục 
-ví dụ : hạng mục Cầu thang thép 
-trong đó hạng mục sẽ là lan can cầu thang thép
-
-5- ngày báo giá là ngày hiện tại
-6- hiệu lực báo giá là sau 30 ngày ( tự động điền luôn
-7- ngoài butotn hủy, lưu báo giá thì thêm button Gửi duyệt báo giá 
 
 
 ## Khách hàng (Customers)
@@ -44,7 +28,13 @@ trong đó hạng mục sẽ là lan can cầu thang thép
 
 ## Giao việc (Kanban)
 
-- [ ]
+> ✅ **Đã xử lý** — Transfer Drawer "Chuyển công nhân" giờ là wizard 3 bước (Công trường → Dự án → Hạng mục) có tabs + "vị trí hiện tại", lọc dữ liệu theo từng bước. Đã build + 39 test PASS + kiểm tra trình duyệt.
+
+- Giao việc 
+ Chuyển công nhân
+ khi chuyển công nhân hiện thị từng bước 
+ chọn công trường -> dự án -> hạng mục như trong file workshop_pro.html
+ không hiển thị hết như hiện tại 
 
 ## Chấm công (Timesheet)
 
