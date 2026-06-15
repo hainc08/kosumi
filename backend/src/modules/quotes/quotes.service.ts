@@ -45,9 +45,12 @@ export class QuotesService {
     const sortedItems = [...items].sort((a, b) => a.sortOrder - b.sortOrder)
     const sortedSteps = [...steps].sort((a, b) => a.stepOrder - b.stepOrder)
 
-    const subtotal = sortedItems.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0)
-    const taxAmount = subtotal * (quote.taxRate / 100)
-    const totalAmount = subtotal + taxAmount
+    // Cộng amount ĐÃ LƯU (đã làm tròn 2 chữ số) thay vì tính lại quantity*unitPrice
+    // bằng float — tránh sai số kiểu 237799999.99999997.
+    const round2 = (n: number) => Math.round(n * 100) / 100
+    const subtotal = round2(sortedItems.reduce((sum, i) => sum + i.amount, 0))
+    const taxAmount = round2(subtotal * (quote.taxRate / 100))
+    const totalAmount = round2(subtotal + taxAmount)
 
     return {
       ...quote,
