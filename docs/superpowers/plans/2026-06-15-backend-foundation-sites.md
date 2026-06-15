@@ -832,6 +832,15 @@ Sửa `frontend/.env` về `VITE_USE_MOCK=true` (mặc định an toàn khi back
 
 ---
 
+## Patterns đã chốt khi verify Sites (BẮT BUỘC áp cho 7 module sau)
+
+1. **Code-gen đếm cả bản xóa mềm**: `m.count(Entity, { withDeleted: true }) + 1` — tránh trùng `code` unique sau soft-delete.
+2. **Query DTO bỏ qua chuỗi rỗng**: FE gửi `?search=&status=&type=`; `@IsOptional` KHÔNG bỏ qua `''` nên `@IsEnum` ném 400. Mỗi field enum/optional trong Query DTO phải có `@Transform(({value}) => value === '' ? undefined : value)` đặt TRƯỚC `@IsEnum`.
+3. **CORS**: `app.enableCors({ origin: /^http:\/\/localhost:\d+$/ })` — vite có thể nhảy cổng 5173/5174/5175.
+4. **FE tráo**: `const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'` (mặc định mock khi thiếu biến); dùng wrapper `apiGet<T>/apiPost<T>/apiPut<T>/apiPatch<T>` trong `http.ts` để giữ type sau khi interceptor bóc envelope.
+5. **DB thật**: MariaDB native localhost:3306 (user `haimv`, db `workshop_pro`) theo `.env` của user — KHÔNG dùng container docker.
+6. **Entity cột nullable**: union `string | null` phải khai báo `type` tường minh (`type:'varchar'`/`'text'`) vì TypeORM reflect union thành `Object`.
+
 ## Scope ngoài plan này (các plan kế tiếp, cùng pattern)
 
 Sau khi Sites verify xong, mỗi module dưới đây = 1 plan riêng lặp lại Phase 1 + Phase 2 (entity→migration→dto→service→controller→e2e→seed→tráo FE→verify), theo thứ tự FK:
