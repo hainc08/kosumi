@@ -11,7 +11,7 @@ services:
       MARIADB_DATABASE: workshop_pro
       MARIADB_ROOT_PASSWORD: rootpass
     ports:
-      - "3306:3306"
+      - "3307:3306"   # host 3306 đã bị dịch vụ khác chiếm → map ra 3307
     volumes:
       - mariadbdata:/var/lib/mysql
 
