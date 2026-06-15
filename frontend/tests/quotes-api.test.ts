@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { db } from '@/mocks/db'
 import { seedQuotes, seedQuoteItems, seedQuotePaymentSteps } from '@/mocks/seed/quotes'
-import { createQuoteInDb, filterQuotes, duplicateQuoteInDb, updateQuoteStatusInDb } from '@/api/quotes'
+import { seedProjects } from '@/mocks/seed/projects'
+import { createQuoteInDb, filterQuotes, duplicateQuoteInDb, updateQuoteStatusInDb, peekNextQuoteCode } from '@/api/quotes'
 
-beforeEach(() => { 
-  db.quotes = structuredClone(seedQuotes) 
+beforeEach(() => {
+  db.quotes = structuredClone(seedQuotes)
   db.quoteItems = structuredClone(seedQuoteItems)
   db.quotePaymentSteps = structuredClone(seedQuotePaymentSteps)
+  db.projects = structuredClone(seedProjects)
 })
 
 describe('quotes mock logic', () => {
@@ -41,6 +43,30 @@ describe('quotes mock logic', () => {
     expect(q.taxAmount).toBe(30000)
     expect(q.totalAmount).toBe(330000)
     expect(q.itemCount).toBe(2)
+  })
+
+  it('peekNextQuoteCode xem trước mã kế tiếp mà không tăng counter', () => {
+    const a = peekNextQuoteCode()
+    const b = peekNextQuoteCode()
+    expect(a).toMatch(/^WS\d{4}$/)
+    expect(a).toBe(b) // gọi nhiều lần vẫn ra cùng mã, không tăng
+  })
+
+  it('createQuoteInDb tạo dự án mới khi không có projectId mà có newProjectName', () => {
+    const beforeProjects = db.projects.length
+    const q = createQuoteInDb({
+      projectId: '', newProjectName: 'Gói thầu lan can ABC', customerId: 'cust-1',
+      title: 'Gói thầu lan can ABC', quoteDate: '2026-06-15',
+      taxRate: 8, validityDays: 30, deliveryDays: 50, paymentTerms: '50-50',
+      items: [{ sectionName: 'HM1', itemName: 'Item', description: '', unit: 'm', quantity: 1, unitPrice: 1000, notes: '' }],
+      paymentSteps: [{ stepOrder: 1, percentage: 100, description: 'Thanh toán' }],
+    })
+    expect(db.projects.length).toBe(beforeProjects + 1)
+    const newProj = db.projects.find((p) => p.id === q.projectId)!
+    expect(newProj.name).toBe('Gói thầu lan can ABC')
+    expect(newProj.customerId).toBe('cust-1')
+    expect(newProj.siteId).toBeNull()
+    expect(newProj.status).toBe('planning')
   })
 
   it('filterQuotes lọc theo status và enrich summary', () => {

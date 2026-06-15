@@ -244,7 +244,7 @@ export interface Project extends BaseEntity {
   name:           string
   customerId:     string | null         // FK → customers (Module 5)
   projectType:    ProjectType
-  siteId:         string
+  siteId:         string | null         // có thể trống khi dự án tạo nhanh từ báo giá
   contractValue:  number | null
   startDate:      string | null
   deadline:       string

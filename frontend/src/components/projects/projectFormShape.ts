@@ -41,7 +41,7 @@ export const emptyProjectForm: ProjectFormShape = {
 
 export function projectToForm(p: Project): ProjectFormShape {
   return {
-    name: p.name, customerId: p.customerId ?? '', projectType: p.projectType, siteId: p.siteId,
+    name: p.name, customerId: p.customerId ?? '', projectType: p.projectType, siteId: p.siteId ?? '',
     contractValue: p.contractValue == null ? '' : String(p.contractValue),
     startDate: p.startDate ?? '', deadline: p.deadline,
     progressPct: String(p.progressPct), status: p.status, description: p.description ?? '',

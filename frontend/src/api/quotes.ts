@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
 import { db, nextId } from '@/mocks/db'
+import { createProjectInDb } from './projects'
 import type { Quote, QuoteStatus, QuoteItem, QuotePaymentStep, PaymentTermsPreset } from '@/types'
 
 export interface QuoteFilters { search?: string; status?: string; customerId?: string; projectId?: string }
 export interface QuoteFormValues {
   projectId: string; customerId?: string; contactId?: string
+  newProjectName?: string   // khi tạo dự án mới từ tên gói thầu (projectId rỗng)
   title: string; quoteDate: string; validUntil?: string
   taxRate: number; validityDays: number; deliveryDays: number
   paymentTerms: PaymentTermsPreset | string
@@ -16,10 +18,21 @@ export interface QuoteFormValues {
 
 const now = () => new Date().toISOString()
 
+function addDays(iso: string, days: number): string {
+  const d = iso ? new Date(iso) : new Date()
+  d.setDate(d.getDate() + days)
+  return d.toISOString().split('T')[0]
+}
+
 function nextQuoteCode(existing: string[]): string {
   const nums = existing.map((c) => parseInt(c.replace(/^WS/, ''), 10)).filter((n) => !Number.isNaN(n))
   const max = nums.length ? Math.max(...nums) : 80 // start at 80
   return 'WS' + String(max + 1).padStart(4, '0')
+}
+
+/** Xem trước mã báo giá kế tiếp (không tăng counter) — để hiển thị read-only trong form. */
+export function peekNextQuoteCode(): string {
+  return nextQuoteCode(db.quotes.map((q) => q.code))
 }
 
 // Hàm tính toán summary cho Quote từ in-memory db
@@ -63,10 +76,20 @@ export function filterQuotes(list: Quote[], f: QuoteFilters): Quote[] {
 export function createQuoteInDb(v: QuoteFormValues): Quote {
   const id = nextId('quote')
   const code = nextQuoteCode(db.quotes.map((q) => q.code))
-  
+
+  // Tạo nhanh dự án mới từ tên gói thầu khi không chọn dự án có sẵn
+  let projectId = v.projectId
+  if (!projectId && v.newProjectName) {
+    const project = createProjectInDb({
+      name: v.newProjectName, customerId: v.customerId, projectType: 'other',
+      deadline: addDays(v.quoteDate, 60), status: 'planning', progressPct: 0,
+    })
+    projectId = project.id
+  }
+
   const quote: Quote = {
     id, code,
-    projectId: v.projectId, customerId: v.customerId ?? null, contactId: v.contactId ?? null,
+    projectId, customerId: v.customerId ?? null, contactId: v.contactId ?? null,
     title: v.title, quoteDate: v.quoteDate, validUntil: v.validUntil ?? null,
     status: 'draft', rejectReason: null, taxRate: v.taxRate,
     validityDays: v.validityDays, deliveryDays: v.deliveryDays, paymentTerms: v.paymentTerms,
@@ -208,7 +231,10 @@ export function useCreateQuote() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (v: QuoteFormValues) => mockRequest(() => createQuoteInDb(v)),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['quotes'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['quotes'] })
+      qc.invalidateQueries({ queryKey: ['projects'] }) // có thể vừa tạo dự án mới
+    },
   })
 }
 

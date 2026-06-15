@@ -10,6 +10,8 @@
 
 ## Báo giá (Quotes)
 
+> ✅ **Đã xử lý toàn bộ 7 mục dưới đây** — xem plan `docs/superpowers/plans/2026-06-15-quotes-form-revamp.md`. Đã build + 39 test PASS + kiểm tra trình duyệt.
+
 ở màn Nhập thông tin báo giá 
 0- không tạo thành các tab 
 1- số báo giá tự động sinh 

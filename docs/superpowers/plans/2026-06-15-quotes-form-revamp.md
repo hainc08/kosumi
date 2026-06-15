@@ -84,15 +84,15 @@ interface QuoteLineFormShape {
 
 ---
 
-## 6. Tiêu chí hoàn thành
+## 6. Tiêu chí hoàn thành — ✅ DONE (commit sau plan này)
 
-- [ ] Form 1 trang, không còn tab; số báo giá hiện read-only (mã kế tiếp / mã hiện có).
-- [ ] Bỏ check "Dự án đã có" → nhập tên gói thầu → lưu thì có **dự án mới** + báo giá gắn vào nó.
-- [ ] Ô khách hàng gõ để lọc & chọn khách có sẵn; không có thì báo dẫn sang module Khách hàng.
-- [ ] Hạng mục lồng danh mục; Preview A4 gom đúng theo hạng mục.
-- [ ] Ngày báo giá = hôm nay; hiệu lực tự = +30 ngày.
-- [ ] 3 nút Hủy / Lưu báo giá / Gửi duyệt; "Gửi duyệt" đưa status sang **Chờ phê duyệt**.
-- [ ] `npm run build` + toàn bộ test PASS.
+- [x] Form 1 trang, không còn tab; số báo giá hiện read-only (mã kế tiếp / mã hiện có).
+- [x] Bỏ check "Dự án đã có" → nhập tên gói thầu → lưu thì có **dự án mới** (PRJ006, xưởng trống) + báo giá gắn vào nó.
+- [x] Ô khách hàng gõ để lọc & chọn khách có sẵn; không có thì báo dẫn sang module Khách hàng.
+- [x] Hạng mục lồng danh mục; Preview A4 gom đúng theo hạng mục.
+- [x] Ngày báo giá = hôm nay; hiệu lực tự = +30 ngày (Hết hiệu lực read-only).
+- [x] 3 nút Hủy / Lưu báo giá / Gửi duyệt; "Gửi duyệt" đưa status sang **Chờ phê duyệt**.
+- [x] `npm run build` + toàn bộ test PASS (39 test).
 
 ## 7. Ngoài phạm vi
 
