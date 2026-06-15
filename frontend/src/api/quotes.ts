@@ -1,8 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost, apiPut, apiPatch } from './http'
 import { db, nextId } from '@/mocks/db'
 import { createProjectInDb } from './projects'
 import type { Quote, QuoteStatus, QuoteItem, QuotePaymentStep, PaymentTermsPreset } from '@/types'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export interface QuoteFilters { search?: string; status?: string; customerId?: string; projectId?: string }
 export interface QuoteFormValues {
@@ -212,25 +215,41 @@ export function updateQuoteStatusInDb(id: string, status: QuoteStatus, rejectRea
 export function useQuotes(filters: QuoteFilters = {}) {
   return useQuery<Quote[]>({
     queryKey: ['quotes', filters],
-    queryFn: () => mockRequest(() => filterQuotes(db.quotes, filters)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => filterQuotes(db.quotes, filters))
+      : apiGet<Quote[]>('/quotes', { params: filters }),
   })
 }
 
 export function useQuote(id: string | null) {
   return useQuery<Quote | undefined>({
     queryKey: ['quotes', id],
-    queryFn: () => mockRequest(() => {
-      const q = db.quotes.find((x) => x.id === id)
-      return q ? enrichQuoteWithSummary(q) : undefined
-    }),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => {
+          const q = db.quotes.find((x) => x.id === id)
+          return q ? enrichQuoteWithSummary(q) : undefined
+        })
+      : apiGet<Quote>(`/quotes/${id}`),
     enabled: !!id,
+  })
+}
+
+/** Mã báo giá kế tiếp (async) — dùng để hiển thị read-only trong form tạo mới. */
+export function useNextQuoteCode() {
+  return useQuery<string>({
+    queryKey: ['quotes', 'next-code'],
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => peekNextQuoteCode())
+      : apiGet<string>('/quotes/next-code'),
   })
 }
 
 export function useCreateQuote() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (v: QuoteFormValues) => mockRequest(() => createQuoteInDb(v)),
+    mutationFn: (v: QuoteFormValues) => USE_MOCK
+      ? mockRequest(() => createQuoteInDb(v))
+      : apiPost<Quote>('/quotes', v),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['quotes'] })
       qc.invalidateQueries({ queryKey: ['projects'] }) // có thể vừa tạo dự án mới
@@ -241,8 +260,9 @@ export function useCreateQuote() {
 export function useUpdateQuote() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, values }: { id: string; values: QuoteFormValues }) =>
-      mockRequest(() => updateQuoteInDb(id, values)),
+    mutationFn: ({ id, values }: { id: string; values: QuoteFormValues }) => USE_MOCK
+      ? mockRequest(() => updateQuoteInDb(id, values))
+      : apiPut<Quote>(`/quotes/${id}`, values),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['quotes'] }),
   })
 }
@@ -250,8 +270,9 @@ export function useUpdateQuote() {
 export function useUpdateQuoteStatus() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, status, rejectReason }: { id: string; status: QuoteStatus; rejectReason?: string }) =>
-      mockRequest(() => updateQuoteStatusInDb(id, status, rejectReason)),
+    mutationFn: ({ id, status, rejectReason }: { id: string; status: QuoteStatus; rejectReason?: string }) => USE_MOCK
+      ? mockRequest(() => updateQuoteStatusInDb(id, status, rejectReason))
+      : apiPatch<Quote>(`/quotes/${id}/status`, { status, rejectReason }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['quotes'] }),
   })
 }
@@ -259,7 +280,9 @@ export function useUpdateQuoteStatus() {
 export function useDuplicateQuote() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: string) => mockRequest(() => duplicateQuoteInDb(id)),
+    mutationFn: (id: string) => USE_MOCK
+      ? mockRequest(() => duplicateQuoteInDb(id))
+      : apiPost<Quote>(`/quotes/${id}/duplicate`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['quotes'] }),
   })
 }

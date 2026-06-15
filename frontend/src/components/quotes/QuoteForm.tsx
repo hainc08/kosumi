@@ -3,7 +3,7 @@ import { useForm, useFieldArray, Controller, type Control, type UseFormRegister,
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconFileInvoice, IconPlus, IconTrash, IconSend } from '@tabler/icons-react'
 import { PAYMENT_TERMS_LABELS, type PaymentTermsPreset, type Quote } from '@/types'
-import { useCreateQuote, useUpdateQuote, useUpdateQuoteStatus, peekNextQuoteCode } from '@/api/quotes'
+import { useCreateQuote, useUpdateQuote, useUpdateQuoteStatus, useNextQuoteCode } from '@/api/quotes'
 import { useProjects } from '@/api/projects'
 import { useCustomers } from '@/api/customers'
 import { useToastStore } from '@/stores/toastStore'
@@ -54,7 +54,8 @@ export function QuoteForm({ open, onClose, quote }: Props) {
     }
   }, [quoteDate, validityDays, setValue])
 
-  const code = useMemo(() => (quote ? quote.code : peekNextQuoteCode()), [quote, open])
+  const { data: nextCode } = useNextQuoteCode()
+  const code = useMemo(() => (quote ? quote.code : (nextCode ?? '— tự sinh —')), [quote, nextCode])
   const saving = createQuote.isPending || updateQuote.isPending || updateStatus.isPending
 
   const persist = async (data: QuoteFormShape): Promise<string> => {
