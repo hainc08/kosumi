@@ -107,6 +107,7 @@ export interface Worker extends BaseEntity {
   experienceYears:  number
   status:           WorkerStatus
   notes:            string | null
+  siteId?:          string | null   // xưởng/công trường công nhân thuộc về (khớp cột site_id ở backend)
   // joined
   activeContract?:  WorkerContract
   // computed (for UI)
