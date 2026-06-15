@@ -1,0 +1,133 @@
+.quote-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  padding: 0 4px;
+}
+
+.quote-tab {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 10px 4px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.quote-tab:hover {
+  color: var(--text);
+}
+
+.quote-tab--active {
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.quote-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--blue);
+  border-radius: 2px 2px 0 0;
+}
+
+.quote-err {
+  font-size: 12px;
+  color: var(--red);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+/* Hạng mục */
+.quote-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.quote-item-row {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 14px;
+}
+
+.quote-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.quote-item-idx {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quote-item-del {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.quote-item-del:hover {
+  background: #FEE2E2;
+  color: var(--red);
+}
+
+.quote-item-calc {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 12px;
+  grid-column: span 2;
+}
+
+/* Thanh toán */
+.quote-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.quote-step-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--surface-2);
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.quote-step-col-pct {
+  width: 80px;
+}
+
+.quote-step-col-desc {
+  flex: 1;
+}
+
+.quote-step-col-del {
+  width: 30px;
+}
