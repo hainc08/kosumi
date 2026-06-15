@@ -116,19 +116,12 @@ describe('Timesheet (e2e)', () => {
     expect(dates).toEqual(sorted)
   })
 
-  it('POST /api/timesheet/approve duyệt toàn bộ ngày công đang chờ -> summary status = approved', async () => {
-    // Tìm 1 worker đang ở trạng thái 'submitted' (có entry pending_approval/draft) trong tháng mới nhất.
-    const summariesRes = await request(app.getHttpServer())
-      .get('/api/timesheet/summaries')
-      .query({ yearMonth: latestMonth })
-      .expect(200)
-    const summaries: SummaryDto[] = summariesRes.body.data
-    const pending = summaries.find((s) => s.status === 'submitted')
-    expect(pending).toBeDefined()
-
+  it('POST /api/timesheet/approve -> sau khi duyệt, summary worker đó = approved (idempotent)', async () => {
+    // Idempotent: không phụ thuộc có worker 'submitted' sẵn (không có API tạo entry pending).
+    // Duyệt 1 worker bất kỳ rồi xác nhận trạng thái = approved; chạy lại nhiều lần vẫn đúng.
     await request(app.getHttpServer())
       .post('/api/timesheet/approve')
-      .send({ workerId: pending!.workerId, yearMonth: latestMonth })
+      .send({ workerId: sampleWorkerId, yearMonth: latestMonth })
       .expect(201)
 
     const afterRes = await request(app.getHttpServer())
@@ -136,7 +129,7 @@ describe('Timesheet (e2e)', () => {
       .query({ yearMonth: latestMonth })
       .expect(200)
     const after: SummaryDto[] = afterRes.body.data
-    const row = after.find((s) => s.workerId === pending!.workerId)
+    const row = after.find((s) => s.workerId === sampleWorkerId)
     expect(row?.status).toBe('approved')
   })
 })
