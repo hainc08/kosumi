@@ -7,7 +7,7 @@ export const seedSites: Site[] = [
     city: 'Hà Nội', managerId: null, phone: '0241234567', areaM2: 1200,
     status: 'active', notes: null,
     createdAt: '2026-01-10T00:00:00Z', updatedAt: '2026-01-10T00:00:00Z',
-    workerCount: 12, projectCount: 3,
+    workerCount: 10, projectCount: 3,
   },
   {
     id: 'site-2', code: 'XHN002', name: 'Xưởng Nội thất Long Biên', type: 'factory',
@@ -23,6 +23,6 @@ export const seedSites: Site[] = [
     city: 'TP.HCM', managerId: null, phone: '0281122334', areaM2: null,
     status: 'preparing', notes: null,
     createdAt: '2026-03-15T00:00:00Z', updatedAt: '2026-03-15T00:00:00Z',
-    workerCount: 0, projectCount: 1,
+    workerCount: 2, projectCount: 1,
   },
 ]

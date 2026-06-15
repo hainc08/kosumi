@@ -6,6 +6,7 @@ import CustomersPage from '@/pages/Customers'
 import ProjectsPage from '@/pages/Projects'
 import QuotesPage from '@/pages/Quotes'
 import QuotePreviewPage from '@/pages/QuotePreview'
+import KanbanPage from '@/pages/Kanban'
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
       { path: 'workers', element: <WorkersPage /> },
       { path: 'projects', element: <ProjectsPage /> },
       { path: 'quotes', element: <QuotesPage /> },
-      { path: 'assign', element: <Placeholder title="Giao việc Kanban" /> },
+      { path: 'assign', element: <KanbanPage /> },
       { path: 'timesheet', element: <Placeholder title="Chấm công" /> },
       { path: 'report', element: <Placeholder title="Hiệu suất" /> },
     ],

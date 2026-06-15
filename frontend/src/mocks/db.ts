@@ -1,10 +1,11 @@
 // In-memory store cho prototype. Mutable: mutations trong src/api/* sửa thẳng vào đây.
-import type { Site, Worker, Customer, Project, Quote, QuoteItem, QuotePaymentStep } from '@/types'
+import type { Site, Worker, Customer, Project, Quote, QuoteItem, QuotePaymentStep, Task, TaskAssignment } from '@/types'
 import { seedSites } from './seed/sites'
 import { seedWorkers } from './seed/workers'
 import { seedCustomers } from './seed/customers'
 import { seedProjects } from './seed/projects'
 import { seedQuotes, seedQuoteItems, seedQuotePaymentSteps } from './seed/quotes'
+import { seedTasks, seedTaskAssignments } from './seed/tasks'
 
 export const db = {
   sites:     structuredClone(seedSites)     as Site[],
@@ -14,6 +15,8 @@ export const db = {
   quotes:    structuredClone(seedQuotes)    as Quote[],
   quoteItems: structuredClone(seedQuoteItems) as (QuoteItem & { quoteId: string })[],
   quotePaymentSteps: structuredClone(seedQuotePaymentSteps) as (QuotePaymentStep & { quoteId: string })[],
+  tasks:     structuredClone(seedTasks)     as Task[],
+  taskAssignments: structuredClone(seedTaskAssignments) as TaskAssignment[],
 }
 
 /** Sinh id giả tăng dần theo prefix (thay cho UUID DB). */

@@ -4,9 +4,9 @@ export const seedQuotes: Quote[] = [
   {
     id: 'quote-1',
     code: 'WS0087',
-    projectId: 'proj-1', // VinFast
-    customerId: 'cust-1', // Vingroup
-    contactId: 'contact-1-1',
+    projectId: 'prj-1', // Aeon Mall Bình Tân
+    customerId: 'cust-1', // Aeon
+    contactId: 'ct-1',
     title: 'Gói thầu cơ khí nhà xưởng',
     quoteDate: '2026-06-01',
     validUntil: '2026-06-15',
@@ -25,8 +25,8 @@ export const seedQuotes: Quote[] = [
   {
     id: 'quote-2',
     code: 'WS0088',
-    projectId: 'proj-2', // Keangnam
-    customerId: 'cust-1', // Vingroup (Reused)
+    projectId: 'prj-2', // Nội thất Vinhomes
+    customerId: 'cust-2', // Studio Kiến trúc Minh Anh
     contactId: null,
     title: 'Lan can ban công khu A',
     quoteDate: '2026-06-10',
@@ -46,8 +46,8 @@ export const seedQuotes: Quote[] = [
   {
     id: 'quote-3',
     code: 'WS0089',
-    projectId: 'proj-3', // Cafe
-    customerId: 'cust-3', // The Coffee House
+    projectId: 'prj-3', // Kết cấu thép Samsung Yên Phong
+    customerId: 'cust-3', // Samsung Engineering Vietnam
     contactId: null,
     title: 'Sản xuất quầy bar Inox',
     quoteDate: '2026-06-12',

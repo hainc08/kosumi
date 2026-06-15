@@ -13,7 +13,7 @@ describe('workers mock logic', () => {
       experienceYears: 2, contractType: 'hourly', startDate: '2026-06-01', rateNormal: 30000,
     })
     expect(db.workers.length).toBe(before + 1)
-    expect(w.code).toBe('CN004')
+    expect(w.code).toBe('CN009')
     expect(w.initials).toBe('PĐ')
     expect(w.activeContract?.contractType).toBe('hourly')
     expect(w.status).toBe('working')
