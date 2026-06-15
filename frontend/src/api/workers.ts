@@ -1,8 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
+import { apiGet, apiPost, apiPut, apiPatch } from './http'
 import { db, nextId } from '@/mocks/db'
 import { deriveInitials, avatarColorFor, nextWorkerCode } from '@/utils/worker-helpers'
 import type { Worker, WorkerContract, Position, ContractType } from '@/types'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export interface WorkerFilters { search?: string; status?: string; position?: string }
 export interface WorkerFormValues {
@@ -86,14 +89,18 @@ export function setWorkerStatusInDb(id: string, status: Worker['status']): void 
 export function useWorkers(filters: WorkerFilters = {}) {
   return useQuery<Worker[]>({
     queryKey: ['workers', filters],
-    queryFn: () => mockRequest(() => filterWorkers(db.workers, filters)),
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => filterWorkers(db.workers, filters))
+      : apiGet<Worker[]>('/workers', { params: filters }),
   })
 }
 
 export function useCreateWorker() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (v: WorkerFormValues) => mockRequest(() => createWorkerInDb(v)),
+    mutationFn: (v: WorkerFormValues) => USE_MOCK
+      ? mockRequest(() => createWorkerInDb(v))
+      : apiPost<Worker>('/workers', v),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['workers'] }),
   })
 }
@@ -101,8 +108,9 @@ export function useCreateWorker() {
 export function useUpdateWorker() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, values }: { id: string; values: WorkerFormValues }) =>
-      mockRequest(() => updateWorkerInDb(id, values)),
+    mutationFn: ({ id, values }: { id: string; values: WorkerFormValues }) => USE_MOCK
+      ? mockRequest(() => updateWorkerInDb(id, values))
+      : apiPut<Worker>(`/workers/${id}`, values),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['workers'] }),
   })
 }
@@ -110,8 +118,9 @@ export function useUpdateWorker() {
 export function useUpdateWorkerStatus() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: Worker['status'] }) =>
-      mockRequest(() => setWorkerStatusInDb(id, status)),
+    mutationFn: ({ id, status }: { id: string; status: Worker['status'] }): Promise<Worker | void> => USE_MOCK
+      ? mockRequest(() => setWorkerStatusInDb(id, status))
+      : apiPatch<Worker>(`/workers/${id}/status`, { status }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['workers'] }),
   })
 }
