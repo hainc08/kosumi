@@ -8,7 +8,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.setGlobalPrefix('api')
-  app.enableCors({ origin: ['http://localhost:5173', 'http://localhost:5174'] })
+  app.enableCors({ origin: /^http:\/\/localhost:\d+$/ }) // mọi cổng localhost (vite có thể nhảy 5173/5174/5175...)
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
   app.useGlobalInterceptors(new ResponseInterceptor())
   app.useGlobalFilters(new HttpExceptionFilter())
