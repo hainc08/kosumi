@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import Placeholder from '@/pages/Placeholder'
+import DashboardPage from '@/pages/Dashboard'
+import SitesPage from '@/pages/Sites'
 import WorkersPage from '@/pages/Workers'
 import CustomersPage from '@/pages/Customers'
 import ProjectsPage from '@/pages/Projects'
@@ -13,10 +15,10 @@ export const router = createBrowserRouter([
   {
     path: '/', element: <AppShell />,
     children: [
-      { index: true, element: <Navigate to="/workers" replace /> },
-      { path: 'dashboard', element: <Placeholder title="Dashboard" /> },
+      { index: true, element: <Navigate to="/dashboard" replace /> },
+      { path: 'dashboard', element: <DashboardPage /> },
       { path: 'customers', element: <CustomersPage /> },
-      { path: 'sites', element: <Placeholder title="Công trường / Xưởng" /> },
+      { path: 'sites', element: <SitesPage /> },
       { path: 'workers', element: <WorkersPage /> },
       { path: 'projects', element: <ProjectsPage /> },
       { path: 'quotes', element: <QuotesPage /> },
