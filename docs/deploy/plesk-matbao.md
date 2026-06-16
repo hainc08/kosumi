@@ -6,6 +6,11 @@ lên hosting **Plesk** của Mắt Bão, trên **một domain duy nhất**:
 - Giao diện: `https://poc.kosumi.vn/`
 - API: `https://poc.kosumi.vn/api/`
 
+> 💡 **Cách deploy nhanh (khuyến nghị): dùng folder `deploy/` + Git.**
+> Build sẵn ở máy local, push lên git; server `git pull` là xong, không build trên hosting.
+> Xem hướng dẫn riêng tại **[`deploy/README.md`](../../deploy/README.md)**. Tài liệu dưới
+> đây mô tả chi tiết từng phần (DB, kiến trúc, troubleshooting) — đọc kèm.
+
 ---
 
 ## 1. Kiến trúc: NestJS serve luôn cả Frontend

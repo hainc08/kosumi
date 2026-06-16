@@ -29,6 +29,12 @@ out/
 # Frontend build được copy vào backend để serve chung 1 domain (build output)
 backend/client/
 
+# === Deploy artifact: bản build sẵn, TRACK để server git pull về chạy ngay ===
+# (deploy/dist bị dính rule "dist/" ở trên nên phải mở lại; deploy/client thì không)
+!deploy/dist/
+!deploy/dist/**
+# .env & node_modules trong deploy vẫn bị ignore (do rule chung) → đúng ý: không commit secret
+
 # OS metadata
 .DS_Store
 Thumbs.db
