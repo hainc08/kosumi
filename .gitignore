@@ -23,6 +23,11 @@ out/
 .env
 .env.*
 !.env.example
+# Cấu hình build FE production (không chứa secret, được nhúng vào bundle) → vẫn track
+!frontend/.env.production
+
+# Frontend build được copy vào backend để serve chung 1 domain (build output)
+backend/client/
 
 # OS metadata
 .DS_Store
