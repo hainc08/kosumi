@@ -21,7 +21,6 @@ let Worker = class Worker {
     phone;
     address;
     position;
-    specialty;
     status;
     notes;
     siteId;
@@ -66,10 +65,6 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'enum', enum: ['team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other'] }),
     __metadata("design:type", String)
 ], Worker.prototype, "position", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ name: 'specialty', type: 'varchar', length: 200, nullable: true }),
-    __metadata("design:type", Object)
-], Worker.prototype, "specialty", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'enum', enum: ['working', 'on_leave', 'absent', 'resigned'], default: 'working' }),
     __metadata("design:type", String)
