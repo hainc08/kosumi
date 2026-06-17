@@ -1,6 +1,0 @@
-.confirm__overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); display: flex;
-  align-items: center; justify-content: center; z-index: 60; }
-.confirm { background: var(--color-surface); border-radius: var(--radius-lg); padding: 20px; width: 380px; box-shadow: var(--shadow-modal); }
-.confirm__title { margin: 0 0 8px; font-size: 15px; }
-.confirm__msg { margin: 0 0 16px; font-size: 12px; color: var(--color-text-2); }
-.confirm__actions { display: flex; justify-content: flex-end; gap: 8px; }

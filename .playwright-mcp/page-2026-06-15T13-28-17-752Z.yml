@@ -1,0 +1,144 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: WorkShop Pro
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: Tổng quan
+        - link "Dashboard" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e10]
+          - generic [ref=e15]: Dashboard
+      - generic [ref=e16]:
+        - generic [ref=e17]: Quản lý
+        - link "Khách hàng" [ref=e18] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e19]
+          - generic [ref=e26]: Khách hàng
+        - link "Công trường / Xưởng" [ref=e27] [cursor=pointer]:
+          - /url: /sites
+          - img [ref=e28]
+          - generic [ref=e31]: Công trường / Xưởng
+        - link "Công nhân" [ref=e32] [cursor=pointer]:
+          - /url: /workers
+          - img [ref=e33]
+          - generic [ref=e38]: Công nhân
+        - link "Dự án" [ref=e39] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e40]
+          - generic [ref=e42]: Dự án
+        - link "Báo giá" [ref=e43] [cursor=pointer]:
+          - /url: /quotes
+          - img [ref=e44]
+          - generic [ref=e47]: Báo giá
+      - generic [ref=e48]:
+        - generic [ref=e49]: Sản xuất
+        - link "Giao việc" [ref=e50] [cursor=pointer]:
+          - /url: /assign
+          - img [ref=e51]
+          - generic [ref=e52]: Giao việc
+        - link "Chấm công" [ref=e53] [cursor=pointer]:
+          - /url: /timesheet
+          - img [ref=e54]
+          - generic [ref=e57]: Chấm công
+      - generic [ref=e58]:
+        - generic [ref=e59]: Báo cáo
+        - link "Hiệu suất" [ref=e60] [cursor=pointer]:
+          - /url: /report
+          - img [ref=e61]
+          - generic [ref=e65]: Hiệu suất
+    - generic [ref=e66]:
+      - generic [ref=e67]: MH
+      - generic [ref=e68]:
+        - generic [ref=e69]: Mai Văn Hải
+        - generic [ref=e70]: Quản lý xưởng
+  - main [ref=e71]:
+    - generic [ref=e72]:
+      - button "Menu" [active] [ref=e73] [cursor=pointer]:
+        - img [ref=e74]
+      - generic [ref=e75]: Công trường / Xưởng
+      - generic [ref=e76]:
+        - button "Thêm mới" [ref=e77] [cursor=pointer]:
+          - img [ref=e78]
+          - text: Thêm mới
+        - generic [ref=e79]:
+          - generic [ref=e80]: MH
+          - img [ref=e81]
+    - generic [ref=e83]:
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - generic [ref=e87]: Tổng công trường
+            - img [ref=e89]
+          - generic [ref=e92]: "3"
+          - generic [ref=e93]: 2 đang hoạt động
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - generic [ref=e96]: Tổng công nhân
+            - img [ref=e98]
+          - generic [ref=e103]: "18"
+          - generic [ref=e104]: Phân bổ 3 địa điểm
+        - generic [ref=e105]:
+          - generic [ref=e106]:
+            - generic [ref=e107]: Dự án đang chạy
+            - img [ref=e109]
+          - generic [ref=e111]: "5"
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - img [ref=e114]
+          - textbox "Tìm tên, mã, địa điểm..." [ref=e117]
+        - combobox [ref=e118]:
+          - option "Tất cả loại" [selected]
+          - option "Xưởng sản xuất"
+          - option "Công trường"
+          - option "Kho bãi"
+        - combobox [ref=e119]:
+          - option "Tất cả trạng thái" [selected]
+          - option "Hoạt động"
+          - option "Tạm dừng"
+          - option "Chuẩn bị"
+      - table [ref=e121]:
+        - rowgroup [ref=e122]:
+          - row "Tên công trường Địa điểm Loại Công nhân Dự án Trạng thái" [ref=e123]:
+            - columnheader "Tên công trường" [ref=e124]
+            - columnheader "Địa điểm" [ref=e125]
+            - columnheader "Loại" [ref=e126]
+            - columnheader "Công nhân" [ref=e127]
+            - columnheader "Dự án" [ref=e128]
+            - columnheader "Trạng thái" [ref=e129]
+        - rowgroup [ref=e130]:
+          - row "Xưởng Cơ khí Hà Nội XHN001 · KCN Thăng Long Hà Nội Xưởng sản xuất — 3 dự án Hoạt động" [ref=e155] [cursor=pointer]:
+            - cell "Xưởng Cơ khí Hà Nội XHN001 · KCN Thăng Long" [ref=e156]:
+              - generic [ref=e157]:
+                - generic [ref=e158]: Xưởng Cơ khí Hà Nội
+                - generic [ref=e159]: XHN001 · KCN Thăng Long
+            - cell "Hà Nội" [ref=e160]
+            - cell "Xưởng sản xuất" [ref=e161]:
+              - generic [ref=e162]: Xưởng sản xuất
+            - cell "—" [ref=e163]
+            - cell "3 dự án" [ref=e164]
+            - cell "Hoạt động" [ref=e165]:
+              - generic [ref=e166]: Hoạt động
+          - row "Xưởng Nội thất Long Biên XHN002 · — Hà Nội Xưởng sản xuất — 1 dự án Hoạt động" [ref=e168] [cursor=pointer]:
+            - cell "Xưởng Nội thất Long Biên XHN002 · —" [ref=e169]:
+              - generic [ref=e170]:
+                - generic [ref=e171]: Xưởng Nội thất Long Biên
+                - generic [ref=e172]: XHN002 · —
+            - cell "Hà Nội" [ref=e173]
+            - cell "Xưởng sản xuất" [ref=e174]:
+              - generic [ref=e175]: Xưởng sản xuất
+            - cell "—" [ref=e176]
+            - cell "1 dự án" [ref=e177]
+            - cell "Hoạt động" [ref=e178]:
+              - generic [ref=e179]: Hoạt động
+          - row "Công trường Aeon Bình Tân CTSG001 · — TP.HCM Công trường — 1 dự án Chuẩn bị" [ref=e181] [cursor=pointer]:
+            - cell "Công trường Aeon Bình Tân CTSG001 · —" [ref=e182]:
+              - generic [ref=e183]:
+                - generic [ref=e184]: Công trường Aeon Bình Tân
+                - generic [ref=e185]: CTSG001 · —
+            - cell "TP.HCM" [ref=e186]
+            - cell "Công trường" [ref=e187]:
+              - generic [ref=e188]: Công trường
+            - cell "—" [ref=e189]
+            - cell "1 dự án" [ref=e190]
+            - cell "Chuẩn bị" [ref=e191]:
+              - generic [ref=e192]: Chuẩn bị

@@ -1,0 +1,190 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: WorkShop Pro
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: Tổng quan
+        - link "Dashboard" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e10]
+          - generic [ref=e15]: Dashboard
+      - generic [ref=e16]:
+        - generic [ref=e17]: Quản lý
+        - link "Khách hàng" [ref=e18] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e19]
+          - generic [ref=e26]: Khách hàng
+        - link "Công trường / Xưởng" [ref=e27] [cursor=pointer]:
+          - /url: /sites
+          - img [ref=e28]
+          - generic [ref=e31]: Công trường / Xưởng
+        - link "Công nhân" [ref=e32] [cursor=pointer]:
+          - /url: /workers
+          - img [ref=e33]
+          - generic [ref=e38]: Công nhân
+        - link "Dự án" [ref=e39] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e40]
+          - generic [ref=e42]: Dự án
+        - link "Báo giá" [ref=e43] [cursor=pointer]:
+          - /url: /quotes
+          - img [ref=e44]
+          - generic [ref=e47]: Báo giá
+      - generic [ref=e48]:
+        - generic [ref=e49]: Sản xuất
+        - link "Giao việc" [ref=e50] [cursor=pointer]:
+          - /url: /assign
+          - img [ref=e51]
+          - generic [ref=e52]: Giao việc
+        - link "Chấm công" [ref=e53] [cursor=pointer]:
+          - /url: /timesheet
+          - img [ref=e54]
+          - generic [ref=e57]: Chấm công
+      - generic [ref=e58]:
+        - generic [ref=e59]: Báo cáo
+        - link "Hiệu suất" [ref=e60] [cursor=pointer]:
+          - /url: /report
+          - img [ref=e61]
+          - generic [ref=e65]: Hiệu suất
+    - generic [ref=e66]:
+      - generic [ref=e67]: MH
+      - generic [ref=e68]:
+        - generic [ref=e69]: Mai Văn Hải
+        - generic [ref=e70]: Quản lý xưởng
+  - main [ref=e71]:
+    - generic [ref=e72]:
+      - button "Menu" [ref=e73] [cursor=pointer]:
+        - img [ref=e74]
+      - generic [ref=e75]:
+        - text: Khách hàng
+        - generic [ref=e76]: · Quản lý đối tác
+      - generic [ref=e77]:
+        - button "Thêm khách hàng" [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+          - text: Thêm khách hàng
+        - button "Tìm kiếm" [ref=e80] [cursor=pointer]:
+          - img [ref=e81]
+        - button "Thông báo" [ref=e84] [cursor=pointer]:
+          - img [ref=e85]
+        - generic [ref=e88]:
+          - generic [ref=e89]: MH
+          - generic [ref=e90]: Quản lý xưởng
+          - img [ref=e91]
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: Tổng khách hàng
+            - img [ref=e99]
+          - generic [ref=e102]: "5"
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - generic [ref=e105]: Có báo giá
+            - img [ref=e107]
+          - generic [ref=e110]: "3"
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]: Chờ phản hồi
+            - img [ref=e115]
+          - generic [ref=e118]: "1"
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e121]: Tổng giá trị HĐ
+            - img [ref=e123]
+          - generic [ref=e125]: 6.490.000.000 ₫
+      - generic [ref=e126]:
+        - generic [ref=e127]:
+          - img [ref=e128]
+          - textbox "Tìm tên, mã, MST, liên hệ..." [ref=e131]
+        - combobox [ref=e132]:
+          - option "Tất cả loại" [selected]
+          - option "Doanh nghiệp"
+          - option "Cá nhân / Studio"
+          - option "Doanh nghiệp nước ngoài"
+          - option "Đơn vị nhà nước"
+      - table [ref=e134]:
+        - rowgroup [ref=e135]:
+          - row "Khách hàng Loại Liên hệ chính Dự án Báo giá Tổng giá trị Trạng thái" [ref=e136]:
+            - columnheader "Khách hàng" [ref=e137]
+            - columnheader "Loại" [ref=e138]
+            - columnheader "Liên hệ chính" [ref=e139]
+            - columnheader "Dự án" [ref=e140]
+            - columnheader "Báo giá" [ref=e141]
+            - columnheader "Tổng giá trị" [ref=e142]
+            - columnheader "Trạng thái" [ref=e143]
+        - rowgroup [ref=e144]:
+          - row "test KH005 Cá nhân / Studio fefefewfwe rưe5 0 0 0 ₫ Đang hợp tác" [ref=e145] [cursor=pointer]:
+            - cell "test KH005" [ref=e146]:
+              - generic [ref=e147]:
+                - generic [ref=e148]: test
+                - generic [ref=e149]: KH005
+            - cell "Cá nhân / Studio" [ref=e150]
+            - cell "fefefewfwe rưe5" [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]: fefefewfwe
+                - generic [ref=e154]: rưe5
+            - cell "0" [ref=e155]
+            - cell "0" [ref=e156]
+            - cell "0 ₫" [ref=e157]
+            - cell "Đang hợp tác" [ref=e158]:
+              - generic [ref=e159]: Đang hợp tác
+          - row "Studio Kiến trúc Minh Anh KH002 Cá nhân / Studio Phạm Minh Anh 0987654321 3 2 500.000.000 ₫ Đang hợp tác" [ref=e161] [cursor=pointer]:
+            - cell "Studio Kiến trúc Minh Anh KH002" [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: Studio Kiến trúc Minh Anh
+                - generic [ref=e165]: KH002
+            - cell "Cá nhân / Studio" [ref=e166]
+            - cell "Phạm Minh Anh 0987654321" [ref=e167]:
+              - generic [ref=e168]:
+                - generic [ref=e169]: Phạm Minh Anh
+                - generic [ref=e170]: "0987654321"
+            - cell "3" [ref=e171]
+            - cell "2" [ref=e172]
+            - cell "500.000.000 ₫" [ref=e173]
+            - cell "Đang hợp tác" [ref=e174]:
+              - generic [ref=e175]: Đang hợp tác
+          - row "Công ty CP Đầu tư Aeon Việt Nam KH001 Doanh nghiệp Nguyễn Thanh Tùng 0903111222 1 1 1.250.000.000 ₫ Đang hợp tác" [ref=e177] [cursor=pointer]:
+            - cell "Công ty CP Đầu tư Aeon Việt Nam KH001" [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: Công ty CP Đầu tư Aeon Việt Nam
+                - generic [ref=e181]: KH001
+            - cell "Doanh nghiệp" [ref=e182]
+            - cell "Nguyễn Thanh Tùng 0903111222" [ref=e183]:
+              - generic [ref=e184]:
+                - generic [ref=e185]: Nguyễn Thanh Tùng
+                - generic [ref=e186]: "0903111222"
+            - cell "1" [ref=e187]
+            - cell "1" [ref=e188]
+            - cell "1.250.000.000 ₫" [ref=e189]
+            - cell "Đang hợp tác" [ref=e190]:
+              - generic [ref=e191]: Đang hợp tác
+          - row "Samsung Engineering Vietnam KH003 Doanh nghiệp nước ngoài Kim Min Jae 0901555666 1 1 4.200.000.000 ₫ Chờ phản hồi" [ref=e193] [cursor=pointer]:
+            - cell "Samsung Engineering Vietnam KH003" [ref=e194]:
+              - generic [ref=e195]:
+                - generic [ref=e196]: Samsung Engineering Vietnam
+                - generic [ref=e197]: KH003
+            - cell "Doanh nghiệp nước ngoài" [ref=e198]
+            - cell "Kim Min Jae 0901555666" [ref=e199]:
+              - generic [ref=e200]:
+                - generic [ref=e201]: Kim Min Jae
+                - generic [ref=e202]: "0901555666"
+            - cell "1" [ref=e203]
+            - cell "1" [ref=e204]
+            - cell "4.200.000.000 ₫" [ref=e205]
+            - cell "Chờ phản hồi" [ref=e206]:
+              - generic [ref=e207]: Chờ phản hồi
+          - row "Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh KH004 Đơn vị nhà nước Trần Văn Bình 0912000111 1 0 540.000.000 ₫ Ngừng hợp tác" [ref=e209] [cursor=pointer]:
+            - cell "Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh KH004" [ref=e210]:
+              - generic [ref=e211]:
+                - generic [ref=e212]: Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh
+                - generic [ref=e213]: KH004
+            - cell "Đơn vị nhà nước" [ref=e214]
+            - cell "Trần Văn Bình 0912000111" [ref=e215]:
+              - generic [ref=e216]:
+                - generic [ref=e217]: Trần Văn Bình
+                - generic [ref=e218]: "0912000111"
+            - cell "1" [ref=e219]
+            - cell "0" [ref=e220]
+            - cell "540.000.000 ₫" [ref=e221]
+            - cell "Ngừng hợp tác" [ref=e222]:
+              - generic [ref=e223]: Ngừng hợp tác

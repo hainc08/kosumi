@@ -1,7 +1,0 @@
-.avatars { display: inline-flex; }
-.avatars__item { display: inline-flex; align-items: center; justify-content: center; color: #fff;
-  border: 2px solid var(--color-surface); border-radius: 50%; font-weight: 600; margin-left: -6px; }
-.avatars__item:first-child { margin-left: 0; }
-.avatars--md .avatars__item { width: 28px; height: 28px; font-size: 10px; }
-.avatars--sm .avatars__item { width: 22px; height: 22px; font-size: 9px; }
-.avatars__more { background: var(--color-surface-2); color: var(--color-text-2); }

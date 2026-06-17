@@ -1,2 +1,0 @@
-/* dùng .form-grid toàn cục (định nghĩa trong WorkerForm.css). Khai báo lại để độc lập module. */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }

@@ -1,0 +1,219 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: WorkShop Pro
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: Tổng quan
+        - link "Dashboard" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e10]
+          - generic [ref=e15]: Dashboard
+      - generic [ref=e16]:
+        - generic [ref=e17]: Quản lý
+        - link "Khách hàng" [ref=e18] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e19]
+          - generic [ref=e26]: Khách hàng
+        - link "Công trường / Xưởng" [ref=e27] [cursor=pointer]:
+          - /url: /sites
+          - img [ref=e28]
+          - generic [ref=e31]: Công trường / Xưởng
+        - link "Nhân viên" [ref=e32] [cursor=pointer]:
+          - /url: /workers
+          - img [ref=e33]
+          - generic [ref=e38]: Nhân viên
+        - link "Dự án" [ref=e39] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e40]
+          - generic [ref=e42]: Dự án
+        - link "Báo giá" [ref=e43] [cursor=pointer]:
+          - /url: /quotes
+          - img [ref=e44]
+          - generic [ref=e47]: Báo giá
+      - generic [ref=e48]:
+        - generic [ref=e49]: Sản xuất
+        - link "Giao việc" [ref=e50] [cursor=pointer]:
+          - /url: /assign
+          - img [ref=e51]
+          - generic [ref=e52]: Giao việc
+        - link "Chấm công" [ref=e53] [cursor=pointer]:
+          - /url: /timesheet
+          - img [ref=e54]
+          - generic [ref=e57]: Chấm công
+      - generic [ref=e58]:
+        - generic [ref=e59]: Báo cáo
+        - link "Hiệu suất" [ref=e60] [cursor=pointer]:
+          - /url: /report
+          - img [ref=e61]
+          - generic [ref=e65]: Hiệu suất
+    - generic [ref=e66]:
+      - generic [ref=e67]: MH
+      - generic [ref=e68]:
+        - generic [ref=e69]: Mai Văn Hải
+        - generic [ref=e70]: Quản lý xưởng
+  - main [ref=e71]:
+    - generic [ref=e72]:
+      - button "Menu" [ref=e73] [cursor=pointer]:
+        - img [ref=e74]
+      - generic [ref=e75]:
+        - text: Dự án
+        - generic [ref=e76]: · Theo dõi tiến độ
+      - generic [ref=e77]:
+        - button "Thêm dự án" [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+          - text: Thêm dự án
+        - button "Tìm kiếm" [ref=e80] [cursor=pointer]:
+          - img [ref=e81]
+        - button "Thông báo" [ref=e84] [cursor=pointer]:
+          - img [ref=e85]
+        - generic [ref=e88]:
+          - generic [ref=e89]: MH
+          - generic [ref=e90]: Quản lý xưởng
+          - img [ref=e91]
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: Tổng dự án
+            - img [ref=e99]
+          - generic [ref=e101]: "5"
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]: Đang thi công
+            - img [ref=e106]
+          - generic [ref=e109]: "2"
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - generic [ref=e112]: Sắp đến hạn
+            - img [ref=e114]
+          - generic [ref=e116]: "2"
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - generic [ref=e119]: Hoàn thành
+            - img [ref=e121]
+          - generic [ref=e124]: "1"
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - img [ref=e127]
+          - textbox "Tìm tên, mã dự án..." [ref=e130]
+        - combobox [ref=e131]:
+          - option "Tất cả trạng thái" [selected]
+          - option "Lên kế hoạch"
+          - option "Đang thi công"
+          - option "Sắp bàn giao"
+          - option "Hoàn thành"
+          - option "Tạm dừng"
+          - option "Đã hủy"
+        - combobox [ref=e132]:
+          - option "Tất cả xưởng" [selected]
+          - option "Xưởng Nội thất Long Biên"
+          - option "Công trường Aeon Bình Tân"
+          - option "Xưởng Cơ khí Hà Nội"
+          - option "Công trường Vincity Hà Nam"
+          - option "Kho vật tư Bắc Ninh"
+        - combobox [ref=e133]:
+          - option "Tất cả báo giá" [selected]
+          - option "WS0090"
+          - option "WS0088"
+          - option "WS0089"
+          - option "WS0087"
+      - table [ref=e135]:
+        - rowgroup [ref=e136]:
+          - row "Dự án Khách hàng Báo giá Loại Xưởng Tiến độ Ngày bàn giao Trạng thái" [ref=e137]:
+            - columnheader "Dự án" [ref=e138]
+            - columnheader "Khách hàng" [ref=e139]
+            - columnheader "Báo giá" [ref=e140]
+            - columnheader "Loại" [ref=e141]
+            - columnheader "Xưởng" [ref=e142]
+            - columnheader "Tiến độ" [ref=e143]
+            - columnheader "Ngày bàn giao" [ref=e144]
+            - columnheader "Trạng thái" [ref=e145]
+        - rowgroup [ref=e146]:
+          - row "Lan can & cầu thang thép Aeon Mall Bình Tân PRJ001 Công ty CP Đầu tư Aeon Việt Nam WS0087 WS0090 Thương mại dịch vụ Công trường Aeon Bình Tân 72% 25/06/2026 Sắp hạn Đang thi công" [ref=e147] [cursor=pointer]:
+            - cell "Lan can & cầu thang thép Aeon Mall Bình Tân PRJ001" [ref=e148]:
+              - generic [ref=e149]:
+                - generic [ref=e150]: Lan can & cầu thang thép Aeon Mall Bình Tân
+                - generic [ref=e151]: PRJ001
+            - cell "Công ty CP Đầu tư Aeon Việt Nam" [ref=e152]
+            - cell "WS0087 WS0090" [ref=e153]:
+              - generic [ref=e154]:
+                - generic "Gói thầu cơ khí nhà xưởng" [ref=e155]:
+                  - generic [ref=e156]: WS0087
+                - generic "Gói thầu cơ khí nhà xưởng (Copy) test 1" [ref=e157]:
+                  - generic [ref=e158]: WS0090
+            - cell "Thương mại dịch vụ" [ref=e159]
+            - cell "Công trường Aeon Bình Tân" [ref=e160]
+            - cell "72%" [ref=e161]:
+              - generic [ref=e165]: 72%
+            - cell "25/06/2026 Sắp hạn" [ref=e166]:
+              - generic [ref=e167]:
+                - text: 25/06/2026
+                - generic [ref=e168]: Sắp hạn
+            - cell "Đang thi công" [ref=e169]:
+              - generic [ref=e170]: Đang thi công
+          - row "Nội thất căn hộ mẫu Vinhomes PRJ002 Studio Kiến trúc Minh Anh WS0088 Căn hộ cao cấp Xưởng Nội thất Long Biên 35% 30/07/2026 Đang thi công" [ref=e172] [cursor=pointer]:
+            - cell "Nội thất căn hộ mẫu Vinhomes PRJ002" [ref=e173]:
+              - generic [ref=e174]:
+                - generic [ref=e175]: Nội thất căn hộ mẫu Vinhomes
+                - generic [ref=e176]: PRJ002
+            - cell "Studio Kiến trúc Minh Anh" [ref=e177]
+            - cell "WS0088" [ref=e178]:
+              - generic "Lan can ban công khu A" [ref=e180]:
+                - generic [ref=e181]: WS0088
+            - cell "Căn hộ cao cấp" [ref=e182]
+            - cell "Xưởng Nội thất Long Biên" [ref=e183]
+            - cell "35%" [ref=e184]:
+              - generic [ref=e188]: 35%
+            - cell "30/07/2026" [ref=e189]:
+              - generic [ref=e190]: 30/07/2026
+            - cell "Đang thi công" [ref=e191]:
+              - generic [ref=e192]: Đang thi công
+          - row "Cổng & hàng rào nghệ thuật biệt thự PRJ004 Studio Kiến trúc Minh Anh — Kiến trúc nghệ thuật Xưởng Cơ khí Hà Nội 100% 20/04/2026 Hoàn thành" [ref=e194] [cursor=pointer]:
+            - cell "Cổng & hàng rào nghệ thuật biệt thự PRJ004" [ref=e195]:
+              - generic [ref=e196]:
+                - generic [ref=e197]: Cổng & hàng rào nghệ thuật biệt thự
+                - generic [ref=e198]: PRJ004
+            - cell "Studio Kiến trúc Minh Anh" [ref=e199]
+            - cell "—" [ref=e200]
+            - cell "Kiến trúc nghệ thuật" [ref=e201]
+            - cell "Xưởng Cơ khí Hà Nội" [ref=e202]
+            - cell "100%" [ref=e203]:
+              - generic [ref=e207]: 100%
+            - cell "20/04/2026" [ref=e208]:
+              - generic [ref=e209]: 20/04/2026
+            - cell "Hoàn thành" [ref=e210]:
+              - generic [ref=e211]: Hoàn thành
+          - row "Sửa chữa kết cấu trụ sở Bắc Ninh PRJ005 Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh — Khác Xưởng Cơ khí Hà Nội 60% 30/05/2026 Quá hạn Tạm dừng" [ref=e213] [cursor=pointer]:
+            - cell "Sửa chữa kết cấu trụ sở Bắc Ninh PRJ005" [ref=e214]:
+              - generic [ref=e215]:
+                - generic [ref=e216]: Sửa chữa kết cấu trụ sở Bắc Ninh
+                - generic [ref=e217]: PRJ005
+            - cell "Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh" [ref=e218]
+            - cell "—" [ref=e219]
+            - cell "Khác" [ref=e220]
+            - cell "Xưởng Cơ khí Hà Nội" [ref=e221]
+            - cell "60%" [ref=e222]:
+              - generic [ref=e226]: 60%
+            - cell "30/05/2026 Quá hạn" [ref=e227]:
+              - generic [ref=e228]:
+                - text: 30/05/2026
+                - generic [ref=e229]: Quá hạn
+            - cell "Tạm dừng" [ref=e230]:
+              - generic [ref=e231]: Tạm dừng
+          - row "Kết cấu thép nhà xưởng Samsung Yên Phong PRJ003 Samsung Engineering Vietnam WS0089 Khu công nghiệp Xưởng Cơ khí Hà Nội 0% 15/12/2026 Lên kế hoạch" [ref=e233] [cursor=pointer]:
+            - cell "Kết cấu thép nhà xưởng Samsung Yên Phong PRJ003" [ref=e234]:
+              - generic [ref=e235]:
+                - generic [ref=e236]: Kết cấu thép nhà xưởng Samsung Yên Phong
+                - generic [ref=e237]: PRJ003
+            - cell "Samsung Engineering Vietnam" [ref=e238]
+            - cell "WS0089" [ref=e239]:
+              - generic "Sản xuất quầy bar Inox" [ref=e241]:
+                - generic [ref=e242]: WS0089
+            - cell "Khu công nghiệp" [ref=e243]
+            - cell "Xưởng Cơ khí Hà Nội" [ref=e244]
+            - cell "0%" [ref=e245]:
+              - generic [ref=e248]: 0%
+            - cell "15/12/2026" [ref=e249]:
+              - generic [ref=e250]: 15/12/2026
+            - cell "Lên kế hoạch" [ref=e251]:
+              - generic [ref=e252]: Lên kế hoạch

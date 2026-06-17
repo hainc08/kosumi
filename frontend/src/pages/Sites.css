@@ -1,6 +1,0 @@
-.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-.kpi-row--3 { grid-template-columns: repeat(3, 1fr); }
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; }
-.cell-site__name { font-size: 12px; font-weight: 600; color: var(--color-text); }
-.cell-site__code { font-size: 10px; color: var(--color-text-3); }
-.cell-site__muted { color: var(--color-text-3); }

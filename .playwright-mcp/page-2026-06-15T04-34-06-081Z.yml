@@ -1,0 +1,323 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: WorkShop Pro
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: Tổng quan
+        - link "Dashboard" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e10]
+          - generic [ref=e15]: Dashboard
+      - generic [ref=e16]:
+        - generic [ref=e17]: Quản lý
+        - link "Khách hàng" [ref=e18] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e19]
+          - generic [ref=e26]: Khách hàng
+        - link "Công trường / Xưởng" [ref=e27] [cursor=pointer]:
+          - /url: /sites
+          - img [ref=e28]
+          - generic [ref=e31]: Công trường / Xưởng
+        - link "Công nhân" [ref=e32] [cursor=pointer]:
+          - /url: /workers
+          - img [ref=e33]
+          - generic [ref=e38]: Công nhân
+        - link "Dự án" [ref=e39] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e40]
+          - generic [ref=e42]: Dự án
+        - link "Báo giá" [ref=e43] [cursor=pointer]:
+          - /url: /quotes
+          - img [ref=e44]
+          - generic [ref=e47]: Báo giá
+      - generic [ref=e48]:
+        - generic [ref=e49]: Sản xuất
+        - link "Giao việc" [ref=e50] [cursor=pointer]:
+          - /url: /assign
+          - img [ref=e51]
+          - generic [ref=e52]: Giao việc
+        - link "Chấm công" [ref=e53] [cursor=pointer]:
+          - /url: /timesheet
+          - img [ref=e54]
+          - generic [ref=e57]: Chấm công
+      - generic [ref=e58]:
+        - generic [ref=e59]: Báo cáo
+        - link "Hiệu suất" [ref=e60] [cursor=pointer]:
+          - /url: /report
+          - img [ref=e61]
+          - generic [ref=e65]: Hiệu suất
+    - generic [ref=e66]:
+      - generic [ref=e67]: MH
+      - generic [ref=e68]:
+        - generic [ref=e69]: Mai Văn Hải
+        - generic [ref=e70]: Quản lý xưởng
+  - main [ref=e71]:
+    - generic [ref=e72]:
+      - button "Thu gọn menu" [ref=e73] [cursor=pointer]:
+        - img [ref=e74]
+      - generic [ref=e75]:
+        - text: Báo giá
+        - generic [ref=e76]: · Quản lý và phê duyệt
+      - generic [ref=e77]:
+        - button "Tạo báo giá" [active] [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+          - text: Tạo báo giá
+        - button "Tìm kiếm" [ref=e80] [cursor=pointer]:
+          - img [ref=e81]
+        - button "Thông báo" [ref=e84] [cursor=pointer]:
+          - img [ref=e85]
+        - generic [ref=e88]:
+          - generic [ref=e89]: MH
+          - generic [ref=e90]: Quản lý xưởng
+          - img [ref=e91]
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: Tổng báo giá
+            - img [ref=e99]
+          - generic [ref=e102]: "3"
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - generic [ref=e105]: Đã duyệt / Có PO
+            - img [ref=e107]
+          - generic [ref=e110]: "1"
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]: Chờ phê duyệt
+            - img [ref=e115]
+          - generic [ref=e118]: "1"
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e121]: Tổng giá trị (Đã duyệt)
+            - img [ref=e123]
+          - generic [ref=e125]: 790.614.000 ₫
+      - generic [ref=e126]:
+        - generic [ref=e127]:
+          - img [ref=e128]
+          - textbox "Tìm đầu mục, số BG..." [ref=e131]
+        - combobox [ref=e132]:
+          - option "Tất cả trạng thái" [selected]
+          - option "Nháp"
+          - option "Chờ duyệt"
+          - option "Đã duyệt"
+          - option "Từ chối"
+          - option "Có PO"
+        - combobox [ref=e133]:
+          - option "Tất cả dự án" [selected]
+          - option "Lan can & cầu thang thép Aeon Mall Bình Tân"
+          - option "Nội thất căn hộ mẫu Vinhomes"
+          - option "Kết cấu thép nhà xưởng Samsung Yên Phong"
+          - option "Cổng & hàng rào nghệ thuật biệt thự"
+          - option "Sửa chữa kết cấu trụ sở Bắc Ninh"
+      - table [ref=e135]:
+        - rowgroup [ref=e136]:
+          - row "Số báo giá Đầu mục Dự án Hạng mục Ngày tạo Giá trị Trạng thái" [ref=e137]:
+            - columnheader "Số báo giá" [ref=e138]
+            - columnheader "Đầu mục" [ref=e139]
+            - columnheader "Dự án" [ref=e140]
+            - columnheader "Hạng mục" [ref=e141]
+            - columnheader "Ngày tạo" [ref=e142]
+            - columnheader "Giá trị" [ref=e143]
+            - columnheader "Trạng thái" [ref=e144]
+            - columnheader [ref=e145]
+        - rowgroup [ref=e146]:
+          - row "WS0087 Gói thầu cơ khí nhà xưởng Lan can & cầu thang thép Aeon Mall Bình Tân 3 hạng mục 01/06/2026 790.614.000 ₫ Đã duyệt" [ref=e177] [cursor=pointer]:
+            - cell "WS0087" [ref=e178]
+            - cell "Gói thầu cơ khí nhà xưởng" [ref=e179]
+            - cell "Lan can & cầu thang thép Aeon Mall Bình Tân" [ref=e180]
+            - cell "3 hạng mục" [ref=e181]
+            - cell "01/06/2026" [ref=e182]
+            - cell "790.614.000 ₫" [ref=e183]
+            - cell "Đã duyệt" [ref=e184]:
+              - generic [ref=e185]: Đã duyệt
+            - cell [ref=e187]:
+              - generic [ref=e188]:
+                - generic "Nhân bản (Clone)" [ref=e189]:
+                  - img [ref=e190]
+                - generic "Chi tiết" [ref=e193]:
+                  - img [ref=e194]
+                - generic "Xem trước" [ref=e197]:
+                  - img [ref=e198]
+          - row "WS0088 Lan can ban công khu A Nội thất căn hộ mẫu Vinhomes 1 hạng mục 10/06/2026 229.500.000 ₫ Chờ duyệt" [ref=e202] [cursor=pointer]:
+            - cell "WS0088" [ref=e203]
+            - cell "Lan can ban công khu A" [ref=e204]
+            - cell "Nội thất căn hộ mẫu Vinhomes" [ref=e205]
+            - cell "1 hạng mục" [ref=e206]
+            - cell "10/06/2026" [ref=e207]
+            - cell "229.500.000 ₫" [ref=e208]
+            - cell "Chờ duyệt" [ref=e209]:
+              - generic [ref=e210]: Chờ duyệt
+            - cell [ref=e212]:
+              - generic [ref=e213]:
+                - generic "Phê duyệt" [ref=e214]:
+                  - img [ref=e215]
+                - generic "Không duyệt" [ref=e217]:
+                  - img [ref=e218]
+                - generic "Nhân bản (Clone)" [ref=e221]:
+                  - img [ref=e222]
+                - generic "Chi tiết" [ref=e225]:
+                  - img [ref=e226]
+                - generic "Xem trước" [ref=e229]:
+                  - img [ref=e230]
+          - row "WS0089 Sản xuất quầy bar Inox Kết cấu thép nhà xưởng Samsung Yên Phong 1 hạng mục 12/06/2026 51.840.000 ₫ Nháp" [ref=e234] [cursor=pointer]:
+            - cell "WS0089" [ref=e235]
+            - cell "Sản xuất quầy bar Inox" [ref=e236]
+            - cell "Kết cấu thép nhà xưởng Samsung Yên Phong" [ref=e237]
+            - cell "1 hạng mục" [ref=e238]
+            - cell "12/06/2026" [ref=e239]
+            - cell "51.840.000 ₫" [ref=e240]
+            - cell "Nháp" [ref=e241]:
+              - generic [ref=e242]: Nháp
+            - cell [ref=e244]:
+              - generic [ref=e245]:
+                - generic "Gửi duyệt" [ref=e246]:
+                  - img [ref=e247]
+                - generic "Nhân bản (Clone)" [ref=e250]:
+                  - img [ref=e251]
+                - generic "Sửa" [ref=e254]:
+                  - img [ref=e255]
+                - generic "Xóa" [ref=e259]:
+                  - img [ref=e260]
+                - generic "Chi tiết" [ref=e263]:
+                  - img [ref=e264]
+                - generic "Xem trước" [ref=e267]:
+                  - img [ref=e268]
+      - generic [ref=e273]:
+        - generic [ref=e274]:
+          - generic [ref=e275]:
+            - img [ref=e276]
+            - text: Tạo báo giá mới
+          - button "Đóng" [ref=e279] [cursor=pointer]:
+            - img [ref=e280]
+        - generic [ref=e284]:
+          - generic [ref=e285]: Thông tin chung
+          - generic [ref=e286]:
+            - generic [ref=e287]:
+              - generic [ref=e288]: Số báo giá (tự sinh)
+              - textbox [ref=e289]: WS0090
+            - generic [ref=e290]:
+              - generic [ref=e291]: ĐK Thanh toán
+              - combobox [ref=e292]:
+                - option "-- Chọn điều khoản --"
+                - option "30% ký HĐ · 25% triển khai · 35% bàn giao · 10% sau bảo hành" [selected]
+                - option "50% trước · 50% khi nhận hàng"
+                - option "30% trước · 70% khi bàn giao"
+                - option "100% trước khi nhận hàng"
+                - option "Tùy chỉnh"
+          - generic [ref=e293] [cursor=pointer]:
+            - checkbox "Dự án đã có" [checked] [ref=e294]
+            - text: Dự án đã có
+          - generic [ref=e295]:
+            - generic [ref=e296]: Dự án*
+            - combobox [ref=e297]:
+              - option "-- Chọn dự án --" [selected]
+              - option "PRJ001 - Lan can & cầu thang thép Aeon Mall Bình Tân"
+              - option "PRJ002 - Nội thất căn hộ mẫu Vinhomes"
+              - option "PRJ003 - Kết cấu thép nhà xưởng Samsung Yên Phong"
+              - option "PRJ004 - Cổng & hàng rào nghệ thuật biệt thự"
+              - option "PRJ005 - Sửa chữa kết cấu trụ sở Bắc Ninh"
+          - generic [ref=e298]:
+            - generic [ref=e299]: Khách hàng
+            - generic [ref=e301]:
+              - img [ref=e302]
+              - textbox "Gõ tên hoặc mã khách hàng..." [ref=e305]
+              - img [ref=e306]
+          - generic [ref=e308]:
+            - generic [ref=e309]: Đầu mục / Tên gói thầu*
+            - 'textbox "VD: Hệ thống lan can toàn bộ dự án" [ref=e310]'
+          - generic [ref=e311]:
+            - generic [ref=e312]:
+              - generic [ref=e313]: Ngày báo giá*
+              - textbox [ref=e314]: 2026-06-15
+            - generic [ref=e315]:
+              - generic [ref=e316]: Hiệu lực (ngày)
+              - textbox [ref=e317]: "30"
+            - generic [ref=e318]:
+              - generic [ref=e319]: Hết hiệu lực (tự tính)
+              - textbox [ref=e320]: 2026-07-15
+            - generic [ref=e321]:
+              - generic [ref=e322]: Giao hàng (ngày)
+              - textbox [ref=e323]: "50"
+            - generic [ref=e324]:
+              - generic [ref=e325]: Thuế VAT (%)
+              - textbox [ref=e326]: "8"
+          - generic [ref=e327]: Hạng mục & danh mục
+          - generic [ref=e329]:
+            - generic [ref=e330]:
+              - generic [ref=e331]: Hạng mục 1
+              - button "Xóa hạng mục" [ref=e332] [cursor=pointer]:
+                - img [ref=e333]
+            - generic [ref=e336]:
+              - generic [ref=e337]:
+                - generic [ref=e338]: Tên hạng mục*
+                - 'textbox "VD: Cầu thang thép" [ref=e339]'
+              - generic [ref=e340]:
+                - generic [ref=e341]: Tên hạng mục (EN)
+                - 'textbox "VD: Steel Staircase" [ref=e342]'
+            - generic [ref=e343]:
+              - generic [ref=e344]:
+                - generic [ref=e345]:
+                  - generic [ref=e346]:
+                    - generic [ref=e347]: Danh mục 1*
+                    - 'textbox "VD: Lan can cầu thang thép" [ref=e348]'
+                  - generic [ref=e349]:
+                    - generic [ref=e350]: Diễn giải
+                    - textbox "Mô tả chi tiết (tuỳ chọn)" [ref=e351]
+                - generic [ref=e352]:
+                  - generic [ref=e353]:
+                    - generic [ref=e354]: ĐVT*
+                    - textbox "m, kg..." [ref=e355]
+                  - generic [ref=e356]:
+                    - generic [ref=e357]: SL*
+                    - textbox [ref=e358]: "1"
+                  - generic [ref=e359]:
+                    - generic [ref=e360]: Đơn giá*
+                    - textbox [ref=e361]: "0"
+                  - button "Xóa danh mục" [ref=e362] [cursor=pointer]:
+                    - img [ref=e363]
+              - button "Thêm danh mục" [ref=e366] [cursor=pointer]:
+                - img [ref=e367]
+                - text: Thêm danh mục
+          - button "Thêm hạng mục" [ref=e368] [cursor=pointer]:
+            - img [ref=e369]
+            - text: Thêm hạng mục
+          - generic [ref=e370]: Đợt thanh toán
+          - generic [ref=e371]:
+            - generic [ref=e372]:
+              - generic [ref=e374]:
+                - generic [ref=e375]: Đợt 1 (%)*
+                - textbox [ref=e376]: "30"
+              - generic [ref=e378]:
+                - generic [ref=e379]: Mô tả*
+                - textbox [ref=e380]: Tạm ứng khi ký hợp đồng
+              - button "Xóa" [ref=e382] [cursor=pointer]:
+                - img [ref=e383]
+            - generic [ref=e386]:
+              - generic [ref=e388]:
+                - generic [ref=e389]: Đợt 2 (%)*
+                - textbox [ref=e390]: "70"
+              - generic [ref=e392]:
+                - generic [ref=e393]: Mô tả*
+                - textbox [ref=e394]: Thanh toán khi nghiệm thu bàn giao
+              - button "Xóa" [ref=e396] [cursor=pointer]:
+                - img [ref=e397]
+          - button "Thêm đợt thanh toán" [ref=e400] [cursor=pointer]:
+            - img [ref=e401]
+            - text: Thêm đợt thanh toán
+          - generic [ref=e402]: Ghi chú
+          - generic [ref=e403]:
+            - generic [ref=e404]: Ghi chú bảo hành
+            - 'textbox "VD: Bảo hành 12 tháng..." [ref=e405]'
+          - generic [ref=e406]:
+            - generic [ref=e407]: Nhà thầu chính / CĐT cung cấp
+            - 'textbox "VD: Mặt bằng thi công do CĐT cấp..." [ref=e408]'
+          - generic [ref=e409]:
+            - generic [ref=e410]: Ghi chú nội bộ
+            - textbox [ref=e411]
+        - generic [ref=e412]:
+          - button "Hủy" [ref=e413] [cursor=pointer]
+          - button "Lưu báo giá" [ref=e414] [cursor=pointer]
+          - button "Gửi duyệt báo giá" [ref=e415] [cursor=pointer]:
+            - img [ref=e416]
+            - text: Gửi duyệt báo giá

@@ -1,0 +1,249 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: WorkShop Pro
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: Tổng quan
+        - link "Dashboard" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e10]
+          - generic [ref=e15]: Dashboard
+      - generic [ref=e16]:
+        - generic [ref=e17]: Quản lý
+        - link "Khách hàng" [ref=e18] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e19]
+          - generic [ref=e26]: Khách hàng
+        - link "Công trường / Xưởng" [ref=e27] [cursor=pointer]:
+          - /url: /sites
+          - img [ref=e28]
+          - generic [ref=e31]: Công trường / Xưởng
+        - link "Nhân viên" [ref=e32] [cursor=pointer]:
+          - /url: /workers
+          - img [ref=e33]
+          - generic [ref=e38]: Nhân viên
+        - link "Dự án" [ref=e39] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e40]
+          - generic [ref=e42]: Dự án
+        - link "Báo giá" [ref=e43] [cursor=pointer]:
+          - /url: /quotes
+          - img [ref=e44]
+          - generic [ref=e47]: Báo giá
+      - generic [ref=e48]:
+        - generic [ref=e49]: Sản xuất
+        - link "Giao việc" [ref=e50] [cursor=pointer]:
+          - /url: /assign
+          - img [ref=e51]
+          - generic [ref=e52]: Giao việc
+        - link "Chấm công" [ref=e53] [cursor=pointer]:
+          - /url: /timesheet
+          - img [ref=e54]
+          - generic [ref=e57]: Chấm công
+      - generic [ref=e58]:
+        - generic [ref=e59]: Báo cáo
+        - link "Hiệu suất" [ref=e60] [cursor=pointer]:
+          - /url: /report
+          - img [ref=e61]
+          - generic [ref=e65]: Hiệu suất
+    - generic [ref=e66]:
+      - generic [ref=e67]: MH
+      - generic [ref=e68]:
+        - generic [ref=e69]: Mai Văn Hải
+        - generic [ref=e70]: Quản lý xưởng
+  - main [ref=e71]:
+    - generic [ref=e72]:
+      - button "Menu" [ref=e73] [cursor=pointer]:
+        - img [ref=e74]
+      - generic [ref=e75]:
+        - text: Nhân viên
+        - generic [ref=e76]: · Nhân sự xưởng
+      - generic [ref=e77]:
+        - button "Thêm nhân viên" [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+          - text: Thêm nhân viên
+        - button "Tìm kiếm" [ref=e82] [cursor=pointer]:
+          - img [ref=e83]
+        - button "Thông báo" [ref=e86] [cursor=pointer]:
+          - img [ref=e87]
+        - generic [ref=e90]:
+          - generic [ref=e91]: MH
+          - generic [ref=e92]: Quản lý xưởng
+          - img [ref=e93]
+    - generic [ref=e95]:
+      - generic [ref=e96]:
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]: Tổng nhân viên
+            - img [ref=e101]
+          - generic [ref=e106]: "9"
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - generic [ref=e109]: Đang làm việc
+            - img [ref=e111]
+          - generic [ref=e115]: "7"
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: Nghỉ / Vắng
+            - img [ref=e120]
+          - generic [ref=e124]: "2"
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - generic [ref=e127]: Hiệu suất TB
+            - img [ref=e129]
+          - generic [ref=e132]: —
+      - generic [ref=e133]:
+        - generic [ref=e134]:
+          - img [ref=e135]
+          - textbox "Tìm theo tên, mã..." [ref=e138]
+        - combobox [ref=e139]:
+          - option "Tất cả trạng thái" [selected]
+          - option "Đang làm việc"
+          - option "Nghỉ phép"
+          - option "Vắng mặt"
+          - option "Đã nghỉ việc"
+        - combobox [ref=e140]:
+          - option "Tất cả chức vụ" [selected]
+          - option "Tổ trưởng"
+          - option "Thợ chính"
+          - option "Nhân viên"
+          - option "Học việc"
+          - option "Kỹ thuật viên"
+          - option "Giám sát"
+          - option "Khác"
+      - table [ref=e142]:
+        - rowgroup [ref=e143]:
+          - row "Nhân viên Chức vụ Chuyên môn Loại HĐ Lương/tháng Trạng thái" [ref=e144]:
+            - columnheader "Nhân viên" [ref=e145]
+            - columnheader "Chức vụ" [ref=e146]
+            - columnheader "Chuyên môn" [ref=e147]
+            - columnheader "Loại HĐ" [ref=e148]
+            - columnheader "Lương/tháng" [ref=e149]
+            - columnheader "Trạng thái" [ref=e150]
+        - rowgroup [ref=e151]:
+          - row "MH mai van hải CN009 Nhân viên — HĐ chính thức 5.000.000 ₫/tháng Đang làm việc" [ref=e152] [cursor=pointer]:
+            - cell "MH mai van hải CN009" [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: MH
+                - generic [ref=e156]:
+                  - generic [ref=e157]: mai van hải
+                  - generic [ref=e158]: CN009
+            - cell "Nhân viên" [ref=e159]
+            - cell "—" [ref=e160]
+            - cell "HĐ chính thức" [ref=e161]:
+              - generic [ref=e162]: HĐ chính thức
+            - cell "5.000.000 ₫/tháng" [ref=e163]
+            - cell "Đang làm việc" [ref=e164]:
+              - generic [ref=e165]: Đang làm việc
+          - row "LT Lê Văn Tâm CN003 Tổ trưởng Quản lý tổ thép HĐ chính thức 15.000.000 ₫/tháng Nghỉ phép" [ref=e167] [cursor=pointer]:
+            - cell "LT Lê Văn Tâm CN003" [ref=e168]:
+              - generic [ref=e169]:
+                - generic [ref=e170]: LT
+                - generic [ref=e171]:
+                  - generic [ref=e172]: Lê Văn Tâm
+                  - generic [ref=e173]: CN003
+            - cell "Tổ trưởng" [ref=e174]
+            - cell "Quản lý tổ thép" [ref=e175]
+            - cell "HĐ chính thức" [ref=e176]:
+              - generic [ref=e177]: HĐ chính thức
+            - cell "15.000.000 ₫/tháng" [ref=e178]
+            - cell "Nghỉ phép" [ref=e179]:
+              - generic [ref=e180]: Nghỉ phép
+          - row "BS Bùi Văn Sơn CN008 Nhân viên Sơn tĩnh điện HĐ giao khoán 150.000 ₫/m² Vắng mặt" [ref=e182] [cursor=pointer]:
+            - cell "BS Bùi Văn Sơn CN008" [ref=e183]:
+              - generic [ref=e184]:
+                - generic [ref=e185]: BS
+                - generic [ref=e186]:
+                  - generic [ref=e187]: Bùi Văn Sơn
+                  - generic [ref=e188]: CN008
+            - cell "Nhân viên" [ref=e189]
+            - cell "Sơn tĩnh điện" [ref=e190]
+            - cell "HĐ giao khoán" [ref=e191]:
+              - generic [ref=e192]: HĐ giao khoán
+            - cell "150.000 ₫/m²" [ref=e193]
+            - cell "Vắng mặt" [ref=e194]:
+              - generic [ref=e195]: Vắng mặt
+          - row "TM Trần Thị Mai CN002 Nhân viên Lắp dựng thép HĐ chính thức 9.000.000 ₫/tháng Đang làm việc" [ref=e197] [cursor=pointer]:
+            - cell "TM Trần Thị Mai CN002" [ref=e198]:
+              - generic [ref=e199]:
+                - generic [ref=e200]: TM
+                - generic [ref=e201]:
+                  - generic [ref=e202]: Trần Thị Mai
+                  - generic [ref=e203]: CN002
+            - cell "Nhân viên" [ref=e204]
+            - cell "Lắp dựng thép" [ref=e205]
+            - cell "HĐ chính thức" [ref=e206]:
+              - generic [ref=e207]: HĐ chính thức
+            - cell "9.000.000 ₫/tháng" [ref=e208]
+            - cell "Đang làm việc" [ref=e209]:
+              - generic [ref=e210]: Đang làm việc
+          - row "NH Nguyễn Văn Hùng CN001 Thợ chính Hàn kết cấu HĐ chính thức 12.000.000 ₫/tháng Đang làm việc" [ref=e212] [cursor=pointer]:
+            - cell "NH Nguyễn Văn Hùng CN001" [ref=e213]:
+              - generic [ref=e214]:
+                - generic [ref=e215]: NH
+                - generic [ref=e216]:
+                  - generic [ref=e217]: Nguyễn Văn Hùng
+                  - generic [ref=e218]: CN001
+            - cell "Thợ chính" [ref=e219]
+            - cell "Hàn kết cấu" [ref=e220]
+            - cell "HĐ chính thức" [ref=e221]:
+              - generic [ref=e222]: HĐ chính thức
+            - cell "12.000.000 ₫/tháng" [ref=e223]
+            - cell "Đang làm việc" [ref=e224]:
+              - generic [ref=e225]: Đang làm việc
+          - row "PQ Phạm Đình Quân CN004 Nhân viên Gia công cơ khí HĐ thử việc 7.000.000 ₫/tháng Đang làm việc" [ref=e227] [cursor=pointer]:
+            - cell "PQ Phạm Đình Quân CN004" [ref=e228]:
+              - generic [ref=e229]:
+                - generic [ref=e230]: PQ
+                - generic [ref=e231]:
+                  - generic [ref=e232]: Phạm Đình Quân
+                  - generic [ref=e233]: CN004
+            - cell "Nhân viên" [ref=e234]
+            - cell "Gia công cơ khí" [ref=e235]
+            - cell "HĐ thử việc" [ref=e236]:
+              - generic [ref=e237]: HĐ thử việc
+            - cell "7.000.000 ₫/tháng" [ref=e238]
+            - cell "Đang làm việc" [ref=e239]:
+              - generic [ref=e240]: Đang làm việc
+          - row "VH Vũ Thị Hồng CN007 Kỹ thuật viên Vận hành CNC HĐ chính thức 13.000.000 ₫/tháng Đang làm việc" [ref=e242] [cursor=pointer]:
+            - cell "VH Vũ Thị Hồng CN007" [ref=e243]:
+              - generic [ref=e244]:
+                - generic [ref=e245]: VH
+                - generic [ref=e246]:
+                  - generic [ref=e247]: Vũ Thị Hồng
+                  - generic [ref=e248]: CN007
+            - cell "Kỹ thuật viên" [ref=e249]
+            - cell "Vận hành CNC" [ref=e250]
+            - cell "HĐ chính thức" [ref=e251]:
+              - generic [ref=e252]: HĐ chính thức
+            - cell "13.000.000 ₫/tháng" [ref=e253]
+            - cell "Đang làm việc" [ref=e254]:
+              - generic [ref=e255]: Đang làm việc
+          - row "ĐK Đỗ Minh Khang CN006 Giám sát Giám sát thi công HĐ chính thức 18.000.000 ₫/tháng Đang làm việc" [ref=e257] [cursor=pointer]:
+            - cell "ĐK Đỗ Minh Khang CN006" [ref=e258]:
+              - generic [ref=e259]:
+                - generic [ref=e260]: ĐK
+                - generic [ref=e261]:
+                  - generic [ref=e262]: Đỗ Minh Khang
+                  - generic [ref=e263]: CN006
+            - cell "Giám sát" [ref=e264]
+            - cell "Giám sát thi công" [ref=e265]
+            - cell "HĐ chính thức" [ref=e266]:
+              - generic [ref=e267]: HĐ chính thức
+            - cell "18.000.000 ₫/tháng" [ref=e268]
+            - cell "Đang làm việc" [ref=e269]:
+              - generic [ref=e270]: Đang làm việc
+          - row "HL Hoàng Thị Lan CN005 Học việc Phụ việc HĐ thử việc 5.500.000 ₫/tháng Đang làm việc" [ref=e272] [cursor=pointer]:
+            - cell "HL Hoàng Thị Lan CN005" [ref=e273]:
+              - generic [ref=e274]:
+                - generic [ref=e275]: HL
+                - generic [ref=e276]:
+                  - generic [ref=e277]: Hoàng Thị Lan
+                  - generic [ref=e278]: CN005
+            - cell "Học việc" [ref=e279]
+            - cell "Phụ việc" [ref=e280]
+            - cell "HĐ thử việc" [ref=e281]:
+              - generic [ref=e282]: HĐ thử việc
+            - cell "5.500.000 ₫/tháng" [ref=e283]
+            - cell "Đang làm việc" [ref=e284]:
+              - generic [ref=e285]: Đang làm việc

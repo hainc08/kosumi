@@ -1,0 +1,256 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: WorkShop Pro
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: Tổng quan
+        - link "Dashboard" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e10]
+          - generic [ref=e15]: Dashboard
+      - generic [ref=e16]:
+        - generic [ref=e17]: Quản lý
+        - link "Khách hàng" [ref=e18] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e19]
+          - generic [ref=e26]: Khách hàng
+        - link "Công trường / Xưởng" [ref=e27] [cursor=pointer]:
+          - /url: /sites
+          - img [ref=e28]
+          - generic [ref=e31]: Công trường / Xưởng
+        - link "Công nhân" [ref=e32] [cursor=pointer]:
+          - /url: /workers
+          - img [ref=e33]
+          - generic [ref=e38]: Công nhân
+        - link "Dự án" [ref=e39] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e40]
+          - generic [ref=e42]: Dự án
+        - link "Báo giá" [ref=e43] [cursor=pointer]:
+          - /url: /quotes
+          - img [ref=e44]
+          - generic [ref=e47]: Báo giá
+      - generic [ref=e48]:
+        - generic [ref=e49]: Sản xuất
+        - link "Giao việc" [ref=e50] [cursor=pointer]:
+          - /url: /assign
+          - img [ref=e51]
+          - generic [ref=e52]: Giao việc
+        - link "Chấm công" [ref=e53] [cursor=pointer]:
+          - /url: /timesheet
+          - img [ref=e54]
+          - generic [ref=e57]: Chấm công
+      - generic [ref=e58]:
+        - generic [ref=e59]: Báo cáo
+        - link "Hiệu suất" [ref=e60] [cursor=pointer]:
+          - /url: /report
+          - img [ref=e61]
+          - generic [ref=e65]: Hiệu suất
+    - generic [ref=e66]:
+      - generic [ref=e67]: MH
+      - generic [ref=e68]:
+        - generic [ref=e69]: Mai Văn Hải
+        - generic [ref=e70]: Quản lý xưởng
+  - main [ref=e71]:
+    - generic [ref=e72]:
+      - button "Thu gọn menu" [ref=e73] [cursor=pointer]:
+        - img [ref=e74]
+      - generic [ref=e75]:
+        - text: Công nhân
+        - generic [ref=e76]: · Nhân sự xưởng
+      - generic [ref=e77]:
+        - button "Thêm công nhân" [active] [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+          - text: Thêm công nhân
+        - button "Tìm kiếm" [ref=e82] [cursor=pointer]:
+          - img [ref=e83]
+        - button "Thông báo" [ref=e86] [cursor=pointer]:
+          - img [ref=e87]
+        - generic [ref=e90]:
+          - generic [ref=e91]: MH
+          - generic [ref=e92]: Quản lý xưởng
+          - img [ref=e93]
+    - generic [ref=e95]:
+      - generic [ref=e96]:
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]: Tổng công nhân
+            - img [ref=e101]
+          - generic [ref=e106]: "3"
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - generic [ref=e109]: Đang làm việc
+            - img [ref=e111]
+          - generic [ref=e115]: "2"
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: Nghỉ / Vắng
+            - img [ref=e120]
+          - generic [ref=e124]: "1"
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - generic [ref=e127]: Hiệu suất TB
+            - img [ref=e129]
+          - generic [ref=e132]: —
+      - generic [ref=e133]:
+        - generic [ref=e134]:
+          - img [ref=e135]
+          - textbox "Tìm theo tên, mã..." [ref=e138]
+        - combobox [ref=e139]:
+          - option "Tất cả xưởng" [selected]
+          - option "Xưởng Cơ khí Hà Nội"
+          - option "Xưởng Nội thất Long Biên"
+          - option "Công trường Aeon Bình Tân"
+        - combobox [ref=e140]:
+          - option "Tất cả trạng thái" [selected]
+          - option "Đang làm việc"
+          - option "Nghỉ phép"
+          - option "Vắng mặt"
+          - option "Đã nghỉ việc"
+        - combobox [ref=e141]:
+          - option "Tất cả kỹ năng" [selected]
+          - option "Hàn điện"
+          - option "Hàn TIG"
+          - option "Cắt CNC"
+          - option "Cắt laser"
+          - option "Lắp ráp"
+          - option "Sơn phủ"
+          - option "Kiểm tra QC"
+          - option "Khác"
+      - table [ref=e143]:
+        - rowgroup [ref=e144]:
+          - row "Công nhân Kỹ năng KN Xưởng Loại HĐ Đơn giá Trạng thái" [ref=e145]:
+            - columnheader "Công nhân" [ref=e146]
+            - columnheader "Kỹ năng" [ref=e147]
+            - columnheader "KN" [ref=e148]
+            - columnheader "Xưởng" [ref=e149]
+            - columnheader "Loại HĐ" [ref=e150]
+            - columnheader "Đơn giá" [ref=e151]
+            - columnheader "Trạng thái" [ref=e152]
+        - rowgroup [ref=e153]:
+          - row "NH Nguyễn Văn Hùng CN001 Hàn TIG 8 năm Xưởng Cơ khí Hà Nội Theo giờ 45.000 ₫/giờ Đang làm việc" [ref=e181] [cursor=pointer]:
+            - cell "NH Nguyễn Văn Hùng CN001" [ref=e182]:
+              - generic [ref=e183]:
+                - generic [ref=e184]: NH
+                - generic [ref=e185]:
+                  - generic [ref=e186]: Nguyễn Văn Hùng
+                  - generic [ref=e187]: CN001
+            - cell "Hàn TIG" [ref=e188]
+            - cell "8 năm" [ref=e189]
+            - cell "Xưởng Cơ khí Hà Nội" [ref=e190]
+            - cell "Theo giờ" [ref=e191]:
+              - generic [ref=e192]: Theo giờ
+            - cell "45.000 ₫/giờ" [ref=e193]
+            - cell "Đang làm việc" [ref=e194]:
+              - generic [ref=e195]: Đang làm việc
+          - row "TM Trần Thị Mai CN002 Sơn phủ 4 năm Xưởng Nội thất Long Biên Cố định tháng 9.000.000 ₫/tháng Đang làm việc" [ref=e197] [cursor=pointer]:
+            - cell "TM Trần Thị Mai CN002" [ref=e198]:
+              - generic [ref=e199]:
+                - generic [ref=e200]: TM
+                - generic [ref=e201]:
+                  - generic [ref=e202]: Trần Thị Mai
+                  - generic [ref=e203]: CN002
+            - cell "Sơn phủ" [ref=e204]
+            - cell "4 năm" [ref=e205]
+            - cell "Xưởng Nội thất Long Biên" [ref=e206]
+            - cell "Cố định tháng" [ref=e207]:
+              - generic [ref=e208]: Cố định tháng
+            - cell "9.000.000 ₫/tháng" [ref=e209]
+            - cell "Đang làm việc" [ref=e210]:
+              - generic [ref=e211]: Đang làm việc
+          - row "LT Lê Văn Tâm CN003 Cắt CNC 10 năm Xưởng Cơ khí Hà Nội Theo ngày công 400.000 ₫/ngày Nghỉ phép" [ref=e213] [cursor=pointer]:
+            - cell "LT Lê Văn Tâm CN003" [ref=e214]:
+              - generic [ref=e215]:
+                - generic [ref=e216]: LT
+                - generic [ref=e217]:
+                  - generic [ref=e218]: Lê Văn Tâm
+                  - generic [ref=e219]: CN003
+            - cell "Cắt CNC" [ref=e220]
+            - cell "10 năm" [ref=e221]
+            - cell "Xưởng Cơ khí Hà Nội" [ref=e222]
+            - cell "Theo ngày công" [ref=e223]:
+              - generic [ref=e224]: Theo ngày công
+            - cell "400.000 ₫/ngày" [ref=e225]
+            - cell "Nghỉ phép" [ref=e226]:
+              - generic [ref=e227]: Nghỉ phép
+      - generic [ref=e230]:
+        - generic [ref=e231]:
+          - generic [ref=e232]:
+            - img [ref=e233]
+            - text: Thêm công nhân
+          - button "Đóng" [ref=e236] [cursor=pointer]:
+            - img [ref=e237]
+        - generic [ref=e241]:
+          - generic [ref=e242]: Thông tin cá nhân
+          - generic [ref=e243]:
+            - generic [ref=e244]:
+              - generic [ref=e245]: Họ và tên*
+              - 'textbox "VD: Nguyễn Văn Hùng" [ref=e246]'
+            - generic [ref=e247]:
+              - generic [ref=e248]: Giới tính*
+              - combobox [ref=e249]:
+                - option "Nam" [selected]
+                - option "Nữ"
+            - generic [ref=e250]:
+              - generic [ref=e251]: Ngày sinh
+              - textbox [ref=e252]
+            - generic [ref=e253]:
+              - generic [ref=e254]: CCCD
+              - 'textbox "VD: 001090012345" [ref=e255]'
+            - generic [ref=e256]:
+              - generic [ref=e257]: Kỹ năng chính*
+              - combobox [ref=e258]:
+                - option "Hàn điện" [selected]
+                - option "Hàn TIG"
+                - option "Cắt CNC"
+                - option "Cắt laser"
+                - option "Lắp ráp"
+                - option "Sơn phủ"
+                - option "Kiểm tra QC"
+                - option "Khác"
+            - generic [ref=e259]:
+              - generic [ref=e260]: Số năm kinh nghiệm*
+              - textbox [ref=e261]: "0"
+            - generic [ref=e262]:
+              - generic [ref=e263]: Xưởng
+              - combobox [ref=e264]:
+                - option "— Chọn xưởng —" [selected]
+                - option "Xưởng Cơ khí Hà Nội"
+                - option "Xưởng Nội thất Long Biên"
+                - option "Công trường Aeon Bình Tân"
+            - generic [ref=e265]:
+              - generic [ref=e266]: Số điện thoại
+              - 'textbox "VD: 0901234567" [ref=e267]'
+          - generic [ref=e268]:
+            - generic [ref=e269]: Địa chỉ
+            - 'textbox "VD: Đông Anh, Hà Nội" [ref=e270]'
+          - generic [ref=e271]:
+            - generic [ref=e272]: Ghi chú
+            - textbox [ref=e273]
+          - generic [ref=e274]:
+            - generic [ref=e275]: Hợp đồng & Tiền công
+            - generic [ref=e276]:
+              - generic [ref=e277]:
+                - generic [ref=e278]: Loại hợp đồng*
+                - combobox [ref=e279]:
+                  - option "Theo giờ" [selected]
+                  - option "Theo ngày công"
+                  - option "Cố định tháng"
+                  - option "Khoán sản phẩm"
+              - generic [ref=e280]:
+                - generic [ref=e281]: Ngày bắt đầu*
+                - textbox [ref=e282]: 2026-06-14
+              - generic [ref=e283]:
+                - generic [ref=e284]: Đơn giá / giờ (đ)*
+                - 'textbox "VD: 45000" [ref=e285]'
+              - generic [ref=e286]:
+                - generic [ref=e287]: Đơn giá OT (đ)
+                - 'textbox "VD: 67500" [ref=e288]'
+                - generic [ref=e289]: Mặc định = đơn giá × 1.5
+            - generic [ref=e290]:
+              - text: "Ước tính:"
+              - strong [ref=e291]: —
+              - text: (26 ngày × 8 giờ/ngày)
+        - generic [ref=e292]:
+          - button "Hủy" [ref=e293] [cursor=pointer]
+          - button "Lưu" [ref=e294] [cursor=pointer]

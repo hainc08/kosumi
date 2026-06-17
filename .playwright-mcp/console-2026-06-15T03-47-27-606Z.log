@@ -1,0 +1,252 @@
+[     189ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-XQLYTHWV.js?v=63ad2897:21550
+[  229383ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-XQLYTHWV.js?v=63ad2897:21550
+[  230729ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:21550
+[  230737ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-XQLYTHWV.js?v=63ad2897:21550
+[  230781ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230781ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230786ms] TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Sidebar (http://localhost:5174/src/components/layout/Sidebar.tsx:81:38)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3699:24)
+    at invokeGuardedCallback (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3733:39)
+[  230785ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230785ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230786ms] TypeError: Cannot read properties of null (reading 'useContext')
+    at Object.useContext (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1062:29)
+    at useOutlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:6373:23)
+    at Outlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:7491:10)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3699:24)
+    at invokeGuardedCallback (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3733:39)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19765:15)
+[  230785ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230786ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230786ms] TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3699:24)
+    at invokeGuardedCallback (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3733:39)
+[  230786ms] [ERROR] Error handled by React Router default ErrorBoundary: TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6524
+[  230786ms] [ERROR] Error handled by React Router default ErrorBoundary: TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6524
+[  230788ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230789ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230788ms] TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Sidebar (http://localhost:5174/src/components/layout/Sidebar.tsx:81:38)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3699:24)
+    at invokeGuardedCallback (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3733:39)
+[  230789ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230789ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230789ms] TypeError: Cannot read properties of null (reading 'useContext')
+    at Object.useContext (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1062:29)
+    at useOutlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:6373:23)
+    at Outlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:7491:10)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3699:24)
+    at invokeGuardedCallback (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3733:39)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19765:15)
+[  230790ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230790ms] [ERROR] Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:135
+[  230790ms] TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3699:24)
+    at invokeGuardedCallback (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:3733:39)
+[  230790ms] [ERROR] Error handled by React Router default ErrorBoundary: TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6524
+[  230790ms] [ERROR] Error handled by React Router default ErrorBoundary: TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6524
+[  230793ms] [ERROR] The above error occurred in the <Sidebar> component:
+
+    at Sidebar (http://localhost:5174/src/components/layout/Sidebar.tsx:81:38)
+    at div
+    at AppShell
+    at RenderedRoute (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6626:26)
+    at RenderErrorBoundary (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6536:5)
+    at DataRoutes2 (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7400:3)
+    at Router (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7500:13)
+    at RouterProvider (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7164:11)
+    at RouterProvider2
+    at QueryClientProvider (http://localhost:5174/node_modules/.vite/deps/@tanstack_react-query.js?v=a4e576dc:3235:3)
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14031
+[  230793ms] [ERROR] React Router caught the following error during render TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Sidebar (http://localhost:5174/src/components/layout/Sidebar.tsx:81:38)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6563
+[  230794ms] [ERROR] The above error occurred in the <Outlet> component:
+
+    at Outlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:7491:26)
+    at main
+    at div
+    at AppShell
+    at RenderedRoute (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6626:26)
+    at RenderErrorBoundary (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6536:5)
+    at DataRoutes2 (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7400:3)
+    at Router (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7500:13)
+    at RouterProvider (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7164:11)
+    at RouterProvider2
+    at QueryClientProvider (http://localhost:5174/node_modules/.vite/deps/@tanstack_react-query.js?v=a4e576dc:3235:3)
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14031
+[  230794ms] [ERROR] React Router caught the following error during render TypeError: Cannot read properties of null (reading 'useContext')
+    at Object.useContext (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1062:29)
+    at useOutlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:6373:23)
+    at Outlet (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=63ad2897:7491:10)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13)
+    at renderRootSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19116:15) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6563
+[  230794ms] [ERROR] The above error occurred in the <Toast> component:
+
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at div
+    at AppShell
+    at RenderedRoute (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6626:26)
+    at RenderErrorBoundary (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6536:5)
+    at DataRoutes2 (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7400:3)
+    at Router (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7500:13)
+    at RouterProvider (http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:7164:11)
+    at RouterProvider2
+    at QueryClientProvider (http://localhost:5174/node_modules/.vite/deps/@tanstack_react-query.js?v=a4e576dc:3235:3)
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14031
+[  230794ms] [ERROR] React Router caught the following error during render TypeError: Cannot read properties of null (reading 'useCallback')
+    at Object.useCallback (http://localhost:5174/node_modules/.vite/deps/chunk-VJA5E53X.js?v=63ad2897:1090:29)
+    at useStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:38:26)
+    at useBoundStore (http://localhost:5174/node_modules/.vite/deps/zustand.js?v=63ad2897:46:39)
+    at Toast (http://localhost:5174/src/components/ui/Toast.tsx:23:29)
+    at renderWithHooks (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:11548:26)
+    at mountIndeterminateComponent (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:14926:21)
+    at beginWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:15914:22)
+    at beginWork$1 (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19753:22)
+    at performUnitOfWork (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19198:20)
+    at workLoopSync (http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:19137:13) @ http://localhost:5174/node_modules/.vite/deps/react-router-dom.js?v=a4e576dc:6563
+[  233740ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-XQLYTHWV.js?v=63ad2897:21550
+[  261455ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-XQLYTHWV.js?v=63ad2897:21550
