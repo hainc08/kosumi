@@ -81,3 +81,46 @@ git add deploy && git commit -m "build: cap nhat deploy" && git push
 
 Nếu thay đổi cấu trúc bảng: chạy SQL migration trên DB production (qua phpMyAdmin),
 hoặc `npm run migration:run` trỏ DB. **Không** bật `synchronize` ở production.
+
+---
+
+## D. Điều tra bug bằng log
+
+App ghi log mọi request/lỗi (backend) và mọi thao tác/API/lỗi (frontend) vào **cùng 1 file**
+theo ngày: `logs/app-YYYY-MM-DD.log` (mỗi dòng 1 JSON). Mỗi request có `requestId`
+(trả về header `X-Request-Id`); log phía trình duyệt có `sessionId` → ghép lại để truy vết
+xuyên FE ↔ BE.
+
+**Bật log (trong `.env` trên server):**
+
+```
+TZ=UTC
+LOG_LEVEL=info          # debug khi cần soi kỹ
+LOG_TO_FILE=true
+LOG_VIEW_TOKEN=<chuỗi-bí-mật-tự-đặt>
+```
+
+→ **Restart App** sau khi sửa `.env`.
+
+**Xem log — 2 cách:**
+
+1. **Qua API (nhanh, không cần SSH):**
+   `https://poc.kosumi.vn/api/logs/tail?token=<LOG_VIEW_TOKEN>&lines=300`
+   → trả JSON 300 dòng cuối. (Bắt buộc có token ở production, sai/thiếu → 403.)
+
+2. **File trực tiếp:** Plesk File Manager → mở `…/deploy/logs/app-YYYY-MM-DD.log`
+   (hoặc đường dẫn `LOG_DIR` nếu có đặt). Tải về, mở bằng editor.
+
+**Quy trình soi 1 bug (vd "tạo nhân viên báo thành công nhưng không hiện"):**
+
+1. Trên web, thực hiện lại thao tác lỗi (bấm Thêm → Lưu).
+2. Mở log, tìm chuỗi sự kiện theo thời gian:
+   - `CLIENT ui.click` (đã bấm gì) → `CLIENT api.request`/`api.response` (FE gọi & nhận gì)
+   - `HTTP → POST /api/workers` … `HTTP ← POST … 201` (BE nhận & trả gì, `result.keys`)
+   - rồi `HTTP ← GET /api/workers … result.length = ?` (danh sách refetch có bao nhiêu bản ghi)
+3. Đối chiếu: nếu **BE trả length tăng nhưng FE `api.response` length cũ** → bị **cache proxy**
+   (kiểm tra `requestId` FE có khớp BE không); nếu **POST 4xx/5xx** → xem `EXCEPTION` + `stack`
+   để biết lỗi DB/validation; nếu cả hai đều đúng mà UI vẫn trống → lỗi render phía FE.
+
+> Log tự che các khóa nhạy cảm (password/token...) và cắt chuỗi quá dài.
+> File log **không commit** (đã gitignore) — chỉ nằm trên server.

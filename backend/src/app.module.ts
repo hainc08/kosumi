@@ -10,6 +10,7 @@ import { ProjectsModule } from './modules/projects/projects.module'
 import { QuotesModule } from './modules/quotes/quotes.module'
 import { TasksModule } from './modules/tasks/tasks.module'
 import { TimesheetModule } from './modules/timesheet/timesheet.module'
+import { LogsModule } from './modules/logs/logs.module'
 
 @Module({
   imports: [
@@ -29,6 +30,10 @@ import { TimesheetModule } from './modules/timesheet/timesheet.module'
       database: process.env.DATABASE_NAME,
       entities: [__dirname + '/modules/**/entities/*.entity.{ts,js}'],
       synchronize: false,
+      // Ép driver coi mọi datetime là UTC để app-ghi (@CreateDateColumn) khớp với
+      // current_timestamp() của DB; tránh lệch giờ làm ORDER BY created_at sai thứ tự
+      // (nguyên nhân bản ghi mới "tạo xong không hiển thị" trên server khác múi giờ).
+      timezone: '+00:00',
     }),
     SitesModule,
     WorkersModule,
@@ -37,6 +42,7 @@ import { TimesheetModule } from './modules/timesheet/timesheet.module'
     QuotesModule,
     TasksModule,
     TimesheetModule,
+    LogsModule,
   ],
 })
 export class AppModule {}

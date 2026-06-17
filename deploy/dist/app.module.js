@@ -19,6 +19,7 @@ const projects_module_1 = require("./modules/projects/projects.module");
 const quotes_module_1 = require("./modules/quotes/quotes.module");
 const tasks_module_1 = require("./modules/tasks/tasks.module");
 const timesheet_module_1 = require("./modules/timesheet/timesheet.module");
+const logs_module_1 = require("./modules/logs/logs.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
                 database: process.env.DATABASE_NAME,
                 entities: [__dirname + '/modules/**/entities/*.entity.{ts,js}'],
                 synchronize: false,
+                timezone: '+00:00',
             }),
             sites_module_1.SitesModule,
             workers_module_1.WorkersModule,
@@ -47,6 +49,7 @@ exports.AppModule = AppModule = __decorate([
             quotes_module_1.QuotesModule,
             tasks_module_1.TasksModule,
             timesheet_module_1.TimesheetModule,
+            logs_module_1.LogsModule,
         ],
     })
 ], AppModule);

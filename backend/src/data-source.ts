@@ -13,4 +13,5 @@ export const AppDataSource = new DataSource({
   entities: ['src/modules/**/entities/*.entity.ts'],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
+  timezone: '+00:00', // nhất quán UTC (xem ghi chú trong app.module.ts)
 })

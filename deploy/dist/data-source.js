@@ -48,5 +48,6 @@ exports.AppDataSource = new typeorm_1.DataSource({
     entities: ['src/modules/**/entities/*.entity.ts'],
     migrations: ['src/database/migrations/*.ts'],
     synchronize: false,
+    timezone: '+00:00',
 });
 //# sourceMappingURL=data-source.js.map

@@ -50,6 +50,32 @@ thực hiện sửa, rồi chuyển issue đã xong xuống mục **✅ Đã xon
 
 ## ✅ Đã xong
 
+### [x] Cơ chế log điều tra bug khi deploy (+ fix lệch giờ created_at)
+- Yêu cầu: log mọi thao tác trên màn hình để điều tra bug sau khi deploy Plesk; cụ thể
+  bug "tạo nhân viên báo thành công nhưng không hiển thị".
+- Đã thêm:
+  - **Backend** (zero-dependency, an toàn shared hosting):
+    - `common/logger/app-logger.ts` — ghi JSON-lines ra `logs/app-YYYY-MM-DD.log` + console,
+      tự che khóa nhạy cảm (password/token), cắt chuỗi dài; cấu hình qua `LOG_LEVEL/LOG_DIR/LOG_TO_FILE`.
+    - `common/interceptors/logging.interceptor.ts` — log mỗi request: `requestId` (trả header
+      `X-Request-Id`), method/url/status/duration/body (method ghi)/tóm tắt response.
+    - `http-exception.filter.ts` — log lỗi kèm stack (5xx) + context; trả `requestId` trong body lỗi.
+    - `modules/logs` — `POST /api/logs/client` nhận log FE; `GET /api/logs/tail?token=&lines=`
+      xem nhanh log (gated bằng `LOG_VIEW_TOKEN`, production thiếu token → 403).
+    - `main.ts` — bắt `unhandledRejection`/`uncaughtException`; log BOOT.
+  - **Frontend**:
+    - `lib/logger.ts` — gom batch & gửi về `/api/logs/client` (real mode), console (dev);
+      bắt `window.error`/`unhandledrejection`, ghi `ui.click` (nhãn nút), `sessionId` mỗi phiên.
+    - `api/http.ts` — axios interceptor log `api.request`/`api.response`/`api.error`
+      (status, `requestId` đối chiếu BE, duration, shape payload).
+- **Phát hiện khi điều tra**: bug "tạo xong không hiển thị" **KHÔNG tái hiện ở local** (POST 201,
+  GET trả danh sách tăng đúng, bản ghi mới lên đầu) → nguyên nhân thuộc môi trường Plesk
+  (nhiều khả năng: cache proxy GET `/api/workers`, hoặc lỗi refetch). Log đã sẵn để bắt tại server.
+- **Fix kèm**: lệch giờ `created_at` -7h khi đọc (mysql2 đọc theo giờ máy). Thêm `timezone: '+00:00'`
+  vào TypeORM (`app.module.ts` + `data-source.ts`) + khuyến nghị `TZ=UTC`. Đã verify: `createdAt`
+  trả về khớp UTC thực. (Lưu ý: sai thứ tự KHÔNG do lỗi này vì ORDER BY chạy ở SQL trên giá trị thô.)
+- Cách dùng: xem `deploy/README.md` mục **D. Điều tra bug bằng log**.
+
 ### [x] Màn Dự án: hiện báo giá liên quan + lọc theo mã báo giá
 - Một dự án có thể có nhiều báo giá → thêm cột **"Báo giá"** (badge mã) trong bảng Dự án,
   và **FilterSelect lọc theo mã báo giá**.
