@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconUserPlus } from '@tabler/icons-react'
@@ -23,16 +24,22 @@ export function WorkerForm({ open, onClose, worker }: WorkerFormProps) {
     resolver: zodResolver(workerSchema),
     defaultValues: worker ? workerToForm(worker) : emptyWorkerForm,
   })
-  const { register, handleSubmit, formState: { errors } } = form
+  const { register, handleSubmit, reset, formState: { errors } } = form
+
+  // Nạp lại dữ liệu mỗi lần mở form (component luôn mounted nên defaultValues
+  // chỉ áp lúc đầu — không reset thì Sửa sẽ hiện dữ liệu cũ/trống).
+  useEffect(() => {
+    if (open) reset(worker ? workerToForm(worker) : emptyWorkerForm)
+  }, [open, worker, reset])
 
   const onSubmit = handleSubmit(async (data) => {
     const values = formToValues(data)
     if (isEdit && worker) {
       await updateWorker.mutateAsync({ id: worker.id, values })
-      toast('✓ Đã cập nhật thông tin công nhân')
+      toast('✓ Đã cập nhật thông tin nhân viên')
     } else {
       await createWorker.mutateAsync(values)
-      toast('✓ Đã thêm công nhân mới')
+      toast('✓ Đã thêm nhân viên mới')
     }
     onClose()
   })
@@ -43,7 +50,7 @@ export function WorkerForm({ open, onClose, worker }: WorkerFormProps) {
     <FormModal
       open={open}
       onClose={onClose}
-      title={isEdit ? 'Sửa thông tin công nhân' : 'Thêm công nhân'}
+      title={isEdit ? 'Sửa thông tin nhân viên' : 'Thêm nhân viên'}
       icon={<IconUserPlus size={18} />}
       size="lg"
       footer={
@@ -78,8 +85,8 @@ export function WorkerForm({ open, onClose, worker }: WorkerFormProps) {
               ))}
             </select>
           </FormField>
-          <FormField label="Số năm kinh nghiệm" required error={errors.experienceYears?.message}>
-            <input inputMode="numeric" {...register('experienceYears')} />
+          <FormField label="Chuyên môn" error={errors.specialty?.message}>
+            <input placeholder="VD: Hàn kết cấu, Vận hành CNC" {...register('specialty')} />
           </FormField>
           <FormField label="Số điện thoại" error={errors.phone?.message}>
             <input inputMode="numeric" placeholder="VD: 0901234567" {...register('phone')} />

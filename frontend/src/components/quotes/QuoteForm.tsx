@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { IconFileInvoice, IconPlus, IconTrash, IconSend } from '@tabler/icons-react'
 import { PAYMENT_TERMS_LABELS, type PaymentTermsPreset, type Quote } from '@/types'
 import { useCreateQuote, useUpdateQuote, useUpdateQuoteStatus, useNextQuoteCode } from '@/api/quotes'
+import { useGenerateTasksFromQuote } from '@/api/tasks'
 import { useProjects } from '@/api/projects'
 import { useCustomers } from '@/api/customers'
 import { useToastStore } from '@/stores/toastStore'
@@ -16,6 +17,14 @@ import {
   quoteSchema, emptyQuoteForm, quoteToForm, formToValues, addDaysStr, type QuoteFormShape,
 } from './quoteFormShape'
 import './QuoteForm.css'
+
+/** Số La Mã cho chỉ số đầu mục (I, II, III...). */
+function toRoman(n: number): string {
+  const map: [number, string][] = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]
+  let r = ''
+  for (const [v, s] of map) { while (n >= v) { r += s; n -= v } }
+  return r
+}
 
 interface Props { open: boolean; onClose: () => void; quote?: Quote | null }
 
@@ -58,6 +67,8 @@ export function QuoteForm({ open, onClose, quote }: Props) {
   const code = useMemo(() => (quote ? quote.code : (nextCode ?? '— tự sinh —')), [quote, nextCode])
   const saving = createQuote.isPending || updateQuote.isPending || updateStatus.isPending
 
+  const generateTasks = useGenerateTasksFromQuote()
+
   const persist = async (data: QuoteFormShape): Promise<string> => {
     const values = formToValues(data)
     if (isEdit && quote) {
@@ -68,9 +79,21 @@ export function QuoteForm({ open, onClose, quote }: Props) {
     return created.id
   }
 
+  /** Sinh hạng mục công việc từ báo giá (best-effort). Dự án chưa có công trường thì chỉ nhắc nhẹ. */
+  const autoGenerate = async (quoteId: string) => {
+    try {
+      const r = await generateTasks.mutateAsync(quoteId)
+      if (r.created > 0) toast(`✓ Đã tạo ${r.created} hạng mục công việc từ báo giá`, 'info')
+    } catch (e) {
+      const msg = (e as { message?: string })?.message
+      if (msg) toast(msg, 'info') // thường: "Dự án chưa có công trường..."
+    }
+  }
+
   const onSave = handleSubmit(async (data) => {
-    await persist(data)
+    const id = await persist(data)
     toast(isEdit ? '✓ Đã cập nhật báo giá' : '✓ Đã lưu báo giá (nháp)')
+    await autoGenerate(id)
     onClose()
   })
 
@@ -78,6 +101,7 @@ export function QuoteForm({ open, onClose, quote }: Props) {
     const id = await persist(data)
     await updateStatus.mutateAsync({ id, status: 'pending' })
     toast('✓ Đã gửi duyệt báo giá')
+    await autoGenerate(id)
     onClose()
   })
 
@@ -153,22 +177,22 @@ export function QuoteForm({ open, onClose, quote }: Props) {
           </FormField>
         </div>
 
-        {/* ── HẠNG MỤC & DANH MỤC ── */}
-        <div className="qf-section-label">Hạng mục & danh mục</div>
+        {/* ── ĐẦU MỤC & HẠNG MỤC ── */}
+        <div className="qf-section-label">Đầu mục & hạng mục</div>
         {typeof errors.sections?.message === 'string' && <p className="quote-err">{errors.sections.message}</p>}
 
         <div className="qf-sections">
           {sections.fields.map((field, si) => (
             <div key={field.id} className="qf-sec">
               <div className="qf-sec__head">
-                <span className="qf-sec__idx">Hạng mục {si + 1}</span>
-                <button type="button" className="quote-item-del" onClick={() => sections.remove(si)} aria-label="Xóa hạng mục"><IconTrash size={15} /></button>
+                <span className="qf-sec__idx">{toRoman(si + 1)}. Đầu mục</span>
+                <button type="button" className="quote-item-del" onClick={() => sections.remove(si)} aria-label="Xóa đầu mục"><IconTrash size={15} /></button>
               </div>
               <div className="form-grid">
-                <FormField label="Tên hạng mục" required error={errors.sections?.[si]?.name?.message}>
+                <FormField label="Tên đầu mục" required error={errors.sections?.[si]?.name?.message}>
                   <input placeholder="VD: Cầu thang thép" {...register(`sections.${si}.name` as const)} />
                 </FormField>
-                <FormField label="Tên hạng mục (EN)">
+                <FormField label="Tên đầu mục (EN)">
                   <input placeholder="VD: Steel Staircase" {...register(`sections.${si}.nameEn` as const)} />
                 </FormField>
               </div>
@@ -179,7 +203,7 @@ export function QuoteForm({ open, onClose, quote }: Props) {
 
         <Button size="sm" icon={<IconPlus size={14} />}
           onClick={() => sections.append({ name: '', nameEn: '', items: [{ itemName: '', description: '', unit: '', quantity: '1', unitPrice: '0' }] })}>
-          Thêm hạng mục
+          Thêm đầu mục
         </Button>
 
         {/* ── THANH TOÁN ── */}
@@ -225,7 +249,7 @@ export function QuoteForm({ open, onClose, quote }: Props) {
   )
 }
 
-/** Danh mục (line items) lồng trong 1 hạng mục — nested useFieldArray. */
+/** Hạng mục (line items) lồng trong 1 đầu mục — nested useFieldArray. */
 function SectionLines({ control, register, errors, sectionIndex }: {
   control: Control<QuoteFormShape>
   register: UseFormRegister<QuoteFormShape>
@@ -241,7 +265,7 @@ function SectionLines({ control, register, errors, sectionIndex }: {
       {lines.fields.map((field, li) => (
         <div key={field.id} className="qf-line">
           <div className="qf-line__main">
-            <FormField label={`Danh mục ${li + 1}`} required error={errors.sections?.[sectionIndex]?.items?.[li]?.itemName?.message}>
+            <FormField label={`${li + 1}. Hạng mục`} required error={errors.sections?.[sectionIndex]?.items?.[li]?.itemName?.message}>
               <input placeholder="VD: Lan can cầu thang thép" {...register(`sections.${sectionIndex}.items.${li}.itemName` as const)} />
             </FormField>
             <FormField label="Diễn giải">
@@ -264,12 +288,12 @@ function SectionLines({ control, register, errors, sectionIndex }: {
                 )}
               />
             </FormField>
-            <button type="button" className="quote-item-del qf-line__del" onClick={() => lines.remove(li)} aria-label="Xóa danh mục"><IconTrash size={15} /></button>
+            <button type="button" className="quote-item-del qf-line__del" onClick={() => lines.remove(li)} aria-label="Xóa hạng mục"><IconTrash size={15} /></button>
           </div>
         </div>
       ))}
       <button type="button" className="qf-add-line" onClick={() => lines.append({ itemName: '', description: '', unit: '', quantity: '1', unitPrice: '0' })}>
-        <IconPlus size={13} /> Thêm danh mục
+        <IconPlus size={13} /> Thêm hạng mục
       </button>
     </div>
   )

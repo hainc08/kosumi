@@ -5,6 +5,7 @@ import {
 } from '@/types'
 import { useProjects } from '@/api/projects'
 import { useSites } from '@/api/sites'
+import { useQuotes } from '@/api/quotes'
 import { formatDate } from '@/utils/format'
 import { deadlineState } from '@/utils/deadline'
 import { PageShell } from '@/components/layout/PageShell'
@@ -25,13 +26,15 @@ export default function ProjectsPage() {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [siteId, setSiteId] = useState('')
+  const [quoteCode, setQuoteCode] = useState('')
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Project | null>(null)
   const [selected, setSelected] = useState<Project | null>(null)
 
   const { data: sites = [] } = useSites()
+  const { data: quotes = [] } = useQuotes({})
   const { data: all = [] } = useProjects({})
-  const { data: projects = [], isLoading } = useProjects({ search, status, siteId })
+  const { data: projects = [], isLoading } = useProjects({ search, status, siteId, quoteCode })
 
   const kpis = useMemo(() => ({
     total: all.length,
@@ -48,6 +51,12 @@ export default function ProjectsPage() {
       ),
     },
     { key: 'customer', header: 'Khách hàng', render: (p) => p.customer?.name ?? '—' },
+    {
+      key: 'quotes', header: 'Báo giá',
+      render: (p) => (p.quotes && p.quotes.length)
+        ? <div className="cell-prj__quotes">{p.quotes.map((q) => <span key={q.id} title={q.title}><Badge variant="gray">{q.code}</Badge></span>)}</div>
+        : <span className="cell-prj__muted">—</span>,
+    },
     { key: 'type', header: 'Loại', render: (p) => PROJECT_TYPE_LABELS[p.projectType] },
     { key: 'site', header: 'Xưởng', render: (p) => p.site?.name ?? '—' },
     {
@@ -92,6 +101,8 @@ export default function ProjectsPage() {
           options={(Object.keys(PROJECT_STATUS_LABELS) as ProjectStatus[]).map((k) => ({ value: k, label: PROJECT_STATUS_LABELS[k] }))} />
         <FilterSelect value={siteId} onChange={setSiteId} placeholder="Tất cả xưởng"
           options={sites.map((s) => ({ value: s.id, label: s.name }))} />
+        <FilterSelect value={quoteCode} onChange={setQuoteCode} placeholder="Tất cả báo giá"
+          options={quotes.map((q) => ({ value: q.code, label: q.code }))} />
       </div>
 
       <DataTable

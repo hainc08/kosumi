@@ -81,7 +81,7 @@ export type Position =
 export const POSITION_LABELS: Record<Position, string> = {
   team_leader:   'Tổ trưởng',
   senior_worker: 'Thợ chính',
-  worker:        'Công nhân',
+  worker:        'Nhân viên',
   apprentice:    'Học việc',
   technician:    'Kỹ thuật viên',
   supervisor:    'Giám sát',
@@ -104,7 +104,7 @@ export interface Worker extends BaseEntity {
   phone:            string | null
   address:          string | null
   position:         Position
-  experienceYears:  number
+  specialty:        string | null   // chuyên môn (VD: Hàn kết cấu, Vận hành CNC)
   status:           WorkerStatus
   notes:            string | null
   siteId?:          string | null   // xưởng/công trường công nhân thuộc về (khớp cột site_id ở backend)
@@ -265,6 +265,7 @@ export interface Project extends BaseEntity {
   customer?:      Pick<Customer, 'id' | 'name'>
   quoteCount?:    number
   workerCount?:   number
+  quotes?:        { id: string; code: string; title: string; status: string }[]  // báo giá liên quan
 }
 
 // ─── QUOTE ───────────────────────────────────────────────────────────────────
@@ -384,6 +385,7 @@ export interface Task extends BaseEntity {
   priority:      TaskPriority
   sortOrder:     number
   // joined
+  section?:      string | null   // danh mục (section_name của hạng mục báo giá nguồn)
   assignments?:  TaskAssignment[]
   activeWorkers?: Pick<Worker, 'id' | 'fullName' | 'initials' | 'avatarColor'>[]
 }

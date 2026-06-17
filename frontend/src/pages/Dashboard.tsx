@@ -70,7 +70,7 @@ export default function DashboardPage() {
     <PageShell title="Dashboard" subtitle="Tổng quan hôm nay">
       <div className="kpi-row">
         <KpiCard label="Công trường" value={kpis.sites} icon={<IconBuildingFactory2 size={16} />} iconColor="var(--color-blue)" change={`${kpis.sitesActive} đang hoạt động`} changeType="up" />
-        <KpiCard label="Công nhân hôm nay" value={kpis.workers} icon={<IconUsers size={16} />} iconColor="var(--color-green)" change={`${kpis.working} đang làm việc`} changeType="up" />
+        <KpiCard label="Nhân viên hôm nay" value={kpis.workers} icon={<IconUsers size={16} />} iconColor="var(--color-green)" change={`${kpis.working} đang làm việc`} changeType="up" />
         <KpiCard label="Dự án đang chạy" value={kpis.running} icon={<IconBuilding size={16} />} iconColor="var(--color-amber)" change={`${kpis.nearDue} sắp đến hạn`} />
         <KpiCard label="Báo giá tháng này" value={kpis.quotesMonth} icon={<IconFileInvoice size={16} />} iconColor="var(--color-purple)" />
       </div>
@@ -96,7 +96,7 @@ export default function DashboardPage() {
         <div className="dash-col">
           {/* Công nhân theo xưởng */}
           <div className="dash-card dash-card--pad">
-            <div className="dash-mini-title">Công nhân theo xưởng</div>
+            <div className="dash-mini-title">Nhân viên theo xưởng</div>
             {sites.map((s, i) => (
               <div key={s.id} className="dash-bar">
                 <div className="dash-bar__top"><span>{s.name}</span><strong>{s.workerCount ?? 0} người</strong></div>

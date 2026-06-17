@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
+import { DataSource, In, Repository } from 'typeorm'
 import { Task } from './entities/task.entity'
 import { TaskAssignment } from './entities/task-assignment.entity'
 import { Worker } from '../workers/entities/worker.entity'
 import { QuoteItem } from '../quotes/entities/quote-item.entity'
+import { Quote } from '../quotes/entities/quote.entity'
+import { Project } from '../projects/entities/project.entity'
 import { deriveInitials, avatarColorFor } from '../../common/utils/worker-display.util'
 
 export type WorkerMini = { id: string; code: string; fullName: string; initials: string; avatarColor: string }
@@ -14,6 +16,8 @@ export type TaskAssignmentWithWorker = TaskAssignment & { worker?: WorkerMini }
 export type TaskWithRelations = Task & {
   assignments: TaskAssignmentWithWorker[]
   activeWorkers: WorkerMini[]
+  // danh mục (section_name của hạng mục báo giá nguồn) — dùng để gom nhóm ở trang Dự án.
+  section?: string | null
 }
 
 export type WorkerWithDisplay = Worker & { initials: string; avatarColor: string }
@@ -25,6 +29,7 @@ export class TasksService {
     @InjectRepository(TaskAssignment) private assignmentRepo: Repository<TaskAssignment>,
     @InjectRepository(Worker) private workerRepo: Repository<Worker>,
     @InjectRepository(QuoteItem) private quoteItemRepo: Repository<QuoteItem>,
+    private dataSource: DataSource,
   ) {}
 
   private toMini(w: Worker): WorkerMini {
@@ -71,6 +76,73 @@ export class TasksService {
     const itemIds = items.map((i) => i.id)
     const tasks = await this.repo.find({ where: { quoteItemId: In(itemIds) }, order: { sortOrder: 'ASC' } })
     return this.enrichMany(tasks)
+  }
+
+  /** Các hạng mục công việc của 1 dự án, kèm `section` (danh mục) lấy từ hạng mục báo giá nguồn. */
+  async tasksForProject(projectId?: string): Promise<TaskWithRelations[]> {
+    if (!projectId) return []
+    const tasks = await this.repo.find({ where: { projectId }, order: { sortOrder: 'ASC' } })
+    if (tasks.length === 0) return []
+    const enriched = await this.enrichMany(tasks)
+
+    // Gắn danh mục (section_name) từ hạng mục báo giá nguồn để FE gom nhóm.
+    const itemIds = [...new Set(tasks.map((t) => t.quoteItemId).filter((id): id is string => !!id))]
+    const items = itemIds.length ? await this.quoteItemRepo.find({ where: { id: In(itemIds) } }) : []
+    const sectionByItem = new Map(items.map((i) => [i.id, i.sectionName]))
+    return enriched.map((t) => ({ ...t, section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null }))
+  }
+
+  /**
+   * Sinh hạng mục công việc từ 1 báo giá: mỗi hạng mục báo giá -> 1 task (giữ quote_item_id).
+   * Idempotent: bỏ qua hạng mục đã có task. site_id lấy từ công trường của dự án.
+   */
+  async generateFromQuote(quoteId: string): Promise<{ created: number }> {
+    const quote = await this.dataSource.getRepository(Quote).findOne({ where: { id: quoteId } })
+    if (!quote) throw new NotFoundException('Không tìm thấy báo giá')
+    if (!quote.projectId) throw new BadRequestException('Báo giá chưa gắn dự án')
+
+    const project = await this.dataSource.getRepository(Project).findOne({ where: { id: quote.projectId } })
+    if (!project) throw new NotFoundException('Không tìm thấy dự án')
+    if (!project.siteId) {
+      throw new BadRequestException('Dự án chưa có công trường — hãy gán công trường cho dự án trước khi tạo công việc')
+    }
+
+    const items = await this.quoteItemRepo.find({ where: { quoteId }, order: { sortOrder: 'ASC' } })
+    if (items.length === 0) return { created: 0 }
+
+    // Bỏ qua hạng mục đã sinh task (tránh trùng, không đụng việc đang chạy).
+    const existing = await this.repo.find({ where: { quoteItemId: In(items.map((i) => i.id)) } })
+    const haveItemIds = new Set(existing.map((t) => t.quoteItemId))
+    const toCreate = items.filter((i) => !haveItemIds.has(i.id))
+    if (toCreate.length === 0) return { created: 0 }
+
+    const today = new Date().toISOString().slice(0, 10)
+    const entities = toCreate.map((i) =>
+      this.repo.create({
+        quoteItemId: i.id,
+        projectId: project.id,
+        siteId: project.siteId as string,
+        title: i.itemName,
+        description: i.description ?? null,
+        taskDate: today,
+        status: 'unassigned',
+        priority: 'medium',
+        sortOrder: i.sortOrder,
+      }),
+    )
+    await this.repo.save(entities)
+    return { created: entities.length }
+  }
+
+  /** Sinh hạng mục công việc cho toàn bộ báo giá của 1 dự án. */
+  async generateForProject(projectId: string): Promise<{ created: number }> {
+    const quotes = await this.dataSource.getRepository(Quote).find({ where: { projectId } })
+    let created = 0
+    for (const q of quotes) {
+      const r = await this.generateFromQuote(q.id)
+      created += r.created
+    }
+    return { created }
   }
 
   /** Tất cả task (cho Transfer Drawer + bảng tổng quan). */

@@ -42,6 +42,45 @@ export function tasksForQuote(quoteId: string): Task[] {
     .map(enrichTask)
 }
 
+/** Các hạng mục công việc của 1 dự án, kèm `section` (danh mục) từ hạng mục báo giá nguồn. */
+export function tasksForProjectDb(projectId: string): Task[] {
+  return db.tasks
+    .filter((t) => t.projectId === projectId)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((t) => {
+      const item = t.quoteItemId ? db.quoteItems.find((qi) => qi.id === t.quoteItemId) : undefined
+      return { ...enrichTask(t), section: item?.sectionName ?? null }
+    })
+}
+
+/** Sinh task từ 1 báo giá (mỗi hạng mục -> 1 task). Idempotent. Mock không throw để tránh lỗi setTimeout. */
+export function generateFromQuoteInDb(quoteId: string): { created: number } {
+  const quote = db.quotes.find((q) => q.id === quoteId)
+  if (!quote) return { created: 0 }
+  const project = db.projects.find((p) => p.id === quote.projectId)
+  if (!project || !project.siteId) return { created: 0 } // chưa có công trường -> bỏ qua (real BE sẽ báo lỗi)
+  const items = db.quoteItems.filter((qi) => qi.quoteId === quoteId).sort((a, b) => a.sortOrder - b.sortOrder)
+  const have = new Set(db.tasks.map((t) => t.quoteItemId).filter(Boolean))
+  const toCreate = items.filter((i) => !have.has(i.id as string))
+  const today = now().slice(0, 10)
+  toCreate.forEach((i) => {
+    db.tasks.push({
+      id: nextId('task'), quoteItemId: i.id as string, projectId: project.id, siteId: project.siteId as string,
+      title: i.itemName, description: i.description ?? undefined, taskDate: today,
+      status: 'unassigned', priority: 'medium', sortOrder: i.sortOrder, createdAt: now(), updatedAt: now(),
+    } as Task)
+  })
+  return { created: toCreate.length }
+}
+
+/** Sinh task cho toàn bộ báo giá của 1 dự án. */
+export function generateForProjectInDb(projectId: string): { created: number } {
+  const quotes = db.quotes.filter((q) => q.projectId === projectId)
+  let created = 0
+  for (const q of quotes) created += generateFromQuoteInDb(q.id).created
+  return { created }
+}
+
 /** id công nhân đang bận (có ít nhất 1 assignment active). */
 export function busyWorkerIds(): Set<string> {
   return new Set(db.taskAssignments.filter((a) => a.isActive).map((a) => a.workerId))
@@ -99,6 +138,39 @@ export function useQuoteTasks(quoteId: string | null) {
       ? mockRequest(() => tasksForQuote(quoteId!))
       : apiGet<Task[]>('/tasks', { params: { quoteId } }),
     enabled: !!quoteId,
+  })
+}
+
+/** Hạng mục công việc của 1 dự án (gom theo danh mục ở FE). */
+export function useProjectTasks(projectId: string | null) {
+  return useQuery<Task[]>({
+    queryKey: ['tasks', 'project', projectId],
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => tasksForProjectDb(projectId!))
+      : apiGet<Task[]>('/tasks', { params: { projectId } }),
+    enabled: !!projectId,
+  })
+}
+
+/** Sinh task từ 1 báo giá. */
+export function useGenerateTasksFromQuote() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (quoteId: string) => USE_MOCK
+      ? mockRequest(() => generateFromQuoteInDb(quoteId))
+      : apiPost<{ created: number }>(`/tasks/generate-from-quote?quoteId=${quoteId}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+  })
+}
+
+/** Sinh (tạo lại) task cho toàn bộ báo giá của 1 dự án. */
+export function useGenerateTasksForProject() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (projectId: string) => USE_MOCK
+      ? mockRequest(() => generateForProjectInDb(projectId))
+      : apiPost<{ created: number }>(`/tasks/generate-for-project?projectId=${projectId}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }
 

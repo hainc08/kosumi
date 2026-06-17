@@ -51,7 +51,7 @@ function groupBySection(items: QuoteItem[]): SectionGroup[] {
     if (i === undefined) {
       i = groups.length
       index.set(key, i)
-      groups.push({ name: it.sectionName ?? 'Hạng mục báo giá', nameEn: it.sectionNameEn ?? undefined, items: [], sum: 0 })
+      groups.push({ name: it.sectionName ?? 'Đầu mục báo giá', nameEn: it.sectionNameEn ?? undefined, items: [], sum: 0 })
     }
     groups[i].items.push(it)
     groups[i].sum += it.amount
@@ -202,7 +202,7 @@ export default function QuotePreviewPage() {
                   ))}
                   {showSubtotals && (
                     <tr className="sum-row">
-                      <td colSpan={6} className="sum-label">Cộng hạng mục {ROMAN[gi]} / Sub-total {ROMAN[gi]}</td>
+                      <td colSpan={6} className="sum-label">Cộng đầu mục {ROMAN[gi]} / Sub-total {ROMAN[gi]}</td>
                       <td className="sum-val">{money(g.sum)}</td>
                     </tr>
                   )}

@@ -55,7 +55,7 @@ export class WorkersService {
 
   async findOne(id: string): Promise<WorkerWithContract> {
     const worker = await this.repo.findOne({ where: { id } })
-    if (!worker) throw new NotFoundException('Không tìm thấy công nhân')
+    if (!worker) throw new NotFoundException('Không tìm thấy nhân viên')
     return this.enrichOne(worker)
   }
 
@@ -71,7 +71,7 @@ export class WorkersService {
         phone: dto.phone ?? null,
         address: dto.address ?? null,
         position: dto.position,
-        experienceYears: dto.experienceYears,
+        specialty: dto.specialty ?? null,
         notes: dto.notes ?? null,
         siteId: dto.siteId ?? null,
         status: 'working',
@@ -100,7 +100,7 @@ export class WorkersService {
 
   async update(id: string, dto: UpdateWorkerDto): Promise<WorkerWithContract> {
     const worker = await this.repo.findOne({ where: { id } })
-    if (!worker) throw new NotFoundException('Không tìm thấy công nhân')
+    if (!worker) throw new NotFoundException('Không tìm thấy nhân viên')
 
     const {
       contractType, startDate, baseSalary, allowanceResponsibility,
@@ -127,7 +127,7 @@ export class WorkersService {
 
   async setStatus(id: string, status: string): Promise<WorkerWithContract> {
     const worker = await this.repo.findOne({ where: { id } })
-    if (!worker) throw new NotFoundException('Không tìm thấy công nhân')
+    if (!worker) throw new NotFoundException('Không tìm thấy nhân viên')
     worker.status = status
     await this.repo.save(worker)
     return this.enrichOne(worker)
@@ -135,7 +135,7 @@ export class WorkersService {
 
   async remove(id: string): Promise<void> {
     const worker = await this.repo.findOne({ where: { id } })
-    if (!worker) throw new NotFoundException('Không tìm thấy công nhân')
+    if (!worker) throw new NotFoundException('Không tìm thấy nhân viên')
     // TODO module tasks: chặn xóa nếu còn task assignment đang active → ConflictException
     await this.repo.softDelete(id)
   }

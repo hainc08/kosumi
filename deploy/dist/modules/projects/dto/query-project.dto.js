@@ -17,6 +17,7 @@ class QueryProjectDto {
     search;
     status;
     siteId;
+    quoteCode;
 }
 exports.QueryProjectDto = QueryProjectDto;
 __decorate([
@@ -36,4 +37,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], QueryProjectDto.prototype, "siteId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    EmptyToUndefined(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], QueryProjectDto.prototype, "quoteCode", void 0);
 //# sourceMappingURL=query-project.dto.js.map

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { Quote, PaymentTermsPreset } from '@/types'
 import type { QuoteFormValues } from '@/api/quotes'
 
-/** Danh mục (line item) bên trong 1 hạng mục. */
+/** Hạng mục (line item) bên trong 1 đầu mục. */
 export interface QuoteLineFormShape {
   id?: string
   itemName: string
@@ -12,7 +12,7 @@ export interface QuoteLineFormShape {
   unitPrice: string
 }
 
-/** Hạng mục (section) chứa nhiều danh mục. */
+/** Đầu mục (section) chứa nhiều hạng mục. */
 export interface QuoteSectionFormShape {
   id?: string
   name: string
@@ -73,11 +73,11 @@ export const quoteSchema = z.object({
   sections: z.array(
     z.object({
       id: z.string().optional(),
-      name: z.string().min(1, 'Bắt buộc nhập tên hạng mục'),
+      name: z.string().min(1, 'Bắt buộc nhập tên đầu mục'),
       nameEn: z.string(),
-      items: z.array(lineSchema).min(1, 'Mỗi hạng mục cần ít nhất 1 danh mục'),
+      items: z.array(lineSchema).min(1, 'Mỗi đầu mục cần ít nhất 1 hạng mục'),
     })
-  ).min(1, 'Báo giá phải có ít nhất 1 hạng mục'),
+  ).min(1, 'Báo giá phải có ít nhất 1 đầu mục'),
   paymentSteps: z.array(
     z.object({
       id: z.string().optional(),
@@ -131,7 +131,7 @@ export function emptyQuoteForm(projectId?: string, customerId?: string): QuoteFo
 }
 
 export function quoteToForm(q: Quote): QuoteFormShape {
-  // Gom QuoteItem cùng sectionName lại thành hạng mục
+  // Gom QuoteItem cùng sectionName lại thành đầu mục
   const map = new Map<string, QuoteSectionFormShape>()
   const order: string[] = []
   for (const it of q.items ?? []) {

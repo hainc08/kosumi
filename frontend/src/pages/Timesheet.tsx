@@ -74,7 +74,7 @@ export default function TimesheetPage() {
 
   const columns: Column<MonthlySummary>[] = [
     {
-      key: 'worker', header: 'Công nhân',
+      key: 'worker', header: 'Nhân viên',
       render: (r) => {
         const w = workerMap.get(r.workerId)
         return (
@@ -99,7 +99,7 @@ export default function TimesheetPage() {
   return (
     <PageShell title="Chấm công" subtitle="Theo dõi giờ công & lương tháng">
       <div className="kpi-row">
-        <KpiCard label="Tổng giờ tháng" value={formatHours(kpis.totalHours)} icon={<IconClock size={16} />} iconColor="var(--color-blue)" change={`${kpis.headcount} công nhân`} />
+        <KpiCard label="Tổng giờ tháng" value={formatHours(kpis.totalHours)} icon={<IconClock size={16} />} iconColor="var(--color-blue)" change={`${kpis.headcount} nhân viên`} />
         <KpiCard label="Ngày công TB" value={kpis.avgDays.toFixed(1)} icon={<IconCalendarCheck size={16} />} iconColor="var(--color-green)" />
         <KpiCard label="Ngày vắng" value={kpis.absent} icon={<IconCalendarX size={16} />} iconColor="var(--color-red)" />
         <KpiCard label="Giờ OT" value={formatHours(kpis.ot)} icon={<IconClockBolt size={16} />} iconColor="var(--color-amber)" />

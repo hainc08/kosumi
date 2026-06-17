@@ -47,7 +47,7 @@ export default function WorkersPage() {
 
   const columns: Column<Worker>[] = [
     {
-      key: 'fullName', header: 'Công nhân',
+      key: 'fullName', header: 'Nhân viên',
       render: (w) => (
         <div className="cell-worker">
           <span className="cell-worker__avatar" style={{ background: w.avatarColor }}>{w.initials}</span>
@@ -59,7 +59,7 @@ export default function WorkersPage() {
       ),
     },
     { key: 'position', header: 'Chức vụ', render: (w) => POSITION_LABELS[w.position] },
-    { key: 'exp', header: 'KN', render: (w) => `${w.experienceYears} năm` },
+    { key: 'specialty', header: 'Chuyên môn', render: (w) => w.specialty || '—' },
     { key: 'contract', header: 'Loại HĐ', render: (w) => w.activeContract ? <Badge variant="blue">{CONTRACT_TYPE_LABELS[w.activeContract.contractType]}</Badge> : '—' },
     { key: 'rate', header: 'Lương/tháng', render: rateLabel },
     { key: 'status', header: 'Trạng thái', render: (w) => <Badge variant={STATUS_VARIANT[w.status]} dot>{WORKER_STATUS_LABELS[w.status]}</Badge> },
@@ -70,11 +70,11 @@ export default function WorkersPage() {
 
   return (
     <PageShell
-      title="Công nhân" subtitle="Nhân sự xưởng"
-      actions={<Button variant="primary" icon={<IconUserPlus size={15} />} onClick={openAdd}>Thêm công nhân</Button>}
+      title="Nhân viên" subtitle="Nhân sự xưởng"
+      actions={<Button variant="primary" icon={<IconUserPlus size={15} />} onClick={openAdd}>Thêm nhân viên</Button>}
     >
       <div className="kpi-row">
-        <KpiCard label="Tổng công nhân" value={kpis.total} icon={<IconUsers size={16} />} iconColor="var(--color-blue)" />
+        <KpiCard label="Tổng nhân viên" value={kpis.total} icon={<IconUsers size={16} />} iconColor="var(--color-blue)" />
         <KpiCard label="Đang làm việc" value={kpis.working} icon={<IconUserCheck size={16} />} iconColor="var(--color-green)" />
         <KpiCard label="Nghỉ / Vắng" value={kpis.off} icon={<IconUserOff size={16} />} iconColor="var(--color-amber)" />
         <KpiCard label="Hiệu suất TB" value="—" icon={<IconTrendingUp size={16} />} iconColor="var(--color-purple)" />
@@ -90,7 +90,7 @@ export default function WorkersPage() {
 
       <DataTable
         columns={columns} data={workers} loading={isLoading} rowKey={(w) => w.id}
-        onRowClick={(w) => setSelected(w)} emptyText="Không tìm thấy công nhân"
+        onRowClick={(w) => setSelected(w)} emptyText="Không tìm thấy nhân viên"
       />
 
       <WorkerForm open={formOpen} worker={editing} onClose={() => setFormOpen(false)} />

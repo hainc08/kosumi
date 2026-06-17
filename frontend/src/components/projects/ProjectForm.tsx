@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconBuilding } from '@tabler/icons-react'
@@ -29,7 +30,14 @@ export function ProjectForm({ open, onClose, project }: Props) {
     resolver: zodResolver(projectSchema),
     defaultValues: project ? projectToForm(project) : emptyProjectForm,
   })
-  const { register, handleSubmit, formState: { errors } } = form
+  const { register, handleSubmit, reset, formState: { errors } } = form
+
+  // Reset form mỗi lần mở: nạp dữ liệu dự án khi Sửa, hoặc form rỗng khi Thêm.
+  // useForm chỉ dùng defaultValues lúc mount, mà component này luôn mounted →
+  // không reset thì form sẽ giữ giá trị cũ (trống) khi đổi project.
+  useEffect(() => {
+    if (open) reset(project ? projectToForm(project) : emptyProjectForm)
+  }, [open, project, reset])
 
   const onSubmit = handleSubmit(async (data) => {
     const values = formToValues(data)

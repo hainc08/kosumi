@@ -118,7 +118,7 @@ export default function KanbanPage() {
               <div className="kb-page__head"><span className="kb-page__title">Chọn công trường / xưởng</span></div>
               <div className="kb-stats">
                 <span className="kb-chip"><IconBuildingWarehouse size={15} color="var(--color-blue)" /> <strong>{sites.length}</strong> xưởng / công trường</span>
-                <span className="kb-chip"><IconUsers size={15} color="var(--color-green)" /> <strong>{sites.reduce((s, x) => s + (x.workerCount ?? 0), 0)}</strong> công nhân</span>
+                <span className="kb-chip"><IconUsers size={15} color="var(--color-green)" /> <strong>{sites.reduce((s, x) => s + (x.workerCount ?? 0), 0)}</strong> nhân viên</span>
               </div>
               <div className="kb-grid kb-grid--2">
                 {sites.map((s) => (
@@ -187,7 +187,7 @@ export default function KanbanPage() {
                   {(provided, snap) => (
                     <div className="kb-pool" ref={provided.innerRef} {...provided.droppableProps}>
                       <div className="kb-pool__head">
-                        <span className="kb-pool__title"><IconUsers size={15} /> Công nhân</span>
+                        <span className="kb-pool__title"><IconUsers size={15} /> Nhân viên</span>
                         <span className="kb-pool__count">{poolWorkers.length} sẵn sàng</span>
                       </div>
                       <div className="kb-pool__search">
@@ -220,10 +220,10 @@ export default function KanbanPage() {
                 <div className="kb-tasks">
                   <div className="kb-page__head">
                     <button className="kb-back" onClick={() => goTo(3)}><IconArrowLeft size={16} /></button>
-                    <span className="kb-page__title">Phân công công nhân</span>
+                    <span className="kb-page__title">Phân công nhân viên</span>
                     <span className="kb-crumb">{quote?.code} · {quote?.title}</span>
                   </div>
-                  <div className="kb-notice"><IconDragDrop size={16} /> Kéo công nhân từ bảng bên trái thả vào hạng mục. Nhấn <strong>×</strong> để rút người ra, <strong>⇄</strong> để chuyển sang việc khác.</div>
+                  <div className="kb-notice"><IconDragDrop size={16} /> Kéo nhân viên từ bảng bên trái thả vào hạng mục. Nhấn <strong>×</strong> để rút người ra, <strong>⇄</strong> để chuyển sang việc khác.</div>
 
                   <div className="kb-task-list">
                     {tasks.map((t) => {
@@ -273,7 +273,7 @@ export default function KanbanPage() {
                                   )
                                 })}
                                 {provided.placeholder}
-                                {draftIds.length === 0 && (t.assignments?.length ?? 0) === 0 && <span className="task-row__hint">Kéo công nhân vào đây</span>}
+                                {draftIds.length === 0 && (t.assignments?.length ?? 0) === 0 && <span className="task-row__hint">Kéo nhân viên vào đây</span>}
                               </div>
                             )}
                           </Droppable>

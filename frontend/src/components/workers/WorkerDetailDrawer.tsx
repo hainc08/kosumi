@@ -35,7 +35,7 @@ export function WorkerDetailDrawer({ worker, open, onClose, onEdit }: Props) {
     <DetailDrawer
       open={open}
       onClose={onClose}
-      title="Chi tiết công nhân"
+      title="Chi tiết nhân viên"
       actions={<Button variant="primary" icon={<IconEdit size={15} />} onClick={() => onEdit(worker)}>Chỉnh sửa</Button>}
     >
       <div className="wd-head">
@@ -49,7 +49,7 @@ export function WorkerDetailDrawer({ worker, open, onClose, onEdit }: Props) {
 
       <div className="wd-section">Thông tin cá nhân</div>
       <Row label="Chức vụ" value={POSITION_LABELS[worker.position]} />
-      <Row label="Số năm kinh nghiệm" value={`${worker.experienceYears} năm`} />
+      <Row label="Chuyên môn" value={worker.specialty} />
       <Row label="Giới tính" value={worker.gender === 'male' ? 'Nam' : 'Nữ'} />
       <Row label="Ngày sinh" value={formatDate(worker.dateOfBirth)} />
       <Row label="CCCD" value={worker.idNumber} />

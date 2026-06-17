@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconBuildingStore, IconPlus, IconTrash } from '@tabler/icons-react'
@@ -30,8 +30,13 @@ export function CustomerForm({ open, onClose, customer }: Props) {
     resolver: zodResolver(customerSchema),
     defaultValues: customer ? customerToForm(customer) : emptyCustomerForm,
   })
-  const { register, handleSubmit, control, formState: { errors } } = form
+  const { register, handleSubmit, control, reset, formState: { errors } } = form
   const contacts = useFieldArray({ control, name: 'contacts' })
+
+  // Nạp lại dữ liệu mỗi lần mở form + về tab đầu (component luôn mounted).
+  useEffect(() => {
+    if (open) { reset(customer ? customerToForm(customer) : emptyCustomerForm); setTab(1) }
+  }, [open, customer, reset])
 
   const onSubmit = handleSubmit(async (data) => {
     const dto = formToCreateDto(data)

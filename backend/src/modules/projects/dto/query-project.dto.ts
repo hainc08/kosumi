@@ -8,4 +8,5 @@ export class QueryProjectDto {
   @IsOptional() @IsString() search?: string
   @IsOptional() @EmptyToUndefined() @IsEnum(['planning', 'in_progress', 'near_deadline', 'completed', 'paused', 'cancelled']) status?: string
   @IsOptional() @EmptyToUndefined() @IsString() siteId?: string
+  @IsOptional() @EmptyToUndefined() @IsString() quoteCode?: string
 }

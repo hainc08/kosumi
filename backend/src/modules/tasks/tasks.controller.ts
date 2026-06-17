@@ -16,7 +16,20 @@ export class TasksController {
     return this.svc.availableWorkers(siteId)
   }
 
-  @Get() tasksForQuote(@Query('quoteId') quoteId: string) { return this.svc.tasksForQuote(quoteId) }
+  // Lấy task theo dự án (projectId) hoặc theo báo giá (quoteId).
+  @Get() tasks(@Query('quoteId') quoteId?: string, @Query('projectId') projectId?: string) {
+    if (projectId) return this.svc.tasksForProject(projectId)
+    return this.svc.tasksForQuote(quoteId)
+  }
+
+  // Sinh hạng mục công việc từ báo giá / từ toàn bộ báo giá của dự án.
+  @Post('generate-from-quote') generateFromQuote(@Query('quoteId') quoteId: string) {
+    return this.svc.generateFromQuote(quoteId)
+  }
+
+  @Post('generate-for-project') generateForProject(@Query('projectId') projectId: string) {
+    return this.svc.generateForProject(projectId)
+  }
 
   @Post('transfer') transfer(@Body() dto: TransferWorkerDto) {
     return this.svc.transfer(dto.workerId, dto.fromTaskId, dto.toTaskId)

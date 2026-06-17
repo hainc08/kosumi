@@ -54,7 +54,7 @@ export default function SitesPage() {
     { key: 'location', header: 'Địa điểm', render: (s) => s.city || s.address },
     { key: 'type', header: 'Loại', render: (s) => <Badge variant={TYPE_VARIANT}>{SITE_TYPE_LABELS[s.type]}</Badge> },
     {
-      key: 'workers', header: 'Công nhân',
+      key: 'workers', header: 'Nhân viên',
       render: (s) => {
         const list = workersBySite.get(s.id) ?? []
         return list.length
@@ -76,7 +76,7 @@ export default function SitesPage() {
     >
       <div className="kpi-row kpi-row--3">
         <KpiCard label="Tổng công trường" value={kpis.total} icon={<IconBuildingFactory2 size={16} />} iconColor="var(--color-blue)" change={`${kpis.active} đang hoạt động`} />
-        <KpiCard label="Tổng công nhân" value={kpis.workers} icon={<IconUsers size={16} />} iconColor="var(--color-green)" change={`Phân bổ ${kpis.total} địa điểm`} />
+        <KpiCard label="Tổng nhân viên" value={kpis.workers} icon={<IconUsers size={16} />} iconColor="var(--color-green)" change={`Phân bổ ${kpis.total} địa điểm`} />
         <KpiCard label="Dự án đang chạy" value={kpis.projects} icon={<IconBuilding size={16} />} iconColor="var(--color-amber)" />
       </div>
 

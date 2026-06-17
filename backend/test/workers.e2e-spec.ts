@@ -23,7 +23,7 @@ describe('Workers (e2e)', () => {
         fullName: 'Nguyễn Văn Test',
         gender: 'male',
         position: 'worker',
-        experienceYears: 2,
+        specialty: 'Hàn kết cấu',
         contractType: 'official',
         startDate: '2026-01-01',
         baseSalary: 8000000,

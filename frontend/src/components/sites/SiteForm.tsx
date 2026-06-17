@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconBuildingFactory2 } from '@tabler/icons-react'
@@ -25,6 +26,11 @@ export function SiteForm({ open, onClose, site }: Props) {
     defaultValues: site ? siteToForm(site) : emptySiteForm(),
   })
   const { register, handleSubmit, reset, formState: { errors } } = form
+
+  // Nạp lại dữ liệu mỗi lần mở: Sửa → dữ liệu công trường, Thêm → form rỗng.
+  useEffect(() => {
+    if (open) reset(site ? siteToForm(site) : emptySiteForm())
+  }, [open, site, reset])
 
   const onSubmit = handleSubmit(async (data) => {
     const values = formToValues(data)

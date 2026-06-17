@@ -11,7 +11,7 @@ export class Worker {
   @Column({ type: 'varchar', length: 20, nullable: true }) phone: string | null
   @Column({ type: 'text', nullable: true }) address: string | null
   @Column({ type: 'enum', enum: ['team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other'] }) position: string
-  @Column({ name: 'experience_years', type: 'int', default: 0 }) experienceYears: number
+  @Column({ name: 'specialty', type: 'varchar', length: 200, nullable: true }) specialty: string | null
   @Column({ type: 'enum', enum: ['working', 'on_leave', 'absent', 'resigned'], default: 'working' }) status: string
   @Column({ type: 'text', nullable: true }) notes: string | null
   @Column({ name: 'site_id', type: 'char', length: 36, nullable: true }) siteId: string | null

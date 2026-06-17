@@ -11,7 +11,7 @@ export interface WorkerFilters { search?: string; status?: string; position?: st
 export interface WorkerFormValues {
   fullName: string; gender: 'male' | 'female'; dateOfBirth?: string; idNumber?: string
   phone?: string; address?: string; position: Position
-  experienceYears: number; notes?: string
+  specialty?: string; notes?: string
   contractType: ContractType; startDate: string
   baseSalary?: number
   allowanceResponsibility?: number
@@ -51,7 +51,7 @@ export function createWorkerInDb(v: WorkerFormValues): Worker {
     id, code, fullName: v.fullName, gender: v.gender,
     dateOfBirth: v.dateOfBirth ?? null, idNumber: v.idNumber ?? null, phone: v.phone ?? null,
     address: v.address ?? null, position: v.position,
-    experienceYears: v.experienceYears, status: 'working', notes: v.notes ?? null,
+    specialty: v.specialty ?? null, status: 'working', notes: v.notes ?? null,
     createdAt: now(), updatedAt: now(),
     initials: deriveInitials(v.fullName), avatarColor: avatarColorFor(id),
     activeContract: buildContract(id, v),
@@ -66,7 +66,7 @@ export function updateWorkerInDb(id: string, v: WorkerFormValues): Worker | unde
   Object.assign(w, {
     fullName: v.fullName, gender: v.gender, dateOfBirth: v.dateOfBirth ?? null,
     idNumber: v.idNumber ?? null, phone: v.phone ?? null, address: v.address ?? null,
-    position: v.position, experienceYears: v.experienceYears,
+    position: v.position, specialty: v.specialty ?? null,
     notes: v.notes ?? null, updatedAt: now(), initials: deriveInitials(v.fullName),
   })
   if (w.activeContract) {

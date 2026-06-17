@@ -31,7 +31,7 @@ export function SiteDetailDrawer({ site, open, onClose, onEdit }: Props) {
       </div>
 
       <div className="sd-stats">
-        <div className="sd-stat"><span>Công nhân</span><strong>{site.workerCount ?? 0}</strong></div>
+        <div className="sd-stat"><span>Nhân viên</span><strong>{site.workerCount ?? 0}</strong></div>
         <div className="sd-stat"><span>Dự án</span><strong>{site.projectCount ?? 0}</strong></div>
         <div className="sd-stat"><span>Diện tích</span><strong>{site.areaM2 ? `${site.areaM2} m²` : '—'}</strong></div>
       </div>

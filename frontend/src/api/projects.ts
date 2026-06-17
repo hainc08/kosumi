@@ -6,7 +6,7 @@ import type { Project, ProjectStatus, ProjectType } from '@/types'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
-export interface ProjectFilters { search?: string; status?: string; siteId?: string }
+export interface ProjectFilters { search?: string; status?: string; siteId?: string; quoteCode?: string }
 export interface ProjectFormValues {
   name: string; customerId?: string; projectType: ProjectType; siteId?: string
   contractValue?: number; startDate?: string; deadline: string
@@ -21,16 +21,29 @@ function nextProjectCode(existing: string[]): string {
   return 'PRJ' + String(max + 1).padStart(3, '0')
 }
 
+/** Báo giá liên quan của 1 dự án (từ db mock). */
+function quotesOfProject(projectId: string) {
+  return db.quotes
+    .filter((q) => q.projectId === projectId)
+    .map((q) => ({ id: q.id, code: q.code, title: q.title, status: q.status }))
+}
+
 export function filterProjects(list: Project[], f: ProjectFilters): Project[] {
-  return list.filter((p) => {
-    if (f.status && p.status !== f.status) return false
-    if (f.siteId && p.siteId !== f.siteId) return false
-    if (f.search) {
-      const q = f.search.toLowerCase()
-      if (!p.name.toLowerCase().includes(q) && !p.code.toLowerCase().includes(q)) return false
-    }
-    return true
-  })
+  return list
+    .map((p) => {
+      const quotes = quotesOfProject(p.id)
+      return { ...p, quotes, quoteCount: quotes.length }
+    })
+    .filter((p) => {
+      if (f.status && p.status !== f.status) return false
+      if (f.siteId && p.siteId !== f.siteId) return false
+      if (f.quoteCode && !p.quotes.some((q) => q.code.toLowerCase().includes(f.quoteCode!.toLowerCase()))) return false
+      if (f.search) {
+        const q = f.search.toLowerCase()
+        if (!p.name.toLowerCase().includes(q) && !p.code.toLowerCase().includes(q)) return false
+      }
+      return true
+    })
 }
 
 export function createProjectInDb(v: ProjectFormValues): Project {

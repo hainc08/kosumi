@@ -18,7 +18,10 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const customer_entity_1 = require("./entities/customer.entity");
 const customer_contact_entity_1 = require("./entities/customer-contact.entity");
+const project_entity_1 = require("../projects/entities/project.entity");
+const quote_entity_1 = require("../quotes/entities/quote.entity");
 const code_util_1 = require("../../common/utils/code.util");
+const ZERO_AGG = { projectCount: 0, quoteCount: 0, totalContractValue: 0 };
 let CustomersService = class CustomersService {
     repo;
     contactRepo;
@@ -28,7 +31,44 @@ let CustomersService = class CustomersService {
         this.contactRepo = contactRepo;
         this.dataSource = dataSource;
     }
-    enrich(customer, contacts) {
+    async loadAggregates(ids) {
+        const map = new Map();
+        for (const id of ids)
+            map.set(id, { projectCount: 0, quoteCount: 0, totalContractValue: 0 });
+        if (ids.length === 0)
+            return map;
+        const [projRows, quoteRows] = await Promise.all([
+            this.dataSource.getRepository(project_entity_1.Project).createQueryBuilder('p')
+                .select('p.customerId', 'cid')
+                .addSelect('COUNT(*)', 'cnt')
+                .addSelect('COALESCE(SUM(p.contract_value), 0)', 'total')
+                .where('p.customerId IN (:...ids)', { ids })
+                .andWhere('p.deletedAt IS NULL')
+                .groupBy('p.customerId')
+                .getRawMany(),
+            this.dataSource.getRepository(quote_entity_1.Quote).createQueryBuilder('q')
+                .select('q.customerId', 'cid')
+                .addSelect('COUNT(*)', 'cnt')
+                .where('q.customerId IN (:...ids)', { ids })
+                .andWhere('q.deletedAt IS NULL')
+                .groupBy('q.customerId')
+                .getRawMany(),
+        ]);
+        for (const r of projRows) {
+            const a = map.get(r.cid);
+            if (a) {
+                a.projectCount = Number(r.cnt);
+                a.totalContractValue = Number(r.total);
+            }
+        }
+        for (const r of quoteRows) {
+            const a = map.get(r.cid);
+            if (a)
+                a.quoteCount = Number(r.cnt);
+        }
+        return map;
+    }
+    enrich(customer, contacts, agg) {
         const sorted = [...contacts].sort((a, b) => a.sortOrder - b.sortOrder);
         const primary = sorted.find((c) => c.isPrimary);
         return {
@@ -37,9 +77,9 @@ let CustomersService = class CustomersService {
             primaryContact: primary
                 ? { fullName: primary.fullName, phone: primary.phone, email: primary.email }
                 : undefined,
-            projectCount: 0,
-            quoteCount: 0,
-            totalContractValue: 0,
+            projectCount: agg.projectCount,
+            quoteCount: agg.quoteCount,
+            totalContractValue: agg.totalContractValue,
         };
     }
     async findAll(q) {
@@ -55,21 +95,27 @@ let CustomersService = class CustomersService {
         if (customers.length === 0)
             return [];
         const ids = customers.map((c) => c.id);
-        const contacts = await this.contactRepo.find({ where: { customerId: (0, typeorm_2.In)(ids) } });
+        const [contacts, aggById] = await Promise.all([
+            this.contactRepo.find({ where: { customerId: (0, typeorm_2.In)(ids) } }),
+            this.loadAggregates(ids),
+        ]);
         const byCustomer = new Map();
         for (const ct of contacts) {
             const list = byCustomer.get(ct.customerId) ?? [];
             list.push(ct);
             byCustomer.set(ct.customerId, list);
         }
-        return customers.map((c) => this.enrich(c, byCustomer.get(c.id) ?? []));
+        return customers.map((c) => this.enrich(c, byCustomer.get(c.id) ?? [], aggById.get(c.id) ?? ZERO_AGG));
     }
     async findOne(id) {
         const customer = await this.repo.findOne({ where: { id } });
         if (!customer)
             throw new common_1.NotFoundException('Không tìm thấy khách hàng');
-        const contacts = await this.contactRepo.find({ where: { customerId: id } });
-        return this.enrich(customer, contacts);
+        const [contacts, aggById] = await Promise.all([
+            this.contactRepo.find({ where: { customerId: id } }),
+            this.loadAggregates([id]),
+        ]);
+        return this.enrich(customer, contacts, aggById.get(id) ?? ZERO_AGG);
     }
     buildContactEntities(customerId, raw) {
         const list = raw ?? [];
@@ -106,7 +152,7 @@ let CustomersService = class CustomersService {
             const savedContacts = contacts.length ? await m.save(customer_contact_entity_1.CustomerContact, contacts) : [];
             return { customer: saved, contacts: savedContacts };
         });
-        return this.enrich(result.customer, result.contacts);
+        return this.enrich(result.customer, result.contacts, ZERO_AGG);
     }
     async update(id, dto) {
         const customer = await this.repo.findOne({ where: { id } });
@@ -121,7 +167,8 @@ let CustomersService = class CustomersService {
             const savedContacts = newContacts.length ? await m.save(customer_contact_entity_1.CustomerContact, newContacts) : [];
             return { customer: saved, contacts: savedContacts };
         });
-        return this.enrich(result.customer, result.contacts);
+        const aggById = await this.loadAggregates([id]);
+        return this.enrich(result.customer, result.contacts, aggById.get(id) ?? ZERO_AGG);
     }
     async remove(id) {
         const customer = await this.repo.findOne({ where: { id } });

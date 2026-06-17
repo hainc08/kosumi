@@ -1,4 +1,4 @@
-import { IsDateString, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator'
+import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class CreateWorkerDto {
   // ─── worker ──────────────────────────────────────────────
@@ -9,7 +9,7 @@ export class CreateWorkerDto {
   @IsOptional() @IsString() phone?: string
   @IsOptional() @IsString() address?: string
   @IsEnum(['team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other']) position: string
-  @IsInt() @Min(0) experienceYears: number
+  @IsOptional() @IsString() specialty?: string
   @IsOptional() @IsString() notes?: string
   @IsOptional() @IsString() siteId?: string
 

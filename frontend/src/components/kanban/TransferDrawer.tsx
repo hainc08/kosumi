@@ -68,7 +68,7 @@ export function TransferDrawer({ context, onClose }: TransferDrawerProps) {
     <DetailDrawer
       open={!!context}
       onClose={onClose}
-      title="Chuyển công nhân"
+      title="Chuyển nhân viên"
       width="md"
       actions={
         <>

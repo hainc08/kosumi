@@ -19,7 +19,11 @@ const typeorm_2 = require("typeorm");
 const project_entity_1 = require("./entities/project.entity");
 const site_entity_1 = require("../sites/entities/site.entity");
 const customer_entity_1 = require("../customers/entities/customer.entity");
+const quote_entity_1 = require("../quotes/entities/quote.entity");
+const task_entity_1 = require("../tasks/entities/task.entity");
+const task_assignment_entity_1 = require("../tasks/entities/task-assignment.entity");
 const code_util_1 = require("../../common/utils/code.util");
+const ZERO_AGG = { quoteCount: 0, workerCount: 0, quotes: [] };
 let ProjectsService = class ProjectsService {
     repo;
     siteRepo;
@@ -31,17 +35,60 @@ let ProjectsService = class ProjectsService {
         this.customerRepo = customerRepo;
         this.dataSource = dataSource;
     }
+    async loadAggregates(ids) {
+        const map = new Map();
+        for (const id of ids)
+            map.set(id, { quoteCount: 0, workerCount: 0, quotes: [] });
+        if (ids.length === 0)
+            return map;
+        const [quoteRows, workerRows] = await Promise.all([
+            this.dataSource.getRepository(quote_entity_1.Quote).createQueryBuilder('q')
+                .select('q.id', 'id')
+                .addSelect('q.code', 'code')
+                .addSelect('q.title', 'title')
+                .addSelect('q.status', 'status')
+                .addSelect('q.projectId', 'pid')
+                .where('q.projectId IN (:...ids)', { ids })
+                .andWhere('q.deletedAt IS NULL')
+                .orderBy('q.code', 'ASC')
+                .getRawMany(),
+            this.dataSource.getRepository(task_assignment_entity_1.TaskAssignment).createQueryBuilder('ta')
+                .innerJoin(task_entity_1.Task, 't', 't.id = ta.task_id')
+                .select('t.project_id', 'pid')
+                .addSelect('COUNT(DISTINCT ta.worker_id)', 'cnt')
+                .where('t.project_id IN (:...ids)', { ids })
+                .andWhere('ta.isActive = :active', { active: true })
+                .groupBy('t.project_id')
+                .getRawMany(),
+        ]);
+        for (const r of quoteRows) {
+            const a = map.get(r.pid);
+            if (a) {
+                a.quotes.push({ id: r.id, code: r.code, title: r.title, status: r.status });
+                a.quoteCount += 1;
+            }
+        }
+        for (const r of workerRows) {
+            const a = map.get(r.pid);
+            if (a)
+                a.workerCount = Number(r.cnt);
+        }
+        return map;
+    }
     async enrich(project) {
-        const [site, customer] = await Promise.all([
+        const [site, customer, aggById] = await Promise.all([
             project.siteId ? this.siteRepo.findOne({ where: { id: project.siteId } }) : Promise.resolve(null),
             project.customerId ? this.customerRepo.findOne({ where: { id: project.customerId } }) : Promise.resolve(null),
+            this.loadAggregates([project.id]),
         ]);
+        const agg = aggById.get(project.id) ?? ZERO_AGG;
         return {
             ...project,
             site: site ? { id: site.id, name: site.name } : undefined,
             customer: customer ? { id: customer.id, name: customer.name } : undefined,
-            quoteCount: 0,
-            workerCount: 0,
+            quoteCount: agg.quoteCount,
+            workerCount: agg.workerCount,
+            quotes: agg.quotes,
         };
     }
     async enrichMany(projects) {
@@ -49,21 +96,24 @@ let ProjectsService = class ProjectsService {
             return [];
         const siteIds = [...new Set(projects.map((p) => p.siteId).filter((id) => !!id))];
         const customerIds = [...new Set(projects.map((p) => p.customerId).filter((id) => !!id))];
-        const [sites, customers] = await Promise.all([
+        const [sites, customers, aggById] = await Promise.all([
             siteIds.length ? this.siteRepo.find({ where: { id: (0, typeorm_2.In)(siteIds) } }) : Promise.resolve([]),
             customerIds.length ? this.customerRepo.find({ where: { id: (0, typeorm_2.In)(customerIds) } }) : Promise.resolve([]),
+            this.loadAggregates(projects.map((p) => p.id)),
         ]);
         const siteById = new Map(sites.map((s) => [s.id, s]));
         const customerById = new Map(customers.map((c) => [c.id, c]));
         return projects.map((p) => {
             const site = p.siteId ? siteById.get(p.siteId) : undefined;
             const customer = p.customerId ? customerById.get(p.customerId) : undefined;
+            const agg = aggById.get(p.id) ?? ZERO_AGG;
             return {
                 ...p,
                 site: site ? { id: site.id, name: site.name } : undefined,
                 customer: customer ? { id: customer.id, name: customer.name } : undefined,
-                quoteCount: 0,
-                workerCount: 0,
+                quoteCount: agg.quoteCount,
+                workerCount: agg.workerCount,
+                quotes: agg.quotes,
             };
         });
     }
@@ -75,6 +125,9 @@ let ProjectsService = class ProjectsService {
             qb.andWhere('p.status = :status', { status: q.status });
         if (q.siteId)
             qb.andWhere('p.site_id = :siteId', { siteId: q.siteId });
+        if (q.quoteCode) {
+            qb.andWhere('EXISTS (SELECT 1 FROM quotes qq WHERE qq.project_id = p.id AND qq.deleted_at IS NULL AND qq.code LIKE :qc)', { qc: `%${q.quoteCode}%` });
+        }
         const projects = await qb.orderBy('p.created_at', 'DESC').getMany();
         return this.enrichMany(projects);
     }

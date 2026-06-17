@@ -11,7 +11,7 @@ export interface WorkerFormShape {
   phone: string
   address: string
   position: Position
-  experienceYears: string
+  specialty: string
   notes: string
   contractType: ContractType
   startDate: string
@@ -35,10 +35,7 @@ export const workerSchema = z
     position: z.enum([
       'team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other',
     ]),
-    experienceYears: z.string().refine((v) => {
-      const n = Number(v)
-      return v !== '' && !Number.isNaN(n) && n >= 0 && n <= 50
-    }, 'Kinh nghiệm phải từ 0–50 năm'),
+    specialty: z.string(),
     notes: z.string(),
     contractType: z.enum(['piece_rate', 'official', 'probation']),
     startDate: z.string().min(1, 'Bắt buộc chọn ngày bắt đầu'),
@@ -61,7 +58,7 @@ export const workerSchema = z
 
 export const emptyWorkerForm: WorkerFormShape = {
   fullName: '', gender: 'male', dateOfBirth: '', idNumber: '', phone: '', address: '',
-  position: 'worker', experienceYears: '0', notes: '',
+  position: 'worker', specialty: '', notes: '',
   contractType: 'official', startDate: new Date().toISOString().slice(0, 10),
   baseSalary: '', allowanceResponsibility: '', allowanceAttendance: '',
   ratePerUnit: '', unitName: '',
@@ -74,7 +71,7 @@ export function workerToForm(w: Worker): WorkerFormShape {
     fullName: w.fullName, gender: w.gender, dateOfBirth: w.dateOfBirth ?? '',
     idNumber: w.idNumber ?? '', phone: w.phone ?? '', address: w.address ?? '',
     position: w.position,
-    experienceYears: String(w.experienceYears), notes: w.notes ?? '',
+    specialty: w.specialty ?? '', notes: w.notes ?? '',
     contractType: c?.contractType ?? 'official', startDate: c?.startDate ?? emptyWorkerForm.startDate,
     baseSalary: s(c?.baseSalary),
     allowanceResponsibility: s(c?.allowanceResponsibility),
@@ -89,7 +86,7 @@ export function formToValues(v: WorkerFormShape): WorkerFormValues {
     dateOfBirth: v.dateOfBirth || undefined, idNumber: v.idNumber || undefined,
     phone: v.phone || undefined, address: v.address || undefined,
     position: v.position,
-    experienceYears: Number(v.experienceYears), notes: v.notes || undefined,
+    specialty: v.specialty || undefined, notes: v.notes || undefined,
     contractType: v.contractType, startDate: v.startDate,
     baseSalary: num(v.baseSalary),
     allowanceResponsibility: num(v.allowanceResponsibility),

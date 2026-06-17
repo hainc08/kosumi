@@ -6,7 +6,7 @@ export declare class CreateWorkerDto {
     phone?: string;
     address?: string;
     position: string;
-    experienceYears: number;
+    specialty?: string;
     notes?: string;
     siteId?: string;
     contractType: string;

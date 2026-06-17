@@ -5,6 +5,12 @@ import { Customer } from '../customers/entities/customer.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { QueryProjectDto } from './dto/query-project.dto';
+export type QuoteMini = {
+    id: string;
+    code: string;
+    title: string;
+    status: string;
+};
 export type ProjectWithRelations = Project & {
     site?: {
         id: string;
@@ -16,6 +22,7 @@ export type ProjectWithRelations = Project & {
     };
     quoteCount: number;
     workerCount: number;
+    quotes: QuoteMini[];
 };
 export declare class ProjectsService {
     private repo;
@@ -23,6 +30,7 @@ export declare class ProjectsService {
     private customerRepo;
     private dataSource;
     constructor(repo: Repository<Project>, siteRepo: Repository<Site>, customerRepo: Repository<Customer>, dataSource: DataSource);
+    private loadAggregates;
     private enrich;
     private enrichMany;
     findAll(q: QueryProjectDto): Promise<ProjectWithRelations[]>;

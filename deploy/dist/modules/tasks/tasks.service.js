@@ -20,17 +20,21 @@ const task_entity_1 = require("./entities/task.entity");
 const task_assignment_entity_1 = require("./entities/task-assignment.entity");
 const worker_entity_1 = require("../workers/entities/worker.entity");
 const quote_item_entity_1 = require("../quotes/entities/quote-item.entity");
+const quote_entity_1 = require("../quotes/entities/quote.entity");
+const project_entity_1 = require("../projects/entities/project.entity");
 const worker_display_util_1 = require("../../common/utils/worker-display.util");
 let TasksService = class TasksService {
     repo;
     assignmentRepo;
     workerRepo;
     quoteItemRepo;
-    constructor(repo, assignmentRepo, workerRepo, quoteItemRepo) {
+    dataSource;
+    constructor(repo, assignmentRepo, workerRepo, quoteItemRepo, dataSource) {
         this.repo = repo;
         this.assignmentRepo = assignmentRepo;
         this.workerRepo = workerRepo;
         this.quoteItemRepo = quoteItemRepo;
+        this.dataSource = dataSource;
     }
     toMini(w) {
         return { id: w.id, code: w.code, fullName: w.fullName, initials: (0, worker_display_util_1.deriveInitials)(w.fullName), avatarColor: (0, worker_display_util_1.avatarColorFor)(w.id) };
@@ -72,6 +76,62 @@ let TasksService = class TasksService {
         const itemIds = items.map((i) => i.id);
         const tasks = await this.repo.find({ where: { quoteItemId: (0, typeorm_2.In)(itemIds) }, order: { sortOrder: 'ASC' } });
         return this.enrichMany(tasks);
+    }
+    async tasksForProject(projectId) {
+        if (!projectId)
+            return [];
+        const tasks = await this.repo.find({ where: { projectId }, order: { sortOrder: 'ASC' } });
+        if (tasks.length === 0)
+            return [];
+        const enriched = await this.enrichMany(tasks);
+        const itemIds = [...new Set(tasks.map((t) => t.quoteItemId).filter((id) => !!id))];
+        const items = itemIds.length ? await this.quoteItemRepo.find({ where: { id: (0, typeorm_2.In)(itemIds) } }) : [];
+        const sectionByItem = new Map(items.map((i) => [i.id, i.sectionName]));
+        return enriched.map((t) => ({ ...t, section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null }));
+    }
+    async generateFromQuote(quoteId) {
+        const quote = await this.dataSource.getRepository(quote_entity_1.Quote).findOne({ where: { id: quoteId } });
+        if (!quote)
+            throw new common_1.NotFoundException('Không tìm thấy báo giá');
+        if (!quote.projectId)
+            throw new common_1.BadRequestException('Báo giá chưa gắn dự án');
+        const project = await this.dataSource.getRepository(project_entity_1.Project).findOne({ where: { id: quote.projectId } });
+        if (!project)
+            throw new common_1.NotFoundException('Không tìm thấy dự án');
+        if (!project.siteId) {
+            throw new common_1.BadRequestException('Dự án chưa có công trường — hãy gán công trường cho dự án trước khi tạo công việc');
+        }
+        const items = await this.quoteItemRepo.find({ where: { quoteId }, order: { sortOrder: 'ASC' } });
+        if (items.length === 0)
+            return { created: 0 };
+        const existing = await this.repo.find({ where: { quoteItemId: (0, typeorm_2.In)(items.map((i) => i.id)) } });
+        const haveItemIds = new Set(existing.map((t) => t.quoteItemId));
+        const toCreate = items.filter((i) => !haveItemIds.has(i.id));
+        if (toCreate.length === 0)
+            return { created: 0 };
+        const today = new Date().toISOString().slice(0, 10);
+        const entities = toCreate.map((i) => this.repo.create({
+            quoteItemId: i.id,
+            projectId: project.id,
+            siteId: project.siteId,
+            title: i.itemName,
+            description: i.description ?? null,
+            taskDate: today,
+            status: 'unassigned',
+            priority: 'medium',
+            sortOrder: i.sortOrder,
+        }));
+        await this.repo.save(entities);
+        return { created: entities.length };
+    }
+    async generateForProject(projectId) {
+        const quotes = await this.dataSource.getRepository(quote_entity_1.Quote).find({ where: { projectId } });
+        let created = 0;
+        for (const q of quotes) {
+            const r = await this.generateFromQuote(q.id);
+            created += r.created;
+        }
+        return { created };
     }
     async activeTasksAll() {
         const tasks = await this.repo.find();
@@ -152,6 +212,7 @@ exports.TasksService = TasksService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        typeorm_2.DataSource])
 ], TasksService);
 //# sourceMappingURL=tasks.service.js.map

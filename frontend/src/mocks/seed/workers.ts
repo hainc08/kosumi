@@ -5,7 +5,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-1', code: 'CN001', fullName: 'Nguyễn Văn Hùng', gender: 'male',
     dateOfBirth: '1990-05-12', idNumber: '001090012345', phone: '0901234567',
     address: 'Đông Anh, Hà Nội', position: 'senior_worker',
-    experienceYears: 8, status: 'working', notes: null,
+    specialty: 'Hàn kết cấu', status: 'working', notes: null,
     createdAt: '2026-01-12T00:00:00Z', updatedAt: '2026-01-12T00:00:00Z',
     initials: 'NH', avatarColor: '#1D4ED8',
     activeContract: {
@@ -20,7 +20,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-2', code: 'CN002', fullName: 'Trần Thị Mai', gender: 'female',
     dateOfBirth: '1995-09-03', idNumber: '001195067890', phone: '0912345678',
     address: 'Long Biên, Hà Nội', position: 'worker',
-    experienceYears: 4, status: 'working', notes: null,
+    specialty: 'Lắp dựng thép', status: 'working', notes: null,
     createdAt: '2026-02-02T00:00:00Z', updatedAt: '2026-02-02T00:00:00Z',
     initials: 'TM', avatarColor: '#16A34A',
     activeContract: {
@@ -35,7 +35,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-3', code: 'CN003', fullName: 'Lê Văn Tâm', gender: 'male',
     dateOfBirth: '1988-12-20', idNumber: '001088054321', phone: '0987654321',
     address: 'Gia Lâm, Hà Nội', position: 'team_leader',
-    experienceYears: 10, status: 'on_leave', notes: 'Nghỉ phép năm',
+    specialty: 'Quản lý tổ thép', status: 'on_leave', notes: 'Nghỉ phép năm',
     createdAt: '2026-01-15T00:00:00Z', updatedAt: '2026-05-01T00:00:00Z',
     initials: 'LT', avatarColor: '#D97706',
     activeContract: {
@@ -50,7 +50,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-4', code: 'CN004', fullName: 'Phạm Đình Quân', gender: 'male',
     dateOfBirth: '1992-03-08', idNumber: '001092011223', phone: '0934567890',
     address: 'Sóc Sơn, Hà Nội', position: 'worker',
-    experienceYears: 6, status: 'working', notes: null,
+    specialty: 'Gia công cơ khí', status: 'working', notes: null,
     createdAt: '2026-01-20T00:00:00Z', updatedAt: '2026-01-20T00:00:00Z',
     initials: 'PQ', avatarColor: '#7C3AED',
     activeContract: {
@@ -65,7 +65,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-5', code: 'CN005', fullName: 'Hoàng Thị Lan', gender: 'female',
     dateOfBirth: '1997-07-25', idNumber: '001197078899', phone: '0945678901',
     address: 'Hoàng Mai, Hà Nội', position: 'apprentice',
-    experienceYears: 3, status: 'working', notes: null,
+    specialty: 'Phụ việc', status: 'working', notes: null,
     createdAt: '2026-02-10T00:00:00Z', updatedAt: '2026-02-10T00:00:00Z',
     initials: 'HL', avatarColor: '#DB2777',
     activeContract: {
@@ -80,7 +80,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-6', code: 'CN006', fullName: 'Đỗ Minh Khang', gender: 'male',
     dateOfBirth: '1985-11-02', idNumber: '001085033445', phone: '0956789012',
     address: 'Bình Tân, TP.HCM', position: 'supervisor',
-    experienceYears: 12, status: 'working', notes: null,
+    specialty: 'Giám sát thi công', status: 'working', notes: null,
     createdAt: '2026-01-18T00:00:00Z', updatedAt: '2026-01-18T00:00:00Z',
     initials: 'ĐK', avatarColor: '#0891B2',
     activeContract: {
@@ -95,7 +95,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-7', code: 'CN007', fullName: 'Vũ Thị Hồng', gender: 'female',
     dateOfBirth: '1993-04-17', idNumber: '001193044556', phone: '0967890123',
     address: 'Bình Tân, TP.HCM', position: 'technician',
-    experienceYears: 5, status: 'working', notes: null,
+    specialty: 'Vận hành CNC', status: 'working', notes: null,
     createdAt: '2026-02-15T00:00:00Z', updatedAt: '2026-02-15T00:00:00Z',
     initials: 'VH', avatarColor: '#CA8A04',
     activeContract: {
@@ -110,7 +110,7 @@ export const seedWorkers: Worker[] = [
     id: 'w-8', code: 'CN008', fullName: 'Bùi Văn Sơn', gender: 'male',
     dateOfBirth: '1991-08-30', idNumber: '001091055667', phone: '0978901234',
     address: 'Long Biên, Hà Nội', position: 'worker',
-    experienceYears: 7, status: 'absent', notes: 'Nghỉ không phép 1 ngày',
+    specialty: 'Sơn tĩnh điện', status: 'absent', notes: 'Nghỉ không phép 1 ngày',
     createdAt: '2026-02-20T00:00:00Z', updatedAt: '2026-06-14T00:00:00Z',
     initials: 'BS', avatarColor: '#DC2626',
     activeContract: {
