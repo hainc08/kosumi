@@ -20,6 +20,7 @@ export declare class CustomersService {
     private contactRepo;
     private dataSource;
     constructor(repo: Repository<Customer>, contactRepo: Repository<CustomerContact>, dataSource: DataSource);
+    private loadAggregates;
     private enrich;
     findAll(q: QueryCustomerDto): Promise<CustomerWithContacts[]>;
     findOne(id: string): Promise<CustomerWithContacts>;

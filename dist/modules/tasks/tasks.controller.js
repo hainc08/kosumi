@@ -27,7 +27,17 @@ let TasksController = class TasksController {
     availableWorkers(siteId) {
         return this.svc.availableWorkers(siteId);
     }
-    tasksForQuote(quoteId) { return this.svc.tasksForQuote(quoteId); }
+    tasks(quoteId, projectId) {
+        if (projectId)
+            return this.svc.tasksForProject(projectId);
+        return this.svc.tasksForQuote(quoteId);
+    }
+    generateFromQuote(quoteId) {
+        return this.svc.generateFromQuote(quoteId);
+    }
+    generateForProject(projectId) {
+        return this.svc.generateForProject(projectId);
+    }
     transfer(dto) {
         return this.svc.transfer(dto.workerId, dto.fromTaskId, dto.toTaskId);
     }
@@ -58,10 +68,25 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('quoteId')),
+    __param(1, (0, common_1.Query)('projectId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "tasks", null);
+__decorate([
+    (0, common_1.Post)('generate-from-quote'),
+    __param(0, (0, common_1.Query)('quoteId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], TasksController.prototype, "tasksForQuote", null);
+], TasksController.prototype, "generateFromQuote", null);
+__decorate([
+    (0, common_1.Post)('generate-for-project'),
+    __param(0, (0, common_1.Query)('projectId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "generateForProject", null);
 __decorate([
     (0, common_1.Post)('transfer'),
     __param(0, (0, common_1.Body)()),

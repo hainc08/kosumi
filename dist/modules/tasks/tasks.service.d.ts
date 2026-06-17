@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
 import { TaskAssignment } from './entities/task-assignment.entity';
 import { Worker } from '../workers/entities/worker.entity';
@@ -16,6 +16,7 @@ export type TaskAssignmentWithWorker = TaskAssignment & {
 export type TaskWithRelations = Task & {
     assignments: TaskAssignmentWithWorker[];
     activeWorkers: WorkerMini[];
+    section?: string | null;
 };
 export type WorkerWithDisplay = Worker & {
     initials: string;
@@ -26,12 +27,20 @@ export declare class TasksService {
     private assignmentRepo;
     private workerRepo;
     private quoteItemRepo;
-    constructor(repo: Repository<Task>, assignmentRepo: Repository<TaskAssignment>, workerRepo: Repository<Worker>, quoteItemRepo: Repository<QuoteItem>);
+    private dataSource;
+    constructor(repo: Repository<Task>, assignmentRepo: Repository<TaskAssignment>, workerRepo: Repository<Worker>, quoteItemRepo: Repository<QuoteItem>, dataSource: DataSource);
     private toMini;
     private enrich;
     private loadActiveAssignments;
     private enrichMany;
     tasksForQuote(quoteId?: string): Promise<TaskWithRelations[]>;
+    tasksForProject(projectId?: string): Promise<TaskWithRelations[]>;
+    generateFromQuote(quoteId: string): Promise<{
+        created: number;
+    }>;
+    generateForProject(projectId: string): Promise<{
+        created: number;
+    }>;
     activeTasksAll(): Promise<TaskWithRelations[]>;
     availableWorkers(_siteId?: string): Promise<WorkerWithDisplay[]>;
     assign(taskId: string, workerId: string): Promise<TaskAssignment>;

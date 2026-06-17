@@ -6,7 +6,13 @@ export declare class TasksController {
     constructor(svc: TasksService);
     activeTasks(): Promise<import("./tasks.service").TaskWithRelations[]>;
     availableWorkers(siteId?: string): Promise<import("./tasks.service").WorkerWithDisplay[]>;
-    tasksForQuote(quoteId: string): Promise<import("./tasks.service").TaskWithRelations[]>;
+    tasks(quoteId?: string, projectId?: string): Promise<import("./tasks.service").TaskWithRelations[]>;
+    generateFromQuote(quoteId: string): Promise<{
+        created: number;
+    }>;
+    generateForProject(projectId: string): Promise<{
+        created: number;
+    }>;
     transfer(dto: TransferWorkerDto): Promise<import("./entities/task-assignment.entity").TaskAssignment>;
     saveAssignments(draft: Record<string, string[]>): Promise<number>;
     assign(id: string, dto: AssignWorkerDto): Promise<import("./entities/task-assignment.entity").TaskAssignment>;

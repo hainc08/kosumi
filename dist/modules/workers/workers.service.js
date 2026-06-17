@@ -64,7 +64,7 @@ let WorkersService = class WorkersService {
     async findOne(id) {
         const worker = await this.repo.findOne({ where: { id } });
         if (!worker)
-            throw new common_1.NotFoundException('Không tìm thấy công nhân');
+            throw new common_1.NotFoundException('Không tìm thấy nhân viên');
         return this.enrichOne(worker);
     }
     async create(dto) {
@@ -78,7 +78,7 @@ let WorkersService = class WorkersService {
                 phone: dto.phone ?? null,
                 address: dto.address ?? null,
                 position: dto.position,
-                experienceYears: dto.experienceYears,
+                specialty: dto.specialty ?? null,
                 notes: dto.notes ?? null,
                 siteId: dto.siteId ?? null,
                 status: 'working',
@@ -105,7 +105,7 @@ let WorkersService = class WorkersService {
     async update(id, dto) {
         const worker = await this.repo.findOne({ where: { id } });
         if (!worker)
-            throw new common_1.NotFoundException('Không tìm thấy công nhân');
+            throw new common_1.NotFoundException('Không tìm thấy nhân viên');
         const { contractType, startDate, baseSalary, allowanceResponsibility, allowanceAttendance, ratePerUnit, unitName, ...workerFields } = dto;
         Object.assign(worker, workerFields);
         await this.repo.save(worker);
@@ -132,7 +132,7 @@ let WorkersService = class WorkersService {
     async setStatus(id, status) {
         const worker = await this.repo.findOne({ where: { id } });
         if (!worker)
-            throw new common_1.NotFoundException('Không tìm thấy công nhân');
+            throw new common_1.NotFoundException('Không tìm thấy nhân viên');
         worker.status = status;
         await this.repo.save(worker);
         return this.enrichOne(worker);
@@ -140,7 +140,7 @@ let WorkersService = class WorkersService {
     async remove(id) {
         const worker = await this.repo.findOne({ where: { id } });
         if (!worker)
-            throw new common_1.NotFoundException('Không tìm thấy công nhân');
+            throw new common_1.NotFoundException('Không tìm thấy nhân viên');
         await this.repo.softDelete(id);
     }
 };

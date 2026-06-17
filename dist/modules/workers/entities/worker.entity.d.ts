@@ -8,7 +8,7 @@ export declare class Worker {
     phone: string | null;
     address: string | null;
     position: string;
-    experienceYears: number;
+    specialty: string | null;
     status: string;
     notes: string | null;
     siteId: string | null;
