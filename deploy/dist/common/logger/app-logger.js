@@ -7,7 +7,7 @@ const fs_1 = require("fs");
 const path_1 = require("path");
 const ORDER = ['debug', 'info', 'warn', 'error'];
 const MIN_LEVEL = process.env.LOG_LEVEL || 'info';
-const LOG_DIR = process.env.LOG_DIR || (0, path_1.join)(process.cwd(), 'logs');
+const LOG_DIR = process.env.LOG_DIR || (0, path_1.join)(__dirname, '../../..', 'logs');
 const TO_FILE = process.env.LOG_TO_FILE !== 'false';
 const SENSITIVE = /^(password|pass|token|secret|authorization|auth|jwt|accesstoken|refreshtoken)$/i;
 const MAX_STR = 2000;

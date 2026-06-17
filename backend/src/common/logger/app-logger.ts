@@ -17,7 +17,7 @@ export type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 const ORDER: LogLevel[] = ['debug', 'info', 'warn', 'error']
 
 const MIN_LEVEL = (process.env.LOG_LEVEL as LogLevel) || 'info'
-const LOG_DIR = process.env.LOG_DIR || join(process.cwd(), 'logs')
+const LOG_DIR = process.env.LOG_DIR || join(__dirname, '../../..', 'logs')
 const TO_FILE = process.env.LOG_TO_FILE !== 'false'
 
 /** Khóa nhạy cảm sẽ bị che khi ghi log (không lộ mật khẩu/token ra file). */

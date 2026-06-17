@@ -14,7 +14,10 @@ import { LogsModule } from './modules/logs/logs.module'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      envFilePath: join(__dirname, '..', '.env'),
+    }),
     // Phục vụ frontend (React build) ngay từ backend → 1 domain duy nhất, không CORS.
     // FE build được copy vào backend/client; mọi path /api* loại trừ để rơi vào controller.
     ServeStaticModule.forRoot({
