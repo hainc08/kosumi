@@ -11,7 +11,7 @@ const app_logger_1 = require("./common/logger/app-logger");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix('api');
-    app.enableCors({ origin: /^http:\/\/localhost:\d+$/ });
+    app.enableCors({ origin: /^http:\/\/localhost:\d+$/, credentials: true });
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
     app.useGlobalInterceptors(new logging_interceptor_1.LoggingInterceptor(), new response_interceptor_1.ResponseInterceptor());
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
