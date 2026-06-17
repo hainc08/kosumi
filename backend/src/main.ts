@@ -10,7 +10,7 @@ import { appLog } from './common/logger/app-logger'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.setGlobalPrefix('api')
-  app.enableCors({ origin: /^http:\/\/localhost:\d+$/ }) // mọi cổng localhost (vite có thể nhảy 5173/5174/5175...)
+  app.enableCors({ origin: /^http:\/\/localhost:\d+$/, credentials: true }) // mọi cổng localhost (vite có thể nhảy 5173/5174/5175...)
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
   // Thứ tự: LoggingInterceptor (ngoài) bọc ResponseInterceptor (trong) → log thấy payload cuối.
   app.useGlobalInterceptors(new LoggingInterceptor(), new ResponseInterceptor())
