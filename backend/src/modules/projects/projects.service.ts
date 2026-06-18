@@ -19,11 +19,12 @@ export type ProjectWithRelations = Project & {
   customer?: { id: string; name: string }
   quoteCount: number
   workerCount: number
+  hasInstallation: boolean
   quotes: QuoteMini[]
 }
 
-type ProjectAgg = { quoteCount: number; workerCount: number; quotes: QuoteMini[] }
-const ZERO_AGG: ProjectAgg = { quoteCount: 0, workerCount: 0, quotes: [] }
+type ProjectAgg = { quoteCount: number; workerCount: number; hasInstallation: boolean; quotes: QuoteMini[] }
+const ZERO_AGG: ProjectAgg = { quoteCount: 0, workerCount: 0, hasInstallation: false, quotes: [] }
 
 @Injectable()
 export class ProjectsService {
@@ -37,7 +38,7 @@ export class ProjectsService {
   /** Đếm số báo giá + số công nhân (distinct, đang active) theo từng dự án (batch, tránh N+1). */
   private async loadAggregates(ids: string[]): Promise<Map<string, ProjectAgg>> {
     const map = new Map<string, ProjectAgg>()
-    for (const id of ids) map.set(id, { quoteCount: 0, workerCount: 0, quotes: [] })
+    for (const id of ids) map.set(id, { quoteCount: 0, workerCount: 0, hasInstallation: false, quotes: [] })
     if (ids.length === 0) return map
 
     const [quoteRows, workerRows] = await Promise.all([
@@ -47,11 +48,12 @@ export class ProjectsService {
         .addSelect('q.code', 'code')
         .addSelect('q.title', 'title')
         .addSelect('q.status', 'status')
+        .addSelect('q.hasInstallation', 'has_installation')
         .addSelect('q.projectId', 'pid')
         .where('q.projectId IN (:...ids)', { ids })
         .andWhere('q.deletedAt IS NULL')
         .orderBy('q.code', 'ASC')
-        .getRawMany<{ id: string; code: string; title: string; status: string; pid: string }>(),
+        .getRawMany<{ id: string; code: string; title: string; status: string; pid: string; has_installation: number }>(),
       this.dataSource.getRepository(TaskAssignment).createQueryBuilder('ta')
         .innerJoin(Task, 't', 't.id = ta.task_id')
         .select('t.project_id', 'pid')
@@ -63,7 +65,11 @@ export class ProjectsService {
     ])
     for (const r of quoteRows) {
       const a = map.get(r.pid)
-      if (a) { a.quotes.push({ id: r.id, code: r.code, title: r.title, status: r.status }); a.quoteCount += 1 }
+      if (a) {
+        a.quotes.push({ id: r.id, code: r.code, title: r.title, status: r.status })
+        a.quoteCount += 1
+        if (Number(r.has_installation) === 1) a.hasInstallation = true
+      }
     }
     for (const r of workerRows) {
       const a = map.get(r.pid)
@@ -86,6 +92,7 @@ export class ProjectsService {
       customer: customer ? { id: customer.id, name: customer.name } : undefined,
       quoteCount: agg.quoteCount,
       workerCount: agg.workerCount,
+      hasInstallation: agg.hasInstallation,
       quotes: agg.quotes,
     }
   }
@@ -115,6 +122,7 @@ export class ProjectsService {
         customer: customer ? { id: customer.id, name: customer.name } : undefined,
         quoteCount: agg.quoteCount,
         workerCount: agg.workerCount,
+        hasInstallation: agg.hasInstallation,
         quotes: agg.quotes,
       }
     })
