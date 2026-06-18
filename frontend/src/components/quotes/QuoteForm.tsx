@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useForm, useFieldArray, Controller, type Control, type UseFormRegister, type FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconFileInvoice, IconPlus, IconTrash, IconSend } from '@tabler/icons-react'
-import { PAYMENT_TERMS_LABELS, type PaymentTermsPreset, type Quote } from '@/types'
+import { type Quote } from '@/types'
 import { useCreateQuote, useUpdateQuote, useUpdateQuoteStatus, useNextQuoteCode } from '@/api/quotes'
 import { useGenerateTasksFromQuote } from '@/api/tasks'
 import { useProjects } from '@/api/projects'
@@ -125,13 +125,11 @@ export function QuoteForm({ open, onClose, quote }: Props) {
           <FormField label="Số báo giá (tự sinh)">
             <input value={code} readOnly className="qf-readonly" />
           </FormField>
-          <FormField label="ĐK Thanh toán">
-            <select {...register('paymentTerms')}>
-              <option value="">-- Chọn điều khoản --</option>
-              {(Object.keys(PAYMENT_TERMS_LABELS) as PaymentTermsPreset[]).map((k) => (
-                <option key={k} value={k}>{PAYMENT_TERMS_LABELS[k]}</option>
-              ))}
-            </select>
+          <FormField label="Lắp đặt">
+            <label className="qf-check" style={{ marginTop: 8 }}>
+              <input type="checkbox" {...register('hasInstallation')} />
+              Có lắp đặt (dự án thực hiện ở công trường + nhà máy)
+            </label>
           </FormField>
         </div>
 

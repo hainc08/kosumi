@@ -97,6 +97,7 @@ export function createQuoteInDb(v: QuoteFormValues): Quote {
     title: v.title, quoteDate: v.quoteDate, validUntil: v.validUntil ?? null,
     status: 'draft', rejectReason: null, taxRate: v.taxRate,
     validityDays: v.validityDays, deliveryDays: v.deliveryDays, paymentTerms: v.paymentTerms,
+    hasInstallation: v.hasInstallation ?? false,
     warrantyNote: v.warrantyNote ?? null, contractorNote: v.contractorNote ?? null, notes: v.notes ?? null,
     createdAt: now(), updatedAt: now()
   }
