@@ -3,6 +3,7 @@ export declare class Customer {
     code: string;
     name: string;
     type: string;
+    industry: string | null;
     taxCode: string | null;
     address: string | null;
     website: string | null;

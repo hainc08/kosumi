@@ -16,6 +16,7 @@ let Customer = class Customer {
     code;
     name;
     type;
+    industry;
     taxCode;
     address;
     website;
@@ -44,9 +45,13 @@ __decorate([
     __metadata("design:type", String)
 ], Customer.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: ['business', 'studio', 'foreign', 'state'] }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: ['domestic', 'foreign', 'state', 'household', 'individual'] }),
     __metadata("design:type", String)
 ], Customer.prototype, "type", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 200, nullable: true }),
+    __metadata("design:type", Object)
+], Customer.prototype, "industry", void 0);
 __decorate([
     (0, typeorm_1.Column)({ name: 'tax_code', type: 'varchar', length: 50, nullable: true }),
     __metadata("design:type", Object)

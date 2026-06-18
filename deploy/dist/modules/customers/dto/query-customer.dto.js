@@ -27,7 +27,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     EmptyToUndefined(),
-    (0, class_validator_1.IsEnum)(['business', 'studio', 'foreign', 'state']),
+    (0, class_validator_1.IsEnum)(['domestic', 'foreign', 'state', 'household', 'individual']),
     __metadata("design:type", String)
 ], QueryCustomerDto.prototype, "type", void 0);
 __decorate([
