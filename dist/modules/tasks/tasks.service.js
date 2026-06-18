@@ -23,6 +23,7 @@ const quote_item_entity_1 = require("../quotes/entities/quote-item.entity");
 const quote_entity_1 = require("../quotes/entities/quote.entity");
 const project_entity_1 = require("../projects/entities/project.entity");
 const worker_display_util_1 = require("../../common/utils/worker-display.util");
+const worker_positions_1 = require("../workers/worker-positions");
 let TasksService = class TasksService {
     repo;
     assignmentRepo;
@@ -140,7 +141,7 @@ let TasksService = class TasksService {
     async availableWorkers(_siteId) {
         const busy = await this.assignmentRepo.find({ where: { isActive: true } });
         const busyIds = new Set(busy.map((a) => a.workerId));
-        const workers = await this.workerRepo.find({ where: { status: 'working' } });
+        const workers = await this.workerRepo.find({ where: { status: 'working', position: (0, typeorm_2.In)(worker_positions_1.STAFF_POSITIONS) } });
         return workers
             .filter((w) => !busyIds.has(w.id))
             .map((w) => ({ ...w, initials: (0, worker_display_util_1.deriveInitials)(w.fullName), avatarColor: (0, worker_display_util_1.avatarColorFor)(w.id) }));
