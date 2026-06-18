@@ -3,6 +3,7 @@ import { mockRequest } from './client'
 import { apiGet, apiPost } from './http'
 import { db, nextId } from '@/mocks/db'
 import type { Task, TaskAssignment, Worker } from '@/types'
+import { STAFF_POSITIONS } from '@/types'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
@@ -89,7 +90,7 @@ export function busyWorkerIds(): Set<string> {
 /** Công nhân sẵn sàng nhận việc (đang làm việc & chưa bận). */
 export function availableWorkersAtSite(_siteId: string): Worker[] {
   const busy = busyWorkerIds()
-  return db.workers.filter((w) => w.status === 'working' && !busy.has(w.id))
+  return db.workers.filter((w) => w.status === 'working' && !busy.has(w.id) && STAFF_POSITIONS.includes(w.position))
 }
 
 export function assignWorkerInDb(taskId: string, workerId: string): TaskAssignment {
