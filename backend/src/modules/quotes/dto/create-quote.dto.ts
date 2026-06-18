@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsArray, IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { IsArray, IsBoolean, IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { CreateQuoteItemDto } from './create-quote-item.dto'
 import { CreateQuotePaymentStepDto } from './create-quote-payment-step.dto'
 
@@ -17,6 +17,7 @@ export class CreateQuoteDto {
   @IsInt() validityDays: number
   @IsInt() deliveryDays: number
   @IsString() paymentTerms: string
+  @IsOptional() @IsBoolean() hasInstallation?: boolean
   @IsOptional() @IsString() warrantyNote?: string
   @IsOptional() @IsString() contractorNote?: string
   @IsOptional() @IsString() notes?: string

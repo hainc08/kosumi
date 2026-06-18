@@ -220,6 +220,7 @@ export class QuotesService {
         validityDays: dto.validityDays,
         deliveryDays: dto.deliveryDays,
         paymentTerms: dto.paymentTerms,
+        hasInstallation: dto.hasInstallation ?? false,
         warrantyNote: dto.warrantyNote ?? null,
         contractorNote: dto.contractorNote ?? null,
         notes: dto.notes ?? null,

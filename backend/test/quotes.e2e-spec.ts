@@ -118,6 +118,23 @@ describe('Quotes (e2e)', () => {
     expect(res.body.data.paymentSteps).toHaveLength(2)
   })
 
+  it('POST /api/quotes lưu hasInstallation và trả lại đúng', async () => {
+    const res = await request(app.getHttpServer()).post('/api/quotes')
+      .send({
+        projectId,
+        title: 'Báo giá có lắp đặt',
+        quoteDate: '2026-06-18',
+        taxRate: 8, validityDays: 14, deliveryDays: 30, paymentTerms: '50-50',
+        hasInstallation: true,
+        items: [{ itemName: 'HM', unit: 'm2', quantity: 1, unitPrice: 1000 }],
+        paymentSteps: [{ percentage: 100, description: '1 lần' }],
+      }).expect(201)
+    expect(res.body.data.hasInstallation).toBe(true)
+
+    const got = await request(app.getHttpServer()).get(`/api/quotes/${res.body.data.id}`).expect(200)
+    expect(got.body.data.hasInstallation).toBe(true)
+  })
+
   it('DELETE /api/quotes/:id soft delete', async () => {
     await request(app.getHttpServer()).delete(`/api/quotes/${createdId}`).expect(200)
     await request(app.getHttpServer()).get(`/api/quotes/${createdId}`).expect(404)

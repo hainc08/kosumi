@@ -17,6 +17,7 @@ export class Quote {
   @Column({ name: 'validity_days', type: 'int' }) validityDays: number
   @Column({ name: 'delivery_days', type: 'int' }) deliveryDays: number
   @Column({ name: 'payment_terms', type: 'varchar', length: 50 }) paymentTerms: string
+  @Column({ name: 'has_installation', type: 'boolean', default: false }) hasInstallation: boolean
   @Column({ name: 'warranty_note', type: 'text', nullable: true }) warrantyNote: string | null
   @Column({ name: 'contractor_note', type: 'text', nullable: true }) contractorNote: string | null
   @Column({ type: 'text', nullable: true }) notes: string | null

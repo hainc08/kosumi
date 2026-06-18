@@ -163,6 +163,7 @@ CREATE TABLE `quotes` (
   `validity_days` int(11) NOT NULL,
   `delivery_days` int(11) NOT NULL,
   `payment_terms` varchar(50) NOT NULL,
+  `has_installation` tinyint(1) NOT NULL DEFAULT 0,
   `warranty_note` text DEFAULT NULL,
   `contractor_note` text DEFAULT NULL,
   `notes` text DEFAULT NULL,
