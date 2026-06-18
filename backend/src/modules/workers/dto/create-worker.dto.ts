@@ -1,4 +1,5 @@
 import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import { ALL_POSITIONS } from '../worker-positions'
 
 export class CreateWorkerDto {
   // ─── worker ──────────────────────────────────────────────
@@ -8,7 +9,7 @@ export class CreateWorkerDto {
   @IsOptional() @IsString() idNumber?: string
   @IsOptional() @IsString() phone?: string
   @IsOptional() @IsString() address?: string
-  @IsEnum(['team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other']) position: string
+  @IsEnum(ALL_POSITIONS) position: string
   @IsOptional() @IsString() specialty?: string
   @IsOptional() @IsString() notes?: string
   @IsOptional() @IsString() siteId?: string

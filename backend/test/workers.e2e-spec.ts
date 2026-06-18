@@ -53,6 +53,15 @@ describe('Workers (e2e)', () => {
     expect(res.body.data.status).toBe('on_leave')
   })
 
+  it('POST /api/workers chấp nhận chức vụ mới (foreman/director)', async () => {
+    const f = await request(app.getHttpServer()).post('/api/workers')
+      .send({ fullName: 'Quản đốc Test', gender: 'male', position: 'foreman', contractType: 'official', startDate: '2026-01-01', baseSalary: 9000000 }).expect(201)
+    expect(f.body.data.position).toBe('foreman')
+    const d = await request(app.getHttpServer()).post('/api/workers')
+      .send({ fullName: 'Giám đốc Test', gender: 'male', position: 'director', contractType: 'official', startDate: '2026-01-01', baseSalary: 20000000 }).expect(201)
+    expect(d.body.data.position).toBe('director')
+  })
+
   it('DELETE /api/workers/:id soft delete', async () => {
     await request(app.getHttpServer()).delete(`/api/workers/${createdId}`).expect(200)
     await request(app.getHttpServer()).get(`/api/workers/${createdId}`).expect(404)

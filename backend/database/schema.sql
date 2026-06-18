@@ -64,7 +64,7 @@ CREATE TABLE `workers` (
   `id_number` varchar(20) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `address` text DEFAULT NULL,
-  `position` enum('team_leader','senior_worker','worker','apprentice','technician','supervisor','other') NOT NULL,
+  `position` enum('foreman','deputy_foreman','team_leader','deputy_leader','worker','director','deputy_director','chief_accountant','accountant','storekeeper','sales','other') NOT NULL,
   `specialty` varchar(200) DEFAULT NULL,
   `status` enum('working','on_leave','absent','resigned') NOT NULL DEFAULT 'working',
   `notes` text DEFAULT NULL,
