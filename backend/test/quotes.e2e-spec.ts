@@ -135,6 +135,30 @@ describe('Quotes (e2e)', () => {
     expect(got.body.data.hasInstallation).toBe(true)
   })
 
+  it('duplicate giữ nguyên hasInstallation; update đổi được cờ', async () => {
+    const created = await request(app.getHttpServer()).post('/api/quotes')
+      .send({
+        projectId, title: 'BG gốc lắp đặt', quoteDate: '2026-06-18',
+        taxRate: 8, validityDays: 14, deliveryDays: 30, paymentTerms: '50-50',
+        hasInstallation: true,
+        items: [{ itemName: 'HM', unit: 'm2', quantity: 1, unitPrice: 1000 }],
+        paymentSteps: [{ percentage: 100, description: '1 lần' }],
+      }).expect(201)
+
+    const dup = await request(app.getHttpServer()).post(`/api/quotes/${created.body.data.id}/duplicate`).expect(201)
+    expect(dup.body.data.hasInstallation).toBe(true)
+
+    const upd = await request(app.getHttpServer()).put(`/api/quotes/${created.body.data.id}`)
+      .send({
+        projectId, title: 'BG gốc lắp đặt', quoteDate: '2026-06-18',
+        taxRate: 8, validityDays: 14, deliveryDays: 30, paymentTerms: '50-50',
+        hasInstallation: false,
+        items: [{ itemName: 'HM', unit: 'm2', quantity: 1, unitPrice: 1000 }],
+        paymentSteps: [{ percentage: 100, description: '1 lần' }],
+      }).expect(200)
+    expect(upd.body.data.hasInstallation).toBe(false)
+  })
+
   it('DELETE /api/quotes/:id soft delete', async () => {
     await request(app.getHttpServer()).delete(`/api/quotes/${createdId}`).expect(200)
     await request(app.getHttpServer()).get(`/api/quotes/${createdId}`).expect(404)

@@ -310,6 +310,7 @@ export class QuotesService {
         validityDays: source.validityDays,
         deliveryDays: source.deliveryDays,
         paymentTerms: source.paymentTerms,
+        hasInstallation: source.hasInstallation,
         warrantyNote: source.warrantyNote,
         contractorNote: source.contractorNote,
         notes: source.notes,
