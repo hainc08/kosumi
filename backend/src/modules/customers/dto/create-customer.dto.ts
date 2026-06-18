@@ -4,7 +4,8 @@ import { CreateCustomerContactDto } from './create-customer-contact.dto'
 
 export class CreateCustomerDto {
   @IsString() @IsNotEmpty() name: string
-  @IsEnum(['business', 'studio', 'foreign', 'state']) type: string
+  @IsEnum(['domestic', 'foreign', 'state', 'household', 'individual']) type: string
+  @IsOptional() @IsString() industry?: string
   @IsOptional() @IsString() taxCode?: string
   @IsOptional() @IsString() address?: string
   @IsOptional() @IsString() website?: string

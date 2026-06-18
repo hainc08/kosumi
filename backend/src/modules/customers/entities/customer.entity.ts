@@ -5,7 +5,8 @@ export class Customer {
   @PrimaryGeneratedColumn('uuid') id: string
   @Column({ unique: true, length: 20 }) code: string
   @Column({ length: 200 }) name: string
-  @Column({ type: 'enum', enum: ['business', 'studio', 'foreign', 'state'] }) type: string
+  @Column({ type: 'enum', enum: ['domestic', 'foreign', 'state', 'household', 'individual'] }) type: string
+  @Column({ type: 'varchar', length: 200, nullable: true }) industry: string | null
   @Column({ name: 'tax_code', type: 'varchar', length: 50, nullable: true }) taxCode: string | null
   @Column({ type: 'text', nullable: true }) address: string | null
   @Column({ type: 'varchar', length: 200, nullable: true }) website: string | null

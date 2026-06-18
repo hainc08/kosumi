@@ -140,6 +140,7 @@ export class CustomersService {
       const customer = m.create(Customer, {
         name: dto.name,
         type: dto.type,
+        industry: dto.industry ?? null,
         taxCode: dto.taxCode ?? null,
         address: dto.address ?? null,
         website: dto.website ?? null,

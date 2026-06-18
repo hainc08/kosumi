@@ -21,7 +21,7 @@ describe('Customers (e2e)', () => {
     const res = await request(app.getHttpServer()).post('/api/customers')
       .send({
         name: 'Công ty Test E2E',
-        type: 'business',
+        type: 'domestic',
         taxCode: '0123456789',
         contacts: [
           { fullName: 'Nguyễn Văn A', title: 'Giám đốc', phone: '0900000001', email: 'a@test.com' },
@@ -52,7 +52,7 @@ describe('Customers (e2e)', () => {
     const res = await request(app.getHttpServer()).put(`/api/customers/${createdId}`)
       .send({
         name: 'Công ty Test E2E',
-        type: 'business',
+        type: 'domestic',
         contacts: [
           { fullName: 'Lê Văn C', title: 'Trưởng phòng', phone: '0900000003', email: 'c@test.com' },
         ],
@@ -64,6 +64,21 @@ describe('Customers (e2e)', () => {
     const get = await request(app.getHttpServer()).get(`/api/customers/${createdId}`).expect(200)
     expect(get.body.data.contacts).toHaveLength(1)
     expect(get.body.data.contacts[0].fullName).toBe('Lê Văn C')
+  })
+
+  it('POST /api/customers chấp nhận type mới + industry; lọc ?type=domestic không 400', async () => {
+    const res = await request(app.getHttpServer()).post('/api/customers')
+      .send({
+        name: 'Hộ KD Cơ khí Test',
+        type: 'household',
+        industry: 'Cơ khí chính xác',
+        contacts: [{ fullName: 'Người LH', title: 'Chủ', phone: '0900000009', email: 'h@test.com' }],
+      }).expect(201)
+    expect(res.body.data.type).toBe('household')
+    expect(res.body.data.industry).toBe('Cơ khí chính xác')
+
+    const list = await request(app.getHttpServer()).get('/api/customers').query({ type: 'domestic' }).expect(200)
+    expect(Array.isArray(list.body.data)).toBe(true)
   })
 
   it('DELETE /api/customers/:id soft delete', async () => {

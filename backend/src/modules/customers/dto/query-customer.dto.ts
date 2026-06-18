@@ -6,6 +6,6 @@ const EmptyToUndefined = () => Transform(({ value }) => (value === '' ? undefine
 
 export class QueryCustomerDto {
   @IsOptional() @IsString() search?: string
-  @IsOptional() @EmptyToUndefined() @IsEnum(['business', 'studio', 'foreign', 'state']) type?: string
+  @IsOptional() @EmptyToUndefined() @IsEnum(['domestic', 'foreign', 'state', 'household', 'individual']) type?: string
   @IsOptional() @EmptyToUndefined() @IsEnum(['active', 'inactive', 'pending']) status?: string
 }
