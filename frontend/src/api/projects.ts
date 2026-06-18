@@ -32,7 +32,7 @@ export function filterProjects(list: Project[], f: ProjectFilters): Project[] {
   return list
     .map((p) => {
       const quotes = quotesOfProject(p.id)
-      return { ...p, quotes, quoteCount: quotes.length }
+      return { ...p, quotes, quoteCount: quotes.length, hasInstallation: db.quotes.some((q) => q.projectId === p.id && q.hasInstallation) }
     })
     .filter((p) => {
       if (f.status && p.status !== f.status) return false
