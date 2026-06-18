@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Customer, CustomerType, CustomerStatus, CreateCustomerDto } from '@/types'
+import type { Customer, CustomerType, CreateCustomerDto } from '@/types'
 
 export interface ContactRow { fullName: string; title: string; phone: string; email: string }
 export interface CustomerFormShape {
@@ -8,7 +8,7 @@ export interface CustomerFormShape {
   taxCode: string
   address: string
   website: string
-  status: CustomerStatus
+  industry: string
   notes: string
   defaultValidityDays: string
   defaultDeliveryDays: string
@@ -25,11 +25,11 @@ const intStr = (msg: string) => z.string().refine((v) => {
 
 export const customerSchema = z.object({
   name: z.string().min(1, 'Bắt buộc nhập tên khách hàng'),
-  type: z.enum(['business', 'studio', 'foreign', 'state']),
+  type: z.enum(['domestic', 'foreign', 'state', 'household', 'individual']),
   taxCode: z.string(),
   address: z.string(),
   website: z.string(),
-  status: z.enum(['active', 'inactive', 'pending']),
+  industry: z.string(),
   notes: z.string(),
   defaultValidityDays: intStr('Số ngày không hợp lệ'),
   defaultDeliveryDays: intStr('Số ngày không hợp lệ'),
@@ -45,7 +45,7 @@ export const customerSchema = z.object({
 })
 
 export const emptyCustomerForm: CustomerFormShape = {
-  name: '', type: 'business', taxCode: '', address: '', website: '', status: 'active', notes: '',
+  name: '', type: 'domestic', taxCode: '', address: '', website: '', industry: '', notes: '',
   defaultValidityDays: '10', defaultDeliveryDays: '50', defaultPaymentTerms: '30-25-35-10',
   defaultWarrantyNote: '', defaultSpecialNote: '',
   contacts: [{ fullName: '', title: '', phone: '', email: '' }],
@@ -54,7 +54,7 @@ export const emptyCustomerForm: CustomerFormShape = {
 export function customerToForm(c: Customer): CustomerFormShape {
   return {
     name: c.name, type: c.type, taxCode: c.taxCode ?? '', address: c.address ?? '',
-    website: c.website ?? '', status: c.status, notes: c.notes ?? '',
+    website: c.website ?? '', industry: c.industry ?? '', notes: c.notes ?? '',
     defaultValidityDays: String(c.defaultValidityDays), defaultDeliveryDays: String(c.defaultDeliveryDays),
     defaultPaymentTerms: c.defaultPaymentTerms, defaultWarrantyNote: c.defaultWarrantyNote ?? '',
     defaultSpecialNote: c.defaultSpecialNote ?? '',
@@ -67,7 +67,7 @@ export function customerToForm(c: Customer): CustomerFormShape {
 export function formToCreateDto(v: CustomerFormShape): CreateCustomerDto {
   return {
     name: v.name, type: v.type, taxCode: v.taxCode || undefined, address: v.address || undefined,
-    website: v.website || undefined, status: v.status,
+    website: v.website || undefined, industry: v.industry || undefined,
     defaultValidityDays: Number(v.defaultValidityDays), defaultDeliveryDays: Number(v.defaultDeliveryDays),
     defaultPaymentTerms: v.defaultPaymentTerms,
     defaultWarrantyNote: v.defaultWarrantyNote || undefined, defaultSpecialNote: v.defaultSpecialNote || undefined,

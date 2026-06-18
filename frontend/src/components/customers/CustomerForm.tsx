@@ -3,8 +3,8 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconBuildingStore, IconPlus, IconTrash } from '@tabler/icons-react'
 import {
-  CUSTOMER_TYPE_LABELS, CUSTOMER_STATUS_LABELS, PAYMENT_TERMS_LABELS,
-  type CustomerType, type CustomerStatus, type PaymentTermsPreset, type Customer,
+  CUSTOMER_TYPE_LABELS,
+  type CustomerType, type Customer,
 } from '@/types'
 import { useCreateCustomer, useUpdateCustomer } from '@/api/customers'
 import { useToastStore } from '@/stores/toastStore'
@@ -17,7 +17,7 @@ import {
 import './CustomerForm.css'
 
 interface Props { open: boolean; onClose: () => void; customer?: Customer | null }
-type Tab = 1 | 2 | 3
+type Tab = 1 | 2
 
 export function CustomerForm({ open, onClose, customer }: Props) {
   const [tab, setTab] = useState<Tab>(1)
@@ -68,7 +68,6 @@ export function CustomerForm({ open, onClose, customer }: Props) {
       <div className="cust-tabs">
         <button type="button" className={tabClass(1)} onClick={() => setTab(1)}>Thông tin chung</button>
         <button type="button" className={tabClass(2)} onClick={() => setTab(2)}>Người liên hệ ({contacts.fields.length})</button>
-        <button type="button" className={tabClass(3)} onClick={() => setTab(3)}>Điều khoản mặc định</button>
       </div>
 
       <form onSubmit={onSubmit}>
@@ -91,12 +90,8 @@ export function CustomerForm({ open, onClose, customer }: Props) {
             <FormField label="Website">
               <input placeholder="VD: company.vn" {...register('website')} />
             </FormField>
-            <FormField label="Trạng thái" required>
-              <select {...register('status')}>
-                {(Object.keys(CUSTOMER_STATUS_LABELS) as CustomerStatus[]).map((k) => (
-                  <option key={k} value={k}>{CUSTOMER_STATUS_LABELS[k]}</option>
-                ))}
-              </select>
+            <FormField label="Ngành nghề KD chính">
+              <input placeholder="VD: Xây dựng, Cơ khí chính xác, kết cấu thép..." {...register('industry')} />
             </FormField>
           </div>
           <FormField label="Địa chỉ trụ sở">
@@ -142,30 +137,7 @@ export function CustomerForm({ open, onClose, customer }: Props) {
           </Button>
         </div>
 
-        {/* Tab 3 */}
-        <div style={{ display: tab === 3 ? 'block' : 'none' }}>
-          <div className="form-grid">
-            <FormField label="Hiệu lực báo giá (ngày)" required error={errors.defaultValidityDays?.message}>
-              <input inputMode="numeric" {...register('defaultValidityDays')} />
-            </FormField>
-            <FormField label="Thời gian giao hàng (ngày)" required error={errors.defaultDeliveryDays?.message}>
-              <input inputMode="numeric" {...register('defaultDeliveryDays')} />
-            </FormField>
-            <FormField label="Điều khoản thanh toán">
-              <select {...register('defaultPaymentTerms')}>
-                {(Object.keys(PAYMENT_TERMS_LABELS) as PaymentTermsPreset[]).map((k) => (
-                  <option key={k} value={k}>{PAYMENT_TERMS_LABELS[k]}</option>
-                ))}
-              </select>
-            </FormField>
-          </div>
-          <FormField label="Bảo hành mặc định">
-            <textarea {...register('defaultWarrantyNote')} />
-          </FormField>
-          <FormField label="Ghi chú điều khoản đặc biệt">
-            <textarea {...register('defaultSpecialNote')} />
-          </FormField>
-        </div>
+
       </form>
     </FormModal>
   )
