@@ -14,6 +14,7 @@ export interface QuoteFormValues {
   title: string; quoteDate: string; validUntil?: string
   taxRate: number; validityDays: number; deliveryDays: number
   paymentTerms: PaymentTermsPreset | string
+  hasInstallation: boolean
   warrantyNote?: string; contractorNote?: string; notes?: string
   items: Omit<QuoteItem, 'id'>[]
   paymentSteps: Omit<QuotePaymentStep, 'id'>[]

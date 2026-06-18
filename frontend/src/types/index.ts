@@ -266,6 +266,7 @@ export interface Project extends BaseEntity {
   quoteCount?:    number
   workerCount?:   number
   quotes?:        { id: string; code: string; title: string; status: string }[]  // báo giá liên quan
+  hasInstallation?: boolean
 }
 
 // ─── QUOTE ───────────────────────────────────────────────────────────────────
@@ -326,6 +327,7 @@ export interface Quote extends BaseEntity {
   validityDays:   number          // Hiệu lực báo giá (ngày)
   deliveryDays:   number          // Thời gian giao hàng (ngày)
   paymentTerms:   PaymentTermsPreset | string
+  hasInstallation: boolean
   warrantyNote:   string | null
   contractorNote: string | null   // "Nhà thầu chính cung cấp (miễn phí)"
   notes:          string | null

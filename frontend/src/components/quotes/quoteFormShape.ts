@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Quote, PaymentTermsPreset } from '@/types'
+import type { Quote } from '@/types'
 import type { QuoteFormValues } from '@/api/quotes'
 
 /** Hạng mục (line item) bên trong 1 đầu mục. */
@@ -38,7 +38,7 @@ export interface QuoteFormShape {
   taxRate: string
   validityDays: string
   deliveryDays: string
-  paymentTerms: PaymentTermsPreset | string
+  hasInstallation: boolean
   warrantyNote: string
   contractorNote: string
   notes: string
@@ -66,7 +66,7 @@ export const quoteSchema = z.object({
   taxRate: z.string().refine((v) => !Number.isNaN(Number(v)), 'VAT phải là số'),
   validityDays: z.string().refine((v) => !Number.isNaN(Number(v)), 'Hiệu lực phải là số'),
   deliveryDays: z.string().refine((v) => !Number.isNaN(Number(v)), 'Thời gian giao hàng phải là số'),
-  paymentTerms: z.string().min(1, 'Bắt buộc chọn/nhập điều khoản thanh toán'),
+  hasInstallation: z.boolean(),
   warrantyNote: z.string(),
   contractorNote: z.string(),
   notes: z.string(),
@@ -116,7 +116,7 @@ export function emptyQuoteForm(projectId?: string, customerId?: string): QuoteFo
     taxRate: '8',
     validityDays: '30',
     deliveryDays: '50',
-    paymentTerms: '30-25-35-10',
+    hasInstallation: false,
     warrantyNote: '',
     contractorNote: '',
     notes: '',
@@ -155,7 +155,7 @@ export function quoteToForm(q: Quote): QuoteFormShape {
     taxRate: String(q.taxRate),
     validityDays: String(q.validityDays),
     deliveryDays: String(q.deliveryDays),
-    paymentTerms: q.paymentTerms,
+    hasInstallation: q.hasInstallation ?? false,
     warrantyNote: q.warrantyNote ?? '',
     contractorNote: q.contractorNote ?? '',
     notes: q.notes ?? '',
@@ -197,7 +197,8 @@ export function formToValues(v: QuoteFormShape): QuoteFormValues {
     taxRate: Number(v.taxRate),
     validityDays: Number(v.validityDays),
     deliveryDays: Number(v.deliveryDays),
-    paymentTerms: v.paymentTerms,
+    paymentTerms: v.paymentSteps.map((s) => String(Math.round(Number(s.percentage) || 0))).join('-') || 'custom',
+    hasInstallation: v.hasInstallation,
     warrantyNote: v.warrantyNote || undefined,
     contractorNote: v.contractorNote || undefined,
     notes: v.notes || undefined,
