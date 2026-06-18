@@ -27,6 +27,7 @@ let Quote = class Quote {
     validityDays;
     deliveryDays;
     paymentTerms;
+    hasInstallation;
     warrantyNote;
     contractorNote;
     notes;
@@ -91,6 +92,10 @@ __decorate([
     (0, typeorm_1.Column)({ name: 'payment_terms', type: 'varchar', length: 50 }),
     __metadata("design:type", String)
 ], Quote.prototype, "paymentTerms", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'has_installation', type: 'boolean', default: false }),
+    __metadata("design:type", Boolean)
+], Quote.prototype, "hasInstallation", void 0);
 __decorate([
     (0, typeorm_1.Column)({ name: 'warranty_note', type: 'text', nullable: true }),
     __metadata("design:type", Object)
