@@ -44,7 +44,7 @@ export function createCustomerInDb(dto: CreateCustomerDto): Customer {
   const contacts = buildContacts(id, dto.contacts)
   const primary = contacts.find((c) => c.isPrimary)
   const customer: Customer = {
-    id, code, name: dto.name, type: dto.type, taxCode: dto.taxCode ?? null,
+    id, code, name: dto.name, type: dto.type, industry: dto.industry ?? null, taxCode: dto.taxCode ?? null,
     address: dto.address ?? null, website: dto.website ?? null, status: dto.status ?? 'active',
     defaultValidityDays: dto.defaultValidityDays ?? 10, defaultDeliveryDays: dto.defaultDeliveryDays ?? 50,
     defaultPaymentTerms: dto.defaultPaymentTerms ?? '30-25-35-10',
@@ -64,7 +64,7 @@ export function updateCustomerInDb(id: string, dto: CreateCustomerDto): Customer
   const contacts = buildContacts(id, dto.contacts)
   const primary = contacts.find((x) => x.isPrimary)
   Object.assign(c, {
-    name: dto.name, type: dto.type, taxCode: dto.taxCode ?? null, address: dto.address ?? null,
+    name: dto.name, type: dto.type, industry: dto.industry ?? null, taxCode: dto.taxCode ?? null, address: dto.address ?? null,
     website: dto.website ?? null, status: dto.status ?? c.status,
     defaultValidityDays: dto.defaultValidityDays ?? c.defaultValidityDays,
     defaultDeliveryDays: dto.defaultDeliveryDays ?? c.defaultDeliveryDays,

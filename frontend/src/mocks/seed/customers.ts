@@ -2,7 +2,7 @@ import type { Customer } from '@/types'
 
 export const seedCustomers: Customer[] = [
   {
-    id: 'cust-1', code: 'KH001', name: 'Công ty CP Đầu tư Aeon Việt Nam', type: 'business',
+    id: 'cust-1', code: 'KH001', name: 'Công ty CP Đầu tư Aeon Việt Nam', type: 'domestic', industry: 'Bán lẻ / Thương mại',
     taxCode: '0301234567', address: '30 Bờ Bao Tân Thắng, Sơn Kỳ, Tân Phú, TP.HCM',
     website: 'aeon.com.vn', status: 'active',
     defaultValidityDays: 10, defaultDeliveryDays: 50, defaultPaymentTerms: '30-25-35-10',
@@ -17,7 +17,7 @@ export const seedCustomers: Customer[] = [
     projectCount: 2, quoteCount: 3, totalContractValue: 1850000000,
   },
   {
-    id: 'cust-2', code: 'KH002', name: 'Studio Kiến trúc Minh Anh', type: 'studio',
+    id: 'cust-2', code: 'KH002', name: 'Studio Kiến trúc Minh Anh', type: 'household', industry: 'Kiến trúc / Nội thất',
     taxCode: null, address: '125 Nguyễn Trãi, Thanh Xuân, Hà Nội',
     website: null, status: 'active',
     defaultValidityDays: 7, defaultDeliveryDays: 30, defaultPaymentTerms: '50-50',
@@ -31,7 +31,7 @@ export const seedCustomers: Customer[] = [
     projectCount: 1, quoteCount: 1, totalContractValue: 320000000,
   },
   {
-    id: 'cust-3', code: 'KH003', name: 'Samsung Engineering Vietnam', type: 'foreign',
+    id: 'cust-3', code: 'KH003', name: 'Samsung Engineering Vietnam', type: 'foreign', industry: 'Kỹ thuật / Xây dựng công nghiệp',
     taxCode: '0108889999', address: 'KCN Yên Phong, Bắc Ninh',
     website: 'samsung.com', status: 'pending',
     defaultValidityDays: 14, defaultDeliveryDays: 60, defaultPaymentTerms: '30-70',
@@ -45,7 +45,7 @@ export const seedCustomers: Customer[] = [
     projectCount: 0, quoteCount: 1, totalContractValue: 0,
   },
   {
-    id: 'cust-4', code: 'KH004', name: 'Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh', type: 'state',
+    id: 'cust-4', code: 'KH004', name: 'Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh', type: 'state', industry: 'Hạ tầng / Xây dựng công cộng',
     taxCode: '2300112233', address: 'Số 1 Lý Thái Tổ, TP. Bắc Ninh',
     website: null, status: 'inactive',
     defaultValidityDays: 15, defaultDeliveryDays: 90, defaultPaymentTerms: '100-prepay',
