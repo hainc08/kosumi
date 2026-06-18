@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Worker = void 0;
 const typeorm_1 = require("typeorm");
+const worker_positions_1 = require("../worker-positions");
 let Worker = class Worker {
     id;
     code;
@@ -63,7 +64,7 @@ __decorate([
     __metadata("design:type", Object)
 ], Worker.prototype, "address", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: ['team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other'] }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: worker_positions_1.ALL_POSITIONS }),
     __metadata("design:type", String)
 ], Worker.prototype, "position", void 0);
 __decorate([
