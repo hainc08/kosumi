@@ -31,6 +31,7 @@ export default function QuotesPage() {
   const { data: quotes = [], isLoading } = useQuotes({ search, status, projectId })
 
   const groups = useMemo(() => groupQuotes(quotes), [quotes])
+  const quoteById = useMemo(() => new Map(quotes.map((q) => [q.id, q])), [quotes])
 
   const kpis = useMemo(() => {
     const total = all.length
@@ -86,7 +87,8 @@ export default function QuotesPage() {
                   <table className="q-itable">
                     <tbody>
                       {sec.items.map((it, idx) => {
-                        const q = quotes.find((x) => x.id === it.quoteId)!
+                        const q = quoteById.get(it.quoteId)
+                        if (!q) return null
                         return (
                           <tr key={it.quoteId + idx} onClick={() => setSelected(q)} className="q-irow">
                             <td className="q-irow__name">{it.itemName}</td>
