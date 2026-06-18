@@ -12,6 +12,7 @@ export declare class CreateQuoteDto {
     validityDays: number;
     deliveryDays: number;
     paymentTerms: string;
+    hasInstallation?: boolean;
     warrantyNote?: string;
     contractorNote?: string;
     notes?: string;

@@ -13,6 +13,7 @@ export declare class Quote {
     validityDays: number;
     deliveryDays: number;
     paymentTerms: string;
+    hasInstallation: boolean;
     warrantyNote: string | null;
     contractorNote: string | null;
     notes: string | null;
