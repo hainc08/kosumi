@@ -253,6 +253,8 @@ CREATE TABLE `task_assignments` (
   `started_at` datetime DEFAULT NULL,
   `ended_at` datetime DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_overtime` tinyint(1) NOT NULL DEFAULT 0,
+  `ot_end_at` datetime DEFAULT NULL,
   `transferred_from_task_id` char(36) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
