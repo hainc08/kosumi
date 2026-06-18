@@ -1,29 +1,27 @@
 import { useMemo, useState } from 'react'
-import { 
+import {
   IconFileInvoice, IconCircleCheck, IconClock, IconCurrencyDollar, IconPlus,
-  IconSend, IconCopy, IconEdit, IconTrash, IconCheck, IconX, IconEye, IconPrinter
 } from '@tabler/icons-react'
 import { QUOTE_STATUS_LABELS, type Quote, type QuoteStatus } from '@/types'
-import { useQuotes, useUpdateQuoteStatus, useDuplicateQuote } from '@/api/quotes'
+import { useQuotes } from '@/api/quotes'
 import { useProjects } from '@/api/projects'
-import { formatCurrency, formatDate } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 import { PageShell } from '@/components/layout/PageShell'
 import { KpiCard } from '@/components/ui/KpiCard'
-import { DataTable, type Column } from '@/components/ui/DataTable'
 import { SearchBox } from '@/components/ui/SearchBox'
 import { FilterSelect } from '@/components/ui/FilterSelect'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { QuoteForm } from '@/components/quotes/QuoteForm'
 import { QuoteDetailDrawer, QUOTE_STATUS_VARIANT } from '@/components/quotes/QuoteDetailDrawer'
-import { useToastStore } from '@/stores/toastStore'
+import { groupQuotes } from '@/components/quotes/groupQuotes'
 import './Quotes.css'
 
 export default function QuotesPage() {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [projectId, setProjectId] = useState('')
-  
+
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Quote | null>(null)
   const [selected, setSelected] = useState<Quote | null>(null)
@@ -32,9 +30,7 @@ export default function QuotesPage() {
   const { data: all = [] } = useQuotes({})
   const { data: quotes = [], isLoading } = useQuotes({ search, status, projectId })
 
-  const updateStatus = useUpdateQuoteStatus()
-  const duplicateQuote = useDuplicateQuote()
-  const toast = useToastStore(s => s.show)
+  const groups = useMemo(() => groupQuotes(quotes), [quotes])
 
   const kpis = useMemo(() => {
     const total = all.length
@@ -43,53 +39,11 @@ export default function QuotesPage() {
     const totalValue = all
       .filter(q => q.status === 'approved' || q.status === 'po_received')
       .reduce((sum, q) => sum + (q.totalAmount || 0), 0)
-    
+
     return { total, approved, pending, totalValue }
   }, [all])
 
-  const handleStatusChange = async (e: React.MouseEvent, id: string, newStatus: QuoteStatus) => {
-    e.stopPropagation()
-    await updateStatus.mutateAsync({ id, status: newStatus })
-    toast(`✓ Đã cập nhật trạng thái: ${QUOTE_STATUS_LABELS[newStatus]}`)
-  }
-
-  const handleDuplicate = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation()
-    await duplicateQuote.mutateAsync(id)
-    toast('✓ Đã nhân bản báo giá')
-  }
-
-  const columns: Column<Quote>[] = [
-    { key: 'code', header: 'Số báo giá', render: (q) => <span className="td-main" style={{ color: 'var(--blue)' }}>{q.code}</span> },
-    { key: 'title', header: 'Đầu mục', render: (q) => q.title },
-    { key: 'project', header: 'Dự án', render: (q) => q.project?.name || q.customer?.name || '—' },
-    { key: 'itemCount', header: 'Hạng mục', render: (q) => `${q.itemCount || 0} hạng mục` },
-    { key: 'quoteDate', header: 'Ngày tạo', render: (q) => formatDate(q.quoteDate) },
-    { key: 'totalAmount', header: 'Giá trị', render: (q) => <span style={{ fontWeight: 600 }}>{formatCurrency(q.totalAmount || 0)}</span> },
-    { key: 'status', header: 'Trạng thái', render: (q) => <Badge variant={QUOTE_STATUS_VARIANT[q.status]} dot>{QUOTE_STATUS_LABELS[q.status]}</Badge> },
-    {
-      key: 'actions', header: '', width: '180px',
-      render: (q) => (
-        <div className="td-actions">
-          {q.status === 'draft' && <div className="act-btn" title="Gửi duyệt" style={{ color: 'var(--amber)' }} onClick={(e) => handleStatusChange(e, q.id, 'pending')}><IconSend size={13} /></div>}
-          {q.status === 'pending' && <div className="act-btn" title="Phê duyệt" style={{ color: 'var(--green)' }} onClick={(e) => handleStatusChange(e, q.id, 'approved')}><IconCheck size={13} /></div>}
-          {q.status === 'pending' && <div className="act-btn" title="Không duyệt" style={{ color: 'var(--red)' }} onClick={(e) => handleStatusChange(e, q.id, 'rejected')}><IconX size={13} /></div>}
-          
-          <div className="act-btn" title="Nhân bản (Clone)" style={{ color: 'var(--purple)' }} onClick={(e) => handleDuplicate(e, q.id)}><IconCopy size={13} /></div>
-          
-          {['draft', 'rejected'].includes(q.status) && <div className="act-btn" title="Sửa" onClick={(e) => openEdit(e, q)}><IconEdit size={13} /></div>}
-          {['draft', 'rejected'].includes(q.status) && <div className="act-btn del" title="Xóa" onClick={(e) => e.stopPropagation()}><IconTrash size={13} /></div>}
-
-          <div className="act-btn" title="Chi tiết" onClick={(e) => { e.stopPropagation(); setSelected(q) }}><IconEye size={13} /></div>
-          <div className="act-btn" title="Xem trước" style={{ color: 'var(--blue)' }} onClick={(e) => openPreview(e, q)}><IconPrinter size={13} /></div>
-        </div>
-      )
-    }
-  ]
-
   const openAdd = () => { setEditing(null); setFormOpen(true) }
-  const openEdit = (e: React.MouseEvent, q: Quote) => { e.stopPropagation(); setSelected(null); setEditing(q); setFormOpen(true) }
-  const openPreview = (e: React.MouseEvent, q: Quote) => { e.stopPropagation(); window.open(`/quotes/${q.id}/preview`, '_blank') }
 
   return (
     <PageShell
@@ -111,18 +65,55 @@ export default function QuotesPage() {
           options={projects.map((p) => ({ value: p.id, label: p.name }))} />
       </div>
 
-      <DataTable
-        columns={columns} data={quotes} loading={isLoading} rowKey={(q) => q.id}
-        onRowClick={(q) => setSelected(q)} emptyText="Không tìm thấy báo giá nào"
-      />
+      {isLoading ? (
+        <div className="dash-empty">Đang tải…</div>
+      ) : groups.length === 0 ? (
+        <div className="dash-empty">Không tìm thấy báo giá nào</div>
+      ) : (
+        <div className="q-groups">
+          {groups.map((g) => (
+            <div key={g.projectId} className="q-group">
+              <div className="q-group__head">
+                <span className="q-group__name">{g.projectName}</span>
+                {g.hasInstallation && (
+                  <Badge variant="blue">Có lắp đặt</Badge>
+                )}
+                <span className="q-group__meta">{g.quoteCount} báo giá</span>
+              </div>
+              {g.sections.map((sec) => (
+                <div key={sec.sectionName} className="q-sec">
+                  <div className="q-sec__name">{sec.sectionName}</div>
+                  <table className="q-itable">
+                    <tbody>
+                      {sec.items.map((it, idx) => {
+                        const q = quotes.find((x) => x.id === it.quoteId)!
+                        return (
+                          <tr key={it.quoteId + idx} onClick={() => setSelected(q)} className="q-irow">
+                            <td className="q-irow__name">{it.itemName}</td>
+                            <td>{it.quantity} {it.unit}</td>
+                            <td>{formatCurrency(it.unitPrice)}</td>
+                            <td className="q-irow__amt">{formatCurrency(it.amount)}</td>
+                            <td><span style={{ color: 'var(--blue)' }}>{it.quoteCode}</span></td>
+                            <td><Badge variant={QUOTE_STATUS_VARIANT[it.status as QuoteStatus]} dot>{QUOTE_STATUS_LABELS[it.status as QuoteStatus]}</Badge></td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
 
       <QuoteForm open={formOpen} quote={editing} onClose={() => setFormOpen(false)} />
-      <QuoteDetailDrawer 
-        quote={selected} 
-        open={!!selected} 
-        onClose={() => setSelected(null)} 
-        onEdit={(q) => { setSelected(null); setEditing(q); setFormOpen(true) }} 
-        onPreview={(q) => window.open(`/quotes/${q.id}/preview`, '_blank')} 
+      <QuoteDetailDrawer
+        quote={selected}
+        open={!!selected}
+        onClose={() => setSelected(null)}
+        onEdit={(q) => { setSelected(null); setEditing(q); setFormOpen(true) }}
+        onPreview={(q) => window.open(`/quotes/${q.id}/preview`, '_blank')}
       />
     </PageShell>
   )

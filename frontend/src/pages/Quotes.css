@@ -51,3 +51,16 @@
   color: var(--color-red);
   background: #FEE2E2;
 }
+
+.q-groups { display: flex; flex-direction: column; gap: 16px; }
+.q-group { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.q-group__head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface-2, #f7f8fa); font-weight: 600; }
+.q-group__meta { margin-left: auto; color: var(--text-3); font-weight: 400; font-size: 12px; }
+.q-sec { padding: 4px 14px 10px; }
+.q-sec__name { font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--text-3); margin: 8px 0 4px; }
+.q-itable { width: 100%; border-collapse: collapse; }
+.q-irow { cursor: pointer; }
+.q-irow:hover { background: var(--surface-2, #f7f8fa); }
+.q-irow td { padding: 6px 8px; border-top: 1px solid var(--border); font-size: 13px; }
+.q-irow__name { font-weight: 500; }
+.q-irow__amt { font-weight: 600; text-align: right; }
