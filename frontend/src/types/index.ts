@@ -73,20 +73,32 @@ export interface CreateSiteDto {
 
 export type WorkerStatus  = 'working' | 'on_leave' | 'absent' | 'resigned'
 export type Position =
-  | 'team_leader'   | 'senior_worker'
-  | 'worker'        | 'apprentice'
-  | 'technician'    | 'supervisor'
-  | 'other'
+  | 'foreman' | 'deputy_foreman' | 'team_leader' | 'deputy_leader' | 'worker'
+  | 'director' | 'deputy_director' | 'chief_accountant' | 'accountant' | 'storekeeper' | 'sales' | 'other'
+export type PositionGroup = 'staff' | 'management'
 
 export const POSITION_LABELS: Record<Position, string> = {
-  team_leader:   'Tổ trưởng',
-  senior_worker: 'Thợ chính',
-  worker:        'Nhân viên',
-  apprentice:    'Học việc',
-  technician:    'Kỹ thuật viên',
-  supervisor:    'Giám sát',
-  other:         'Khác',
+  foreman:         'Quản đốc',
+  deputy_foreman:  'Phó quản đốc',
+  team_leader:     'Tổ trưởng',
+  deputy_leader:   'Tổ phó',
+  worker:          'Công nhân',
+  director:        'Giám đốc',
+  deputy_director: 'Phó giám đốc',
+  chief_accountant:'Kế toán trưởng',
+  accountant:      'Kế toán viên',
+  storekeeper:     'Thủ kho',
+  sales:           'Sale',
+  other:           'Khác',
 }
+
+export const STAFF_POSITIONS: Position[] = ['foreman', 'deputy_foreman', 'team_leader', 'deputy_leader', 'worker']
+export const MANAGEMENT_POSITIONS: Position[] = ['director', 'deputy_director', 'chief_accountant', 'accountant', 'storekeeper', 'sales', 'other']
+export const POSITION_GROUP: Record<Position, PositionGroup> = Object.fromEntries([
+  ...STAFF_POSITIONS.map((p) => [p, 'staff']),
+  ...MANAGEMENT_POSITIONS.map((p) => [p, 'management']),
+]) as Record<Position, PositionGroup>
+export const POSITION_GROUP_LABELS: Record<PositionGroup, string> = { staff: 'Nhân viên', management: 'Quản lý' }
 
 export const WORKER_STATUS_LABELS: Record<WorkerStatus, string> = {
   working:   'Đang làm việc',
