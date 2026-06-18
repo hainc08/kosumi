@@ -8,6 +8,7 @@ import { QuoteItem } from '../quotes/entities/quote-item.entity'
 import { Quote } from '../quotes/entities/quote.entity'
 import { Project } from '../projects/entities/project.entity'
 import { deriveInitials, avatarColorFor } from '../../common/utils/worker-display.util'
+import { STAFF_POSITIONS } from '../workers/worker-positions'
 
 export type WorkerMini = { id: string; code: string; fullName: string; initials: string; avatarColor: string }
 
@@ -158,7 +159,7 @@ export class TasksService {
   async availableWorkers(_siteId?: string): Promise<WorkerWithDisplay[]> {
     const busy = await this.assignmentRepo.find({ where: { isActive: true } })
     const busyIds = new Set(busy.map((a) => a.workerId))
-    const workers = await this.workerRepo.find({ where: { status: 'working' } })
+    const workers = await this.workerRepo.find({ where: { status: 'working', position: In(STAFF_POSITIONS) } })
     return workers
       .filter((w) => !busyIds.has(w.id))
       .map((w) => ({ ...w, initials: deriveInitials(w.fullName), avatarColor: avatarColorFor(w.id) }))

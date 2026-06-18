@@ -62,6 +62,17 @@ describe('Workers (e2e)', () => {
     expect(d.body.data.position).toBe('director')
   })
 
+  it('available-workers loại nhóm Quản lý, giữ nhóm Nhân viên', async () => {
+    await request(app.getHttpServer()).post('/api/workers')
+      .send({ fullName: 'CN Giao Việc', gender: 'male', position: 'worker', contractType: 'official', startDate: '2026-01-01', baseSalary: 8000000 }).expect(201)
+    const dir = await request(app.getHttpServer()).post('/api/workers')
+      .send({ fullName: 'GĐ Ẩn', gender: 'male', position: 'director', contractType: 'official', startDate: '2026-01-01', baseSalary: 20000000 }).expect(201)
+    const res = await request(app.getHttpServer()).get('/api/tasks/available-workers').expect(200)
+    const ids = res.body.data.map((w: { id: string }) => w.id)
+    expect(ids).not.toContain(dir.body.data.id)
+    expect(res.body.data.every((w: { position: string }) => ['foreman','deputy_foreman','team_leader','deputy_leader','worker'].includes(w.position))).toBe(true)
+  })
+
   it('DELETE /api/workers/:id soft delete', async () => {
     await request(app.getHttpServer()).delete(`/api/workers/${createdId}`).expect(200)
     await request(app.getHttpServer()).get(`/api/workers/${createdId}`).expect(404)
