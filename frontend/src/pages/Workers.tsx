@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
-import { IconUsers, IconUserCheck, IconUserOff, IconTrendingUp, IconUserPlus } from '@tabler/icons-react'
+import { IconUsers, IconUserCheck, IconUserOff, IconBriefcase, IconUserPlus } from '@tabler/icons-react'
 import {
-  POSITION_LABELS, WORKER_STATUS_LABELS, CONTRACT_TYPE_LABELS,
+  POSITION_GROUP, POSITION_LABELS, WORKER_STATUS_LABELS, CONTRACT_TYPE_LABELS,
   type Worker, type WorkerStatus,
 } from '@/types'
 import { useWorkers } from '@/api/workers'
@@ -40,7 +40,8 @@ export default function WorkersPage() {
   const { data: workers = [], isLoading } = useWorkers({ search, status, position })
 
   const kpis = useMemo(() => ({
-    total: all.length,
+    staff: all.filter((w) => POSITION_GROUP[w.position] === 'staff').length,
+    management: all.filter((w) => POSITION_GROUP[w.position] === 'management').length,
     working: all.filter((w) => w.status === 'working').length,
     off: all.filter((w) => w.status === 'on_leave' || w.status === 'absent').length,
   }), [all])
@@ -74,10 +75,10 @@ export default function WorkersPage() {
       actions={<Button variant="primary" icon={<IconUserPlus size={15} />} onClick={openAdd}>Thêm nhân viên</Button>}
     >
       <div className="kpi-row">
-        <KpiCard label="Tổng nhân viên" value={kpis.total} icon={<IconUsers size={16} />} iconColor="var(--color-blue)" />
+        <KpiCard label="Tổng nhân viên" value={kpis.staff} icon={<IconUsers size={16} />} iconColor="var(--color-blue)" />
+        <KpiCard label="Tổng quản lý" value={kpis.management} icon={<IconBriefcase size={16} />} iconColor="var(--color-purple)" />
         <KpiCard label="Đang làm việc" value={kpis.working} icon={<IconUserCheck size={16} />} iconColor="var(--color-green)" />
         <KpiCard label="Nghỉ / Vắng" value={kpis.off} icon={<IconUserOff size={16} />} iconColor="var(--color-amber)" />
-        <KpiCard label="Hiệu suất TB" value="—" icon={<IconTrendingUp size={16} />} iconColor="var(--color-purple)" />
       </div>
 
       <div className="toolbar">
