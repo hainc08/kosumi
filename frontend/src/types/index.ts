@@ -154,14 +154,15 @@ export interface CreateContractDto {
 
 // ─── CUSTOMER (Module 5) ─────────────────────────────────────────────────────
 
-export type CustomerType   = 'business' | 'studio' | 'foreign' | 'state'
+export type CustomerType   = 'domestic' | 'foreign' | 'state' | 'household' | 'individual'
 export type CustomerStatus = 'active' | 'inactive' | 'pending'
 
 export const CUSTOMER_TYPE_LABELS: Record<CustomerType, string> = {
-  business: 'Doanh nghiệp',
-  studio:   'Cá nhân / Studio',
-  foreign:  'Doanh nghiệp nước ngoài',
-  state:    'Đơn vị nhà nước',
+  domestic:   'Doanh nghiệp trong nước',
+  foreign:    'Doanh nghiệp nước ngoài',
+  state:      'Doanh nghiệp nhà nước',
+  household:  'Hộ kinh doanh',
+  individual: 'Cá nhân',
 }
 
 export const CUSTOMER_STATUS_LABELS: Record<CustomerStatus, string> = {
@@ -185,6 +186,7 @@ export interface Customer extends BaseEntity {
   code:                 string
   name:                 string
   type:                 CustomerType
+  industry:             string | null
   taxCode:              string | null
   address:              string | null
   website:              string | null
@@ -208,6 +210,7 @@ export interface Customer extends BaseEntity {
 export interface CreateCustomerDto {
   name:                 string
   type:                 CustomerType
+  industry?:            string
   taxCode?:             string
   address?:             string
   website?:             string
