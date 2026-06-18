@@ -2,6 +2,7 @@ import { CreateCustomerContactDto } from './create-customer-contact.dto';
 export declare class CreateCustomerDto {
     name: string;
     type: string;
+    industry?: string;
     taxCode?: string;
     address?: string;
     website?: string;

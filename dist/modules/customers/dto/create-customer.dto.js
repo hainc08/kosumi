@@ -16,6 +16,7 @@ const create_customer_contact_dto_1 = require("./create-customer-contact.dto");
 class CreateCustomerDto {
     name;
     type;
+    industry;
     taxCode;
     address;
     website;
@@ -35,9 +36,14 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(['business', 'studio', 'foreign', 'state']),
+    (0, class_validator_1.IsEnum)(['domestic', 'foreign', 'state', 'household', 'individual']),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCustomerDto.prototype, "industry", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
