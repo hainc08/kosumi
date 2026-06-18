@@ -1,15 +1,13 @@
 import { IconEdit } from '@tabler/icons-react'
 import {
-  CUSTOMER_TYPE_LABELS, CUSTOMER_STATUS_LABELS, PAYMENT_TERMS_LABELS,
-  type Customer, type CustomerStatus, type PaymentTermsPreset,
+  CUSTOMER_TYPE_LABELS, PAYMENT_TERMS_LABELS,
+  type Customer, type PaymentTermsPreset,
 } from '@/types'
 import { formatCurrency } from '@/utils/format'
 import { DetailDrawer } from '@/components/ui/DetailDrawer'
-import { Badge, type BadgeVariant } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import './CustomerDetailDrawer.css'
-
-const STATUS_VARIANT: Record<CustomerStatus, BadgeVariant> = { active: 'green', pending: 'amber', inactive: 'gray' }
 
 interface Props { customer: Customer | null; open: boolean; onClose: () => void; onEdit: (c: Customer) => void }
 
@@ -31,7 +29,7 @@ export function CustomerDetailDrawer({ customer, open, onClose, onEdit }: Props)
           <div className="cd-name">{customer.name}</div>
           <div className="cd-code">{customer.code} · {CUSTOMER_TYPE_LABELS[customer.type]}</div>
         </div>
-        <Badge variant={STATUS_VARIANT[customer.status]} dot>{CUSTOMER_STATUS_LABELS[customer.status]}</Badge>
+        {customer.industry && <Badge variant="blue">{customer.industry}</Badge>}
       </div>
 
       <div className="cd-stats">
