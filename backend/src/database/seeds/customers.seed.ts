@@ -12,7 +12,7 @@ export async function seedCustomers(ds: DataSource): Promise<void> {
   const data: { customer: Partial<Customer>; contacts: Partial<CustomerContact>[] }[] = [
     {
       customer: {
-        name: 'Công ty CP Đầu tư Aeon Việt Nam', type: 'business',
+        name: 'Công ty CP Đầu tư Aeon Việt Nam', type: 'domestic', industry: 'Bán lẻ / Thương mại',
         taxCode: '0301234567', address: '30 Bờ Bao Tân Thắng, Sơn Kỳ, Tân Phú, TP.HCM',
         website: 'aeon.com.vn', status: 'active',
         defaultValidityDays: 10, defaultDeliveryDays: 50, defaultPaymentTerms: '30-25-35-10',
@@ -26,7 +26,7 @@ export async function seedCustomers(ds: DataSource): Promise<void> {
     },
     {
       customer: {
-        name: 'Studio Kiến trúc Minh Anh', type: 'studio',
+        name: 'Studio Kiến trúc Minh Anh', type: 'household', industry: 'Kiến trúc / Nội thất',
         taxCode: null, address: '125 Nguyễn Trãi, Thanh Xuân, Hà Nội',
         website: null, status: 'active',
         defaultValidityDays: 7, defaultDeliveryDays: 30, defaultPaymentTerms: '50-50',
@@ -39,7 +39,7 @@ export async function seedCustomers(ds: DataSource): Promise<void> {
     },
     {
       customer: {
-        name: 'Samsung Engineering Vietnam', type: 'foreign',
+        name: 'Samsung Engineering Vietnam', type: 'foreign', industry: 'Kỹ thuật / Xây dựng công nghiệp',
         taxCode: '0108889999', address: 'KCN Yên Phong, Bắc Ninh',
         website: 'samsung.com', status: 'pending',
         defaultValidityDays: 14, defaultDeliveryDays: 60, defaultPaymentTerms: '30-70',
@@ -52,7 +52,7 @@ export async function seedCustomers(ds: DataSource): Promise<void> {
     },
     {
       customer: {
-        name: 'Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh', type: 'state',
+        name: 'Ban QLDA Đầu tư Xây dựng tỉnh Bắc Ninh', type: 'state', industry: 'Hạ tầng / Xây dựng công cộng',
         taxCode: '2300112233', address: 'Số 1 Lý Thái Tổ, TP. Bắc Ninh',
         website: null, status: 'inactive',
         defaultValidityDays: 15, defaultDeliveryDays: 90, defaultPaymentTerms: '100-prepay',
