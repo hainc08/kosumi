@@ -33,7 +33,8 @@ export const workerSchema = z
     phone: z.string().refine((v) => v === '' || /^(0[3-9]\d{8})$/.test(v), 'Số điện thoại không hợp lệ'),
     address: z.string(),
     position: z.enum([
-      'team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other',
+      'foreman', 'deputy_foreman', 'team_leader', 'deputy_leader', 'worker',
+      'director', 'deputy_director', 'chief_accountant', 'accountant', 'storekeeper', 'sales', 'other',
     ]),
     specialty: z.string(),
     notes: z.string(),

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconUserPlus } from '@tabler/icons-react'
-import { POSITION_LABELS, type Position, type Worker } from '@/types'
+import { POSITION_LABELS, STAFF_POSITIONS, MANAGEMENT_POSITIONS, type Worker } from '@/types'
 import { useCreateWorker, useUpdateWorker } from '@/api/workers'
 import { useToastStore } from '@/stores/toastStore'
 import { FormModal } from '@/components/ui/FormModal'
@@ -80,9 +80,12 @@ export function WorkerForm({ open, onClose, worker }: WorkerFormProps) {
           </FormField>
           <FormField label="Chức vụ" required>
             <select {...register('position')}>
-              {(Object.keys(POSITION_LABELS) as Position[]).map((k) => (
-                <option key={k} value={k}>{POSITION_LABELS[k]}</option>
-              ))}
+              <optgroup label="Nhân viên">
+                {STAFF_POSITIONS.map((k) => <option key={k} value={k}>{POSITION_LABELS[k]}</option>)}
+              </optgroup>
+              <optgroup label="Quản lý">
+                {MANAGEMENT_POSITIONS.map((k) => <option key={k} value={k}>{POSITION_LABELS[k]}</option>)}
+              </optgroup>
             </select>
           </FormField>
           <FormField label="Chuyên môn" error={errors.specialty?.message}>
