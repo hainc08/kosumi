@@ -40,7 +40,7 @@ export class TasksController {
   }
 
   @Post(':id/assign') assign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AssignWorkerDto) {
-    return this.svc.assign(id, dto.workerId)
+    return this.svc.assign(id, dto.workerId, dto.otHours)
   }
 
   @Post(':id/unassign') unassign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AssignWorkerDto) {

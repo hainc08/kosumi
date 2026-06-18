@@ -9,6 +9,7 @@ import { Quote } from '../quotes/entities/quote.entity'
 import { Project } from '../projects/entities/project.entity'
 import { deriveInitials, avatarColorFor } from '../../common/utils/worker-display.util'
 import { STAFF_POSITIONS } from '../workers/worker-positions'
+import { computeOtEndAt } from './shift'
 
 export type WorkerMini = { id: string; code: string; fullName: string; initials: string; avatarColor: string }
 
@@ -166,7 +167,7 @@ export class TasksService {
   }
 
   /** Giao công nhân vào task: tạo assignment active; nếu task 'unassigned' -> 'in_progress'. Idempotent. */
-  async assign(taskId: string, workerId: string): Promise<TaskAssignment> {
+  async assign(taskId: string, workerId: string, otHours?: number): Promise<TaskAssignment> {
     const task = await this.repo.findOne({ where: { id: taskId } })
     if (!task) throw new NotFoundException('Không tìm thấy công việc')
 
@@ -174,22 +175,16 @@ export class TasksService {
     if (existing) return existing
 
     const now = new Date()
+    const overtime = typeof otHours === 'number' && otHours > 0
     const assignment = this.assignmentRepo.create({
-      taskId,
-      workerId,
-      assignedAt: now,
-      startedAt: now,
-      endedAt: null,
-      isActive: true,
+      taskId, workerId,
+      assignedAt: now, startedAt: now, endedAt: null, isActive: true,
       transferredFromTaskId: null,
+      isOvertime: overtime,
+      otEndAt: overtime ? computeOtEndAt(now, otHours as number) : null,
     })
     const saved = await this.assignmentRepo.save(assignment)
-
-    if (task.status === 'unassigned') {
-      task.status = 'in_progress'
-      await this.repo.save(task)
-    }
-
+    if (task.status === 'unassigned') { task.status = 'in_progress'; await this.repo.save(task) }
     return saved
   }
 

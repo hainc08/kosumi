@@ -130,4 +130,17 @@ describe('Tasks (e2e)', () => {
     expect(task.activeWorkers?.map((w) => w.id)).not.toContain(freeWorkerId)
     expect(task.status).toBe('unassigned')
   })
+
+  it('POST /assign với otHours -> assignment is_overtime + ot_end_at', async () => {
+    // đảm bảo worker rảnh
+    await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/assign`)
+      .send({ workerId: freeWorkerId, otHours: 2 }).expect(201)
+    const active = await request(app.getHttpServer()).get('/api/tasks/active').expect(200)
+    const t = active.body.data.find((x: { id: string }) => x.id === anotherUnassignedTaskId)
+    const a = t.assignments.find((x: { workerId: string }) => x.workerId === freeWorkerId)
+    expect(a.isOvertime).toBe(true)
+    expect(a.otEndAt).toBeTruthy()
+    // dọn dẹp
+    await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/unassign`).send({ workerId: freeWorkerId }).expect(201)
+  })
 })
