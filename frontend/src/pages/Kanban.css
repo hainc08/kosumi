@@ -169,3 +169,18 @@
 
 .tf-confirm { display: flex; align-items: flex-start; gap: 8px; background: var(--color-green-light); border: 1px solid #86EFAC;
   border-radius: var(--radius-md); padding: 10px 12px; margin-top: 14px; font-size: 11px; color: var(--color-green-text); }
+
+/* ── Tăng ca / hoàn thành (Gói 4) ── */
+.task-row__head-actions { display:flex; align-items:center; gap:8px; }
+.task-row__done { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:var(--color-green); background:none; border:1px solid var(--color-green); border-radius:6px; padding:3px 8px; cursor:pointer; }
+.task-row__done:hover { background:var(--color-green); color:#fff; }
+.kb-done-wrap { margin-top:12px; border:1px solid var(--color-border); border-radius:10px; padding:12px 14px; background:var(--color-surface); }
+.kb-done-wrap__title { font-weight:600; font-size:13px; margin-bottom:8px; }
+.ct-list { display:flex; flex-direction:column; gap:8px; }
+.ct-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 10px; border:1px solid var(--color-border); border-radius:8px; }
+.ct-row__main { display:flex; flex-direction:column; gap:4px; }
+.ct-row__title { font-weight:500; font-size:13px; }
+.ct-row__workers { display:flex; gap:4px; }
+.ct-av { width:22px; height:22px; border-radius:50%; color:#fff; font-size:10px; display:inline-flex; align-items:center; justify-content:center; }
+.ct-row__time { display:flex; gap:8px; align-items:center; font-size:13px; font-weight:600; }
+.ct-ot { color:var(--color-amber); font-size:12px; }

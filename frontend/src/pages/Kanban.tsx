@@ -13,6 +13,7 @@ import { useProjects } from '@/api/projects'
 import { useQuotes } from '@/api/quotes'
 import {
   useQuoteTasks, useAvailableWorkers, useSaveAssignments, useUnassignWorker,
+  useCompleteTask, useClockOut,
 } from '@/api/tasks'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
@@ -20,6 +21,8 @@ import { Button } from '@/components/ui/Button'
 import { StepsBar } from '@/components/kanban/StepsBar'
 import { LiveTimer } from '@/components/kanban/LiveTimer'
 import { TransferDrawer, type TransferContext } from '@/components/kanban/TransferDrawer'
+import { OvertimeDialog } from '@/components/kanban/OvertimeDialog'
+import { CompletedTasksPanel } from '@/components/kanban/CompletedTasksPanel'
 import { useToastStore } from '@/stores/toastStore'
 import './Kanban.css'
 
@@ -33,6 +36,8 @@ export default function KanbanPage() {
   const [draft, setDraft] = useState<Record<string, string[]>>({})
   const [search, setSearch] = useState('')
   const [transferCtx, setTransferCtx] = useState<TransferContext | null>(null)
+  const [otOpen, setOtOpen] = useState(false)
+  const [showDone, setShowDone] = useState(false)
 
   const toast = useToastStore((s) => s.show)
   const { data: sites = [] } = useSites()
@@ -42,6 +47,8 @@ export default function KanbanPage() {
   const { data: availableWorkers = [] } = useAvailableWorkers(siteId)
   const saveAssignments = useSaveAssignments()
   const unassign = useUnassignWorker()
+  const completeTask = useCompleteTask()
+  const clockOut = useClockOut()
 
   const site = sites.find((s) => s.id === siteId)
   const project = projects.find((p) => p.id === projectId)
@@ -100,10 +107,26 @@ export default function KanbanPage() {
     toast(`Đã rút ${name} khỏi hạng mục`, 'info')
   }
 
+  const doSave = async (otHours?: number) => {
+    const n = await saveAssignments.mutateAsync({ draft, otHours })
+    setDraft({}); setOtOpen(false)
+    toast(`✓ Đã lưu ${n} lượt giao việc${otHours ? ` (tăng ca ${otHours}h)` : ''}`)
+  }
+
+  // Giao việc sau 17:00 -> hỏi giờ tăng ca; ngược lại lưu ngay.
   const handleSave = async () => {
-    const n = await saveAssignments.mutateAsync(draft)
-    setDraft({})
-    toast(`✓ Đã lưu ${n} lượt giao việc`)
+    if (new Date().getHours() >= 17) setOtOpen(true)
+    else await doSave()
+  }
+
+  const handleComplete = async (taskId: string) => {
+    await completeTask.mutateAsync(taskId)
+    toast('✓ Đã hoàn thành hạng mục')
+  }
+
+  const handleClockOut = async () => {
+    const r = await clockOut.mutateAsync()
+    toast(`✓ Đã tan ca — đóng ${r?.ended ?? 0} lượt giao việc`)
   }
 
   return (
@@ -235,7 +258,12 @@ export default function KanbanPage() {
                               <div className="task-row__title">{t.title}</div>
                               {t.description && <div className="task-row__desc">{t.description}</div>}
                             </div>
-                            <Badge variant={PRIORITY_VARIANT[t.priority]} dot>{TASK_PRIORITY_LABELS[t.priority]}</Badge>
+                            <div className="task-row__head-actions">
+                              <button className="task-row__done" title="Đánh dấu hoàn thành" onClick={() => handleComplete(t.id)}>
+                                <IconCircleCheck size={14} /> Hoàn thành
+                              </button>
+                              <Badge variant={PRIORITY_VARIANT[t.priority]} dot>{TASK_PRIORITY_LABELS[t.priority]}</Badge>
+                            </div>
                           </div>
 
                           {/* Người đang làm (đã lưu) */}
@@ -288,6 +316,13 @@ export default function KanbanPage() {
           )}
         </div>
 
+        {step === 4 && showDone && (
+          <div className="kb-done-wrap">
+            <div className="kb-done-wrap__title">Hạng mục đã hoàn thành</div>
+            <CompletedTasksPanel />
+          </div>
+        )}
+
         {/* Footer */}
         {step === 4 && (
           <div className="kanban__footer">
@@ -297,6 +332,8 @@ export default function KanbanPage() {
               <span className="kb-breadcrumb__sep">/</span> {quote?.code}
             </div>
             <div className="kanban__footer-actions">
+              <Button variant="default" onClick={() => setShowDone((v) => !v)}>{showDone ? 'Ẩn hoàn thành' : 'Hạng mục đã hoàn thành'}</Button>
+              <Button variant="default" onClick={handleClockOut} disabled={clockOut.isPending}>Tan ca</Button>
               <Button variant="default" icon={<IconRefresh size={15} />} onClick={resetAll}>Làm mới</Button>
               <Button variant="primary" icon={draftCount ? <IconDeviceFloppy size={15} /> : <IconCircleCheck size={15} />}
                 disabled={draftCount === 0 || saveAssignments.isPending} onClick={handleSave}>
@@ -308,6 +345,7 @@ export default function KanbanPage() {
       </div>
 
       <TransferDrawer context={transferCtx} onClose={() => setTransferCtx(null)} />
+      <OvertimeDialog open={otOpen} onCancel={() => setOtOpen(false)} onConfirm={(h) => doSave(h)} />
     </PageShell>
   )
 }
