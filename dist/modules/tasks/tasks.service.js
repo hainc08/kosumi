@@ -24,6 +24,7 @@ const quote_entity_1 = require("../quotes/entities/quote.entity");
 const project_entity_1 = require("../projects/entities/project.entity");
 const worker_display_util_1 = require("../../common/utils/worker-display.util");
 const worker_positions_1 = require("../workers/worker-positions");
+const shift_1 = require("./shift");
 let TasksService = class TasksService {
     repo;
     assignmentRepo;
@@ -146,7 +147,7 @@ let TasksService = class TasksService {
             .filter((w) => !busyIds.has(w.id))
             .map((w) => ({ ...w, initials: (0, worker_display_util_1.deriveInitials)(w.fullName), avatarColor: (0, worker_display_util_1.avatarColorFor)(w.id) }));
     }
-    async assign(taskId, workerId) {
+    async assign(taskId, workerId, otHours) {
         const task = await this.repo.findOne({ where: { id: taskId } });
         if (!task)
             throw new common_1.NotFoundException('Không tìm thấy công việc');
@@ -154,14 +155,13 @@ let TasksService = class TasksService {
         if (existing)
             return existing;
         const now = new Date();
+        const overtime = typeof otHours === 'number' && otHours > 0;
         const assignment = this.assignmentRepo.create({
-            taskId,
-            workerId,
-            assignedAt: now,
-            startedAt: now,
-            endedAt: null,
-            isActive: true,
+            taskId, workerId,
+            assignedAt: now, startedAt: now, endedAt: null, isActive: true,
             transferredFromTaskId: null,
+            isOvertime: overtime,
+            otEndAt: overtime ? (0, shift_1.computeOtEndAt)(now, otHours) : null,
         });
         const saved = await this.assignmentRepo.save(assignment);
         if (task.status === 'unassigned') {
@@ -192,15 +192,89 @@ let TasksService = class TasksService {
         assignment.transferredFromTaskId = fromTaskId;
         return this.assignmentRepo.save(assignment);
     }
-    async saveAssignments(draft) {
+    async saveAssignments(draft, otHours) {
         let count = 0;
         for (const [taskId, workerIds] of Object.entries(draft)) {
             for (const workerId of workerIds) {
-                await this.assign(taskId, workerId);
+                await this.assign(taskId, workerId, otHours);
                 count += 1;
             }
         }
         return count;
+    }
+    async endOfShiftClockOut(now = new Date()) {
+        const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: false } });
+        if (actives.length === 0)
+            return { ended: 0 };
+        for (const a of actives) {
+            a.isActive = false;
+            a.endedAt = now;
+        }
+        await this.assignmentRepo.save(actives);
+        await this.recomputeTaskStatuses([...new Set(actives.map((a) => a.taskId))]);
+        return { ended: actives.length };
+    }
+    async sweepExpiredOvertime(now = new Date()) {
+        const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: true } });
+        const due = actives.filter((a) => a.otEndAt && a.otEndAt <= now);
+        if (due.length === 0)
+            return { ended: 0 };
+        for (const a of due) {
+            a.isActive = false;
+            a.endedAt = now;
+        }
+        await this.assignmentRepo.save(due);
+        await this.recomputeTaskStatuses([...new Set(due.map((a) => a.taskId))]);
+        return { ended: due.length };
+    }
+    async recomputeTaskStatuses(taskIds) {
+        for (const id of taskIds) {
+            const task = await this.repo.findOne({ where: { id } });
+            if (!task || task.status === 'completed' || task.status === 'cancelled')
+                continue;
+            const stillActive = await this.assignmentRepo.count({ where: { taskId: id, isActive: true } });
+            if (stillActive === 0 && task.status !== 'unassigned') {
+                task.status = 'unassigned';
+                await this.repo.save(task);
+            }
+        }
+    }
+    async completeTask(taskId) {
+        const task = await this.repo.findOne({ where: { id: taskId } });
+        if (!task)
+            throw new common_1.NotFoundException('Không tìm thấy công việc');
+        const actives = await this.assignmentRepo.find({ where: { taskId, isActive: true } });
+        const now = new Date();
+        for (const a of actives) {
+            a.isActive = false;
+            a.endedAt = now;
+        }
+        if (actives.length)
+            await this.assignmentRepo.save(actives);
+        task.status = 'completed';
+        return this.repo.save(task);
+    }
+    async completedTasks() {
+        const tasks = await this.repo.find({ where: { status: 'completed' }, order: { updatedAt: 'DESC' } });
+        if (tasks.length === 0)
+            return [];
+        const taskIds = tasks.map((t) => t.id);
+        const all = await this.assignmentRepo.find({ where: { taskId: (0, typeorm_2.In)(taskIds) } });
+        const workerIds = [...new Set(all.map((a) => a.workerId))];
+        const workers = workerIds.length ? await this.workerRepo.find({ where: { id: (0, typeorm_2.In)(workerIds) } }) : [];
+        const workerById = new Map(workers.map((w) => [w.id, w]));
+        const minutesOf = (a) => a.endedAt && a.startedAt ? Math.max(0, Math.round((+a.endedAt - +a.startedAt) / 60000)) : 0;
+        return tasks.map((t) => {
+            const list = all.filter((a) => a.taskId === t.id);
+            const wids = [...new Set(list.map((a) => a.workerId))];
+            const totalMinutes = list.reduce((s, a) => s + minutesOf(a), 0);
+            const overtimeMinutes = list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0);
+            return {
+                ...t, assignments: [], activeWorkers: [],
+                workers: wids.map((id) => workerById.get(id)).filter((w) => !!w).map((w) => this.toMini(w)),
+                totalMinutes, overtimeMinutes,
+            };
+        });
     }
 };
 exports.TasksService = TasksService;

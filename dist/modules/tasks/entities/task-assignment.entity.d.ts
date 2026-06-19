@@ -6,6 +6,8 @@ export declare class TaskAssignment {
     startedAt: Date | null;
     endedAt: Date | null;
     isActive: boolean;
+    isOvertime: boolean;
+    otEndAt: Date | null;
     transferredFromTaskId: string | null;
     createdAt: Date;
     updatedAt: Date;

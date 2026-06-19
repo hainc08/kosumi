@@ -19,6 +19,8 @@ let TaskAssignment = class TaskAssignment {
     startedAt;
     endedAt;
     isActive;
+    isOvertime;
+    otEndAt;
     transferredFromTaskId;
     createdAt;
     updatedAt;
@@ -52,6 +54,14 @@ __decorate([
     (0, typeorm_1.Column)({ name: 'is_active', type: 'boolean', default: true }),
     __metadata("design:type", Boolean)
 ], TaskAssignment.prototype, "isActive", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'is_overtime', type: 'boolean', default: false }),
+    __metadata("design:type", Boolean)
+], TaskAssignment.prototype, "isOvertime", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'ot_end_at', type: 'datetime', nullable: true }),
+    __metadata("design:type", Object)
+], TaskAssignment.prototype, "otEndAt", void 0);
 __decorate([
     (0, typeorm_1.Column)({ name: 'transferred_from_task_id', type: 'char', length: 36, nullable: true }),
     __metadata("design:type", Object)
