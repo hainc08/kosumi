@@ -46,11 +46,11 @@ export const seedTasks: Task[] = [
 export const seedTaskAssignments: TaskAssignment[] = [
   // Aeon (site-3) — w-6 đang làm, pool còn w-7
   { id: 'ta-1', taskId: 'task-1', workerId: 'w-6', assignedAt: minsAgo(135), startedAt: minsAgo(135),
-    endedAt: null, isActive: true, createdAt: minsAgo(135), updatedAt: minsAgo(135) },
+    endedAt: null, isActive: true, isOvertime: false, createdAt: minsAgo(135), updatedAt: minsAgo(135) },
   // Samsung (site-1) — w-1 đang làm, pool còn w-4
   { id: 'ta-2', taskId: 'task-8', workerId: 'w-1', assignedAt: minsAgo(90), startedAt: minsAgo(90),
-    endedAt: null, isActive: true, createdAt: minsAgo(90), updatedAt: minsAgo(90) },
+    endedAt: null, isActive: true, isOvertime: false, createdAt: minsAgo(90), updatedAt: minsAgo(90) },
   // Nội thất (site-2) — w-5 đang làm, pool còn w-2
   { id: 'ta-3', taskId: 'task-5', workerId: 'w-5', assignedAt: minsAgo(40), startedAt: minsAgo(40),
-    endedAt: null, isActive: true, createdAt: minsAgo(40), updatedAt: minsAgo(40) },
+    endedAt: null, isActive: true, isOvertime: false, createdAt: minsAgo(40), updatedAt: minsAgo(40) },
 ]

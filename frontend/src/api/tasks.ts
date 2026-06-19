@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
 import { apiGet, apiPost } from './http'
 import { db, nextId } from '@/mocks/db'
-import type { Task, TaskAssignment, Worker } from '@/types'
+import type { Task, TaskAssignment, Worker, CompletedTask } from '@/types'
 import { STAFF_POSITIONS } from '@/types'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
@@ -93,10 +93,12 @@ export function availableWorkersAtSite(_siteId: string): Worker[] {
   return db.workers.filter((w) => w.status === 'working' && !busy.has(w.id) && STAFF_POSITIONS.includes(w.position))
 }
 
-export function assignWorkerInDb(taskId: string, workerId: string): TaskAssignment {
+export function assignWorkerInDb(taskId: string, workerId: string, otHours?: number): TaskAssignment {
+  const overtime = typeof otHours === 'number' && otHours > 0
   const a: TaskAssignment = {
     id: nextId('ta'), taskId, workerId,
     assignedAt: now(), startedAt: now(), endedAt: null, isActive: true,
+    isOvertime: overtime, otEndAt: null,
     createdAt: now(), updatedAt: now(),
   }
   db.taskAssignments.push(a)
@@ -122,12 +124,54 @@ export function transferWorkerInDb(workerId: string, fromTaskId: string, toTaskI
 }
 
 /** Lưu toàn bộ phân công nháp (taskId -> danh sách workerId). Trả về số lượt giao. */
-export function saveAssignmentsInDb(draft: Record<string, string[]>): number {
+export function saveAssignmentsInDb(draft: Record<string, string[]>, otHours?: number): number {
   let count = 0
   for (const [taskId, workerIds] of Object.entries(draft)) {
-    for (const workerId of workerIds) { assignWorkerInDb(taskId, workerId); count += 1 }
+    for (const workerId of workerIds) { assignWorkerInDb(taskId, workerId, otHours); count += 1 }
   }
   return count
+}
+
+/** Tan ca: đóng assignment active ca thường (không OT), NV về chờ. */
+export function clockOutInDb(): { ended: number } {
+  const actives = db.taskAssignments.filter((a) => a.isActive && !a.isOvertime)
+  actives.forEach((a) => { a.isActive = false; a.endedAt = now(); a.updatedAt = now() })
+  const taskIds = new Set(actives.map((a) => a.taskId))
+  taskIds.forEach((id) => {
+    const task = db.tasks.find((t) => t.id === id)
+    if (!task || task.status === 'completed' || task.status === 'cancelled') return
+    const still = db.taskAssignments.some((x) => x.taskId === id && x.isActive)
+    if (!still && task.status !== 'unassigned') { task.status = 'unassigned'; task.updatedAt = now() }
+  })
+  return { ended: actives.length }
+}
+
+/** Hoàn thành hạng mục: đóng assignment active + status='completed'. */
+export function completeTaskInDb(taskId: string): Task | undefined {
+  const task = db.tasks.find((t) => t.id === taskId)
+  if (!task) return undefined
+  db.taskAssignments.filter((a) => a.taskId === taskId && a.isActive)
+    .forEach((a) => { a.isActive = false; a.endedAt = now(); a.updatedAt = now() })
+  task.status = 'completed'; task.updatedAt = now()
+  return task
+}
+
+/** Danh sách hạng mục đã hoàn thành + ai làm + tổng phút + phút OT. */
+export function completedTasksFromDb(): CompletedTask[] {
+  const minutesOf = (a: TaskAssignment) =>
+    a.endedAt && a.startedAt ? Math.max(0, Math.round((+new Date(a.endedAt) - +new Date(a.startedAt)) / 60000)) : 0
+  return db.tasks.filter((t) => t.status === 'completed').map((t) => {
+    const list = db.taskAssignments.filter((a) => a.taskId === t.id)
+    const wids = [...new Set(list.map((a) => a.workerId))]
+    const workers = wids.map((id) => db.workers.find((w) => w.id === id)).filter(Boolean)
+      .map((w) => ({ id: w!.id, fullName: w!.fullName, initials: w!.initials, avatarColor: w!.avatarColor }))
+    return {
+      ...t,
+      workers,
+      totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
+      overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+    }
+  })
 }
 
 // ─── HOOKS ───────────────────────────────────────────────────────────────────
@@ -198,10 +242,42 @@ export function useActiveTasks() {
 export function useAssignWorker() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ taskId, workerId }: { taskId: string; workerId: string }) => USE_MOCK
-      ? mockRequest(() => assignWorkerInDb(taskId, workerId))
-      : apiPost(`/tasks/${taskId}/assign`, { workerId }),
+    mutationFn: ({ taskId, workerId, otHours }: { taskId: string; workerId: string; otHours?: number }) => USE_MOCK
+      ? mockRequest(() => assignWorkerInDb(taskId, workerId, otHours))
+      : apiPost(`/tasks/${taskId}/assign`, { workerId, otHours }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+  })
+}
+
+/** Đánh dấu hoàn thành 1 hạng mục. */
+export function useCompleteTask() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (taskId: string) => USE_MOCK
+      ? mockRequest(() => completeTaskInDb(taskId))
+      : apiPost(`/tasks/${taskId}/complete`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+  })
+}
+
+/** Tan ca thủ công. */
+export function useClockOut() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => USE_MOCK
+      ? mockRequest(() => clockOutInDb())
+      : apiPost<{ ended: number }>('/tasks/clock-out'),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+  })
+}
+
+/** Danh sách hạng mục đã hoàn thành. */
+export function useCompletedTasks() {
+  return useQuery<CompletedTask[]>({
+    queryKey: ['tasks', 'completed'],
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => completedTasksFromDb())
+      : apiGet<CompletedTask[]>('/tasks/completed'),
   })
 }
 
@@ -228,9 +304,9 @@ export function useTransferWorker() {
 export function useSaveAssignments() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (draft: Record<string, string[]>) => USE_MOCK
-      ? mockRequest(() => saveAssignmentsInDb(draft))
-      : apiPost('/tasks/assignments/bulk', draft),
+    mutationFn: ({ draft, otHours }: { draft: Record<string, string[]>; otHours?: number }) => USE_MOCK
+      ? mockRequest(() => saveAssignmentsInDb(draft, otHours))
+      : apiPost('/tasks/assignments/bulk', { draft, otHours }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }

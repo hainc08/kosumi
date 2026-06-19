@@ -41,8 +41,8 @@ export class TasksController {
     return this.svc.transfer(dto.workerId, dto.fromTaskId, dto.toTaskId)
   }
 
-  @Post('assignments/bulk') saveAssignments(@Body() draft: Record<string, string[]>) {
-    return this.svc.saveAssignments(draft)
+  @Post('assignments/bulk') saveAssignments(@Body() body: { draft: Record<string, string[]>; otHours?: number }) {
+    return this.svc.saveAssignments(body.draft, body.otHours)
   }
 
   @Post(':id/assign') assign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AssignWorkerDto) {

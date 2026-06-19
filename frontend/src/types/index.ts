@@ -386,6 +386,8 @@ export interface TaskAssignment extends BaseEntity {
   startedAt:   string | null
   endedAt:     string | null
   isActive:    boolean
+  isOvertime:  boolean
+  otEndAt?:    string | null
   transferredFromTaskId?: string
   // joined
   worker?:     Pick<Worker, 'id' | 'code' | 'fullName' | 'initials' | 'avatarColor'>
@@ -405,6 +407,13 @@ export interface Task extends BaseEntity {
   section?:      string | null   // danh mục (section_name của hạng mục báo giá nguồn)
   assignments?:  TaskAssignment[]
   activeWorkers?: Pick<Worker, 'id' | 'fullName' | 'initials' | 'avatarColor'>[]
+}
+
+/** Hạng mục đã hoàn thành kèm ai làm / tổng giờ / OT (cho panel danh sách hoàn thành). */
+export interface CompletedTask extends Task {
+  workers: { id: string; fullName: string; initials: string; avatarColor: string }[]
+  totalMinutes: number
+  overtimeMinutes: number
 }
 
 // ─── TIMESHEET ───────────────────────────────────────────────────────────────
