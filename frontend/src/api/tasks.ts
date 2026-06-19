@@ -45,12 +45,23 @@ export function tasksForQuote(quoteId: string): Task[] {
 
 /** Các hạng mục công việc của 1 dự án, kèm `section` (danh mục) từ hạng mục báo giá nguồn. */
 export function tasksForProjectDb(projectId: string): Task[] {
+  const minutesOf = (a: TaskAssignment) =>
+    a.endedAt && a.startedAt ? Math.max(0, Math.round((+new Date(a.endedAt) - +new Date(a.startedAt)) / 60000)) : 0
   return db.tasks
     .filter((t) => t.projectId === projectId)
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((t) => {
       const item = t.quoteItemId ? db.quoteItems.find((qi) => qi.id === t.quoteItemId) : undefined
-      return { ...enrichTask(t), section: item?.sectionName ?? null }
+      const list = db.taskAssignments.filter((a) => a.taskId === t.id)
+      const wids = [...new Set(list.map((a) => a.workerId))]
+      const workedBy = wids.map((id) => db.workers.find((w) => w.id === id)).filter(Boolean)
+        .map((w) => ({ id: w!.id, fullName: w!.fullName, initials: w!.initials, avatarColor: w!.avatarColor }))
+      return {
+        ...enrichTask(t), section: item?.sectionName ?? null,
+        workedBy,
+        totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
+        overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+      }
     })
 }
 
@@ -146,15 +157,21 @@ export function clockOutInDb(): { ended: number } {
   return { ended: actives.length }
 }
 
-/** Hoàn thành hạng mục: đóng assignment active + status='completed'. */
-export function completeTaskInDb(taskId: string): Task | undefined {
+/** Đóng assignment active + đặt trạng thái kết thúc. */
+function closeTaskInDb(taskId: string, status: 'completed' | 'cancelled'): Task | undefined {
   const task = db.tasks.find((t) => t.id === taskId)
   if (!task) return undefined
   db.taskAssignments.filter((a) => a.taskId === taskId && a.isActive)
     .forEach((a) => { a.isActive = false; a.endedAt = now(); a.updatedAt = now() })
-  task.status = 'completed'; task.updatedAt = now()
+  task.status = status; task.updatedAt = now()
   return task
 }
+
+/** Hoàn thành hạng mục. */
+export function completeTaskInDb(taskId: string): Task | undefined { return closeTaskInDb(taskId, 'completed') }
+
+/** Hủy hạng mục. */
+export function cancelTaskInDb(taskId: string): Task | undefined { return closeTaskInDb(taskId, 'cancelled') }
 
 /** Danh sách hạng mục đã hoàn thành + ai làm + tổng phút + phút OT. */
 export function completedTasksFromDb(): CompletedTask[] {
@@ -256,6 +273,17 @@ export function useCompleteTask() {
     mutationFn: (taskId: string) => USE_MOCK
       ? mockRequest(() => completeTaskInDb(taskId))
       : apiPost(`/tasks/${taskId}/complete`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+  })
+}
+
+/** Hủy 1 hạng mục. */
+export function useCancelTask() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (taskId: string) => USE_MOCK
+      ? mockRequest(() => cancelTaskInDb(taskId))
+      : apiPost(`/tasks/${taskId}/cancel`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }

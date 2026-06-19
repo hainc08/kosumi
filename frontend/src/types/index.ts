@@ -407,6 +407,10 @@ export interface Task extends BaseEntity {
   section?:      string | null   // danh mục (section_name của hạng mục báo giá nguồn)
   assignments?:  TaskAssignment[]
   activeWorkers?: Pick<Worker, 'id' | 'fullName' | 'initials' | 'avatarColor'>[]
+  // lịch sử làm việc (mọi assignment) — cho chi tiết dự án
+  workedBy?:     { id: string; fullName: string; initials: string; avatarColor: string }[]
+  totalMinutes?: number
+  overtimeMinutes?: number
 }
 
 /** Hạng mục đã hoàn thành kèm ai làm / tổng giờ / OT (cho panel danh sách hoàn thành). */

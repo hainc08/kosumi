@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import { IconEdit, IconRefresh, IconChecklist } from '@tabler/icons-react'
+import { IconEdit, IconRefresh, IconChecklist, IconCircleCheck, IconX } from '@tabler/icons-react'
 import {
   PROJECT_TYPE_LABELS, PROJECT_STATUS_LABELS, TASK_STATUS_LABELS,
   type Project, type ProjectStatus, type Task, type TaskStatus,
 } from '@/types'
 import { formatCurrency, formatDate } from '@/utils/format'
 import { deadlineState } from '@/utils/deadline'
-import { useProjectTasks, useGenerateTasksForProject } from '@/api/tasks'
+import { useProjectTasks, useGenerateTasksForProject, useCompleteTask, useCancelTask } from '@/api/tasks'
 import { useToastStore } from '@/stores/toastStore'
 import { DetailDrawer } from '@/components/ui/DetailDrawer'
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
@@ -35,7 +35,13 @@ export function ProjectDetailDrawer({ project, open, onClose, onEdit }: Props) {
   // Hooks phải đứng trước mọi return sớm.
   const { data: tasks = [] } = useProjectTasks(open && project ? project.id : null)
   const generate = useGenerateTasksForProject()
+  const completeTask = useCompleteTask()
+  const cancelTask = useCancelTask()
   const toast = useToastStore((s) => s.show)
+
+  const fmtMin = (m: number) => { const h = Math.floor(m / 60), mm = m % 60; return h ? `${h}h${mm ? ` ${mm}p` : ''}` : `${mm}p` }
+  const doComplete = async (id: string) => { await completeTask.mutateAsync(id); toast('✓ Đã hoàn thành hạng mục') }
+  const doCancel = async (id: string) => { await cancelTask.mutateAsync(id); toast('Đã hủy hạng mục', 'info') }
 
   // Gom công việc theo danh mục (section_name), giữ thứ tự xuất hiện.
   const grouped = useMemo(() => {
@@ -110,21 +116,38 @@ export function ProjectDetailDrawer({ project, open, onClose, onEdit }: Props) {
         grouped.map(([section, list]) => (
           <div key={section} className="pd-tg">
             <div className="pd-tg__name">{section}</div>
-            {list.map((t) => (
+            {list.map((t) => {
+              const open2 = t.status === 'unassigned' || t.status === 'in_progress' || t.status === 'paused'
+              const workers = (t.workedBy && t.workedBy.length ? t.workedBy : t.activeWorkers) ?? []
+              return (
               <div key={t.id} className="pd-task">
                 <div className="pd-task__main">
                   <span className="pd-task__title">{t.title}</span>
-                  <Badge variant={TASK_STATUS_VARIANT[t.status]} dot>{TASK_STATUS_LABELS[t.status]}</Badge>
+                  <div className="pd-task__head-right">
+                    {open2 && (
+                      <>
+                        <button className="pd-task__btn pd-task__btn--done" title="Hoàn thành" onClick={() => doComplete(t.id)}><IconCircleCheck size={14} /></button>
+                        <button className="pd-task__btn pd-task__btn--cancel" title="Hủy" onClick={() => doCancel(t.id)}><IconX size={14} /></button>
+                      </>
+                    )}
+                    <Badge variant={TASK_STATUS_VARIANT[t.status]} dot>{TASK_STATUS_LABELS[t.status]}</Badge>
+                  </div>
                 </div>
-                {(t.activeWorkers?.length ?? 0) > 0 && (
-                  <div className="pd-task__workers">
-                    {t.activeWorkers!.map((w) => (
-                      <span key={w.id} className="pd-task__av" style={{ background: w.avatarColor }} title={w.fullName}>{w.initials}</span>
-                    ))}
+                {(workers.length > 0 || (t.totalMinutes ?? 0) > 0) && (
+                  <div className="pd-task__meta">
+                    <div className="pd-task__workers">
+                      {workers.map((w) => (
+                        <span key={w.id} className="pd-task__av" style={{ background: w.avatarColor }} title={w.fullName}>{w.initials}</span>
+                      ))}
+                    </div>
+                    {(t.totalMinutes ?? 0) > 0 && (
+                      <span className="pd-task__time">{fmtMin(t.totalMinutes!)}{(t.overtimeMinutes ?? 0) > 0 ? ` · OT ${fmtMin(t.overtimeMinutes!)}` : ''}</span>
+                    )}
                   </div>
                 )}
               </div>
-            ))}
+              )
+            })}
           </div>
         ))
       )}
