@@ -143,4 +143,26 @@ describe('Tasks (e2e)', () => {
     // dọn dẹp
     await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/unassign`).send({ workerId: freeWorkerId }).expect(201)
   })
+
+  it('POST /clock-out kết thúc assignment ca thường, NV về chờ', async () => {
+    await request(app.getHttpServer()).post(`/api/tasks/${unassignedTaskId}/assign`).send({ workerId: freeWorkerId }).expect(201)
+    const r = await request(app.getHttpServer()).post('/api/tasks/clock-out').expect(201)
+    expect(typeof r.body.data.ended).toBe('number')
+    const active = await request(app.getHttpServer()).get('/api/tasks/active').expect(200)
+    const t = active.body.data.find((x: { id: string }) => x.id === unassignedTaskId)
+    expect((t.assignments ?? []).some((a: { workerId: string }) => a.workerId === freeWorkerId)).toBe(false)
+    expect(t.status).toBe('unassigned')
+  })
+
+  it('POST /:id/complete -> task completed; GET /completed trả worker + phút', async () => {
+    await request(app.getHttpServer()).post(`/api/tasks/${unassignedTaskId}/assign`).send({ workerId: freeWorkerId }).expect(201)
+    const c = await request(app.getHttpServer()).post(`/api/tasks/${unassignedTaskId}/complete`).expect(201)
+    expect(c.body.data.status).toBe('completed')
+    const done = await request(app.getHttpServer()).get('/api/tasks/completed').expect(200)
+    const row = done.body.data.find((x: { id: string }) => x.id === unassignedTaskId)
+    expect(row).toBeTruthy()
+    expect(Array.isArray(row.workers)).toBe(true)
+    expect(typeof row.totalMinutes).toBe('number')
+    expect(typeof row.overtimeMinutes).toBe('number')
+  })
 })

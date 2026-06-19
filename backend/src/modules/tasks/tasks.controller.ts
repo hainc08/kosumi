@@ -16,6 +16,12 @@ export class TasksController {
     return this.svc.availableWorkers(siteId)
   }
 
+  // Danh sách hạng mục đã hoàn thành (ai làm / tổng giờ / OT).
+  @Get('completed') completed() { return this.svc.completedTasks() }
+
+  // Tan ca thủ công: kết thúc các assignment ca thường đang active.
+  @Post('clock-out') clockOut() { return this.svc.endOfShiftClockOut(new Date()) }
+
   // Lấy task theo dự án (projectId) hoặc theo báo giá (quoteId).
   @Get() tasks(@Query('quoteId') quoteId?: string, @Query('projectId') projectId?: string) {
     if (projectId) return this.svc.tasksForProject(projectId)
@@ -45,5 +51,9 @@ export class TasksController {
 
   @Post(':id/unassign') unassign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AssignWorkerDto) {
     return this.svc.unassign(id, dto.workerId)
+  }
+
+  @Post(':id/complete') complete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.svc.completeTask(id)
   }
 }

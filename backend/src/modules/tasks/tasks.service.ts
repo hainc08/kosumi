@@ -216,14 +216,82 @@ export class TasksService {
   }
 
   /** Lưu toàn bộ phân công nháp (taskId -> danh sách workerId). Trả về số lượt giao. */
-  async saveAssignments(draft: Record<string, string[]>): Promise<number> {
+  async saveAssignments(draft: Record<string, string[]>, otHours?: number): Promise<number> {
     let count = 0
     for (const [taskId, workerIds] of Object.entries(draft)) {
       for (const workerId of workerIds) {
-        await this.assign(taskId, workerId)
+        await this.assign(taskId, workerId, otHours)
         count += 1
       }
     }
     return count
+  }
+
+  /** Tan ca: kết thúc mọi assignment active KHÔNG phải OT. Trả số lượt đã đóng. */
+  async endOfShiftClockOut(now: Date = new Date()): Promise<{ ended: number }> {
+    const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: false } })
+    if (actives.length === 0) return { ended: 0 }
+    for (const a of actives) { a.isActive = false; a.endedAt = now }
+    await this.assignmentRepo.save(actives)
+    await this.recomputeTaskStatuses([...new Set(actives.map((a) => a.taskId))])
+    return { ended: actives.length }
+  }
+
+  /** Đóng các block OT đã tới hạn (otEndAt <= now). */
+  async sweepExpiredOvertime(now: Date = new Date()): Promise<{ ended: number }> {
+    const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: true } })
+    const due = actives.filter((a) => a.otEndAt && a.otEndAt <= now)
+    if (due.length === 0) return { ended: 0 }
+    for (const a of due) { a.isActive = false; a.endedAt = now }
+    await this.assignmentRepo.save(due)
+    await this.recomputeTaskStatuses([...new Set(due.map((a) => a.taskId))])
+    return { ended: due.length }
+  }
+
+  /** Task không còn assignment active -> 'unassigned' (giữ task đã completed/cancelled). */
+  private async recomputeTaskStatuses(taskIds: string[]): Promise<void> {
+    for (const id of taskIds) {
+      const task = await this.repo.findOne({ where: { id } })
+      if (!task || task.status === 'completed' || task.status === 'cancelled') continue
+      const stillActive = await this.assignmentRepo.count({ where: { taskId: id, isActive: true } })
+      if (stillActive === 0 && task.status !== 'unassigned') { task.status = 'unassigned'; await this.repo.save(task) }
+    }
+  }
+
+  /** Đánh dấu hoàn thành hạng mục: đóng assignment active + status='completed'. */
+  async completeTask(taskId: string): Promise<Task> {
+    const task = await this.repo.findOne({ where: { id: taskId } })
+    if (!task) throw new NotFoundException('Không tìm thấy công việc')
+    const actives = await this.assignmentRepo.find({ where: { taskId, isActive: true } })
+    const now = new Date()
+    for (const a of actives) { a.isActive = false; a.endedAt = now }
+    if (actives.length) await this.assignmentRepo.save(actives)
+    task.status = 'completed'
+    return this.repo.save(task)
+  }
+
+  /** Danh sách hạng mục đã hoàn thành + ai làm + tổng phút + phút OT. */
+  async completedTasks(): Promise<Array<TaskWithRelations & { workers: WorkerMini[]; totalMinutes: number; overtimeMinutes: number }>> {
+    const tasks = await this.repo.find({ where: { status: 'completed' }, order: { updatedAt: 'DESC' } })
+    if (tasks.length === 0) return []
+    const taskIds = tasks.map((t) => t.id)
+    const all = await this.assignmentRepo.find({ where: { taskId: In(taskIds) } })
+    const workerIds = [...new Set(all.map((a) => a.workerId))]
+    const workers = workerIds.length ? await this.workerRepo.find({ where: { id: In(workerIds) } }) : []
+    const workerById = new Map(workers.map((w) => [w.id, w]))
+    const minutesOf = (a: TaskAssignment) =>
+      a.endedAt && a.startedAt ? Math.max(0, Math.round((+a.endedAt - +a.startedAt) / 60000)) : 0
+
+    return tasks.map((t) => {
+      const list = all.filter((a) => a.taskId === t.id)
+      const wids = [...new Set(list.map((a) => a.workerId))]
+      const totalMinutes = list.reduce((s, a) => s + minutesOf(a), 0)
+      const overtimeMinutes = list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0)
+      return {
+        ...t, assignments: [], activeWorkers: [],
+        workers: wids.map((id) => workerById.get(id)).filter((w): w is Worker => !!w).map((w) => this.toMini(w)),
+        totalMinutes, overtimeMinutes,
+      }
+    })
   }
 }
