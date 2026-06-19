@@ -20,6 +20,10 @@ export type TaskWithRelations = Task & {
   activeWorkers: WorkerMini[]
   // danh mục (section_name của hạng mục báo giá nguồn) — dùng để gom nhóm ở trang Dự án.
   section?: string | null
+  // tổng hợp lịch sử làm việc (mọi assignment, không chỉ active) — cho chi tiết dự án.
+  workedBy?: WorkerMini[]
+  totalMinutes?: number
+  overtimeMinutes?: number
 }
 
 export type WorkerWithDisplay = Worker & { initials: string; avatarColor: string }
@@ -91,7 +95,26 @@ export class TasksService {
     const itemIds = [...new Set(tasks.map((t) => t.quoteItemId).filter((id): id is string => !!id))]
     const items = itemIds.length ? await this.quoteItemRepo.find({ where: { id: In(itemIds) } }) : []
     const sectionByItem = new Map(items.map((i) => [i.id, i.sectionName]))
-    return enriched.map((t) => ({ ...t, section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null }))
+
+    // Lịch sử làm việc: gom TẤT CẢ assignment (không chỉ active) -> ai đã làm + thời gian + OT.
+    const allAssignments = await this.assignmentRepo.find({ where: { taskId: In(tasks.map((t) => t.id)) } })
+    const histWorkerIds = [...new Set(allAssignments.map((a) => a.workerId))]
+    const histWorkers = histWorkerIds.length ? await this.workerRepo.find({ where: { id: In(histWorkerIds) } }) : []
+    const histWorkerById = new Map(histWorkers.map((w) => [w.id, w]))
+    const minutesOf = (a: TaskAssignment) =>
+      a.endedAt && a.startedAt ? Math.max(0, Math.round((+a.endedAt - +a.startedAt) / 60000)) : 0
+
+    return enriched.map((t) => {
+      const list = allAssignments.filter((a) => a.taskId === t.id)
+      const wids = [...new Set(list.map((a) => a.workerId))]
+      return {
+        ...t,
+        section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null,
+        workedBy: wids.map((id) => histWorkerById.get(id)).filter((w): w is Worker => !!w).map((w) => this.toMini(w)),
+        totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
+        overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+      }
+    })
   }
 
   /**
@@ -258,17 +281,23 @@ export class TasksService {
     }
   }
 
-  /** Đánh dấu hoàn thành hạng mục: đóng assignment active + status='completed'. */
-  async completeTask(taskId: string): Promise<Task> {
+  /** Đóng assignment active của task rồi đặt trạng thái kết thúc ('completed' hoặc 'cancelled'). */
+  private async closeTask(taskId: string, status: 'completed' | 'cancelled'): Promise<Task> {
     const task = await this.repo.findOne({ where: { id: taskId } })
     if (!task) throw new NotFoundException('Không tìm thấy công việc')
     const actives = await this.assignmentRepo.find({ where: { taskId, isActive: true } })
     const now = new Date()
     for (const a of actives) { a.isActive = false; a.endedAt = now }
     if (actives.length) await this.assignmentRepo.save(actives)
-    task.status = 'completed'
+    task.status = status
     return this.repo.save(task)
   }
+
+  /** Đánh dấu hoàn thành hạng mục. */
+  completeTask(taskId: string): Promise<Task> { return this.closeTask(taskId, 'completed') }
+
+  /** Hủy hạng mục công việc. */
+  cancelTask(taskId: string): Promise<Task> { return this.closeTask(taskId, 'cancelled') }
 
   /** Danh sách hạng mục đã hoàn thành + ai làm + tổng phút + phút OT. */
   async completedTasks(): Promise<Array<TaskWithRelations & { workers: WorkerMini[]; totalMinutes: number; overtimeMinutes: number }>> {

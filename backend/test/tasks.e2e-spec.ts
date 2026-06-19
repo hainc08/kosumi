@@ -165,4 +165,24 @@ describe('Tasks (e2e)', () => {
     expect(typeof row.totalMinutes).toBe('number')
     expect(typeof row.overtimeMinutes).toBe('number')
   })
+
+  it('POST /:id/cancel -> task cancelled, assignment đóng', async () => {
+    await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/assign`).send({ workerId: freeWorkerId }).expect(201)
+    const r = await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/cancel`).expect(201)
+    expect(r.body.data.status).toBe('cancelled')
+    const active = await request(app.getHttpServer()).get('/api/tasks/active').expect(200)
+    const t = active.body.data.find((x: { id: string }) => x.id === anotherUnassignedTaskId)
+    expect((t.assignments ?? []).some((a: { workerId: string }) => a.workerId === freeWorkerId)).toBe(false)
+  })
+
+  it('GET /tasks?projectId trả hạng mục kèm workedBy/totalMinutes/overtimeMinutes', async () => {
+    const active = await request(app.getHttpServer()).get('/api/tasks/active').expect(200)
+    const projectId: string = active.body.data[0].projectId
+    const res = await request(app.getHttpServer()).get('/api/tasks').query({ projectId }).expect(200)
+    expect(Array.isArray(res.body.data)).toBe(true)
+    const t = res.body.data[0]
+    expect(Array.isArray(t.workedBy)).toBe(true)
+    expect(typeof t.totalMinutes).toBe('number')
+    expect(typeof t.overtimeMinutes).toBe('number')
+  })
 })

@@ -56,4 +56,8 @@ export class TasksController {
   @Post(':id/complete') complete(@Param('id', ParseUUIDPipe) id: string) {
     return this.svc.completeTask(id)
   }
+
+  @Post(':id/cancel') cancel(@Param('id', ParseUUIDPipe) id: string) {
+    return this.svc.cancelTask(id)
+  }
 }
