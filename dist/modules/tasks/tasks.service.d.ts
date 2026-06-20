@@ -45,6 +45,13 @@ export declare class TasksService {
         created: number;
     }>;
     activeTasksAll(): Promise<TaskWithRelations[]>;
+    workerAllocation(): Promise<Array<{
+        taskId: string;
+        projectName: string;
+        section: string | null;
+        title: string;
+        workerCount: number;
+    }>>;
     availableWorkers(_siteId?: string): Promise<WorkerWithDisplay[]>;
     assign(taskId: string, workerId: string, otHours?: number): Promise<TaskAssignment>;
     unassign(taskId: string, workerId: string): Promise<void>;

@@ -28,6 +28,7 @@ let TasksController = class TasksController {
         return this.svc.availableWorkers(siteId);
     }
     completed() { return this.svc.completedTasks(); }
+    workerAllocation() { return this.svc.workerAllocation(); }
     clockOut() { return this.svc.endOfShiftClockOut(new Date()); }
     tasks(quoteId, projectId) {
         if (projectId)
@@ -79,6 +80,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "completed", null);
+__decorate([
+    (0, common_1.Get)('worker-allocation'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "workerAllocation", null);
 __decorate([
     (0, common_1.Post)('clock-out'),
     __metadata("design:type", Function),
