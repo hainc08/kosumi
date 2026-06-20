@@ -55,6 +55,9 @@ let TasksController = class TasksController {
     complete(id) {
         return this.svc.completeTask(id);
     }
+    cancel(id) {
+        return this.svc.cancelTask(id);
+    }
 };
 exports.TasksController = TasksController;
 __decorate([
@@ -141,6 +144,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "complete", null);
+__decorate([
+    (0, common_1.Post)(':id/cancel'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "cancel", null);
 exports.TasksController = TasksController = __decorate([
     (0, common_1.Controller)('tasks'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
