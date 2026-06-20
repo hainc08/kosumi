@@ -10,6 +10,9 @@ export declare class TasksController {
         assignments: import("./tasks.service").TaskAssignmentWithWorker[];
         activeWorkers: import("./tasks.service").WorkerMini[];
         section?: string | null;
+        workedBy?: import("./tasks.service").WorkerMini[];
+        totalMinutes?: number;
+        overtimeMinutes?: number;
     } & {
         workers: import("./tasks.service").WorkerMini[];
         totalMinutes: number;
@@ -33,4 +36,5 @@ export declare class TasksController {
     assign(id: string, dto: AssignWorkerDto): Promise<import("./entities/task-assignment.entity").TaskAssignment>;
     unassign(id: string, dto: AssignWorkerDto): Promise<void>;
     complete(id: string): Promise<import("./entities/task.entity").Task>;
+    cancel(id: string): Promise<import("./entities/task.entity").Task>;
 }

@@ -17,6 +17,9 @@ export type TaskWithRelations = Task & {
     assignments: TaskAssignmentWithWorker[];
     activeWorkers: WorkerMini[];
     section?: string | null;
+    workedBy?: WorkerMini[];
+    totalMinutes?: number;
+    overtimeMinutes?: number;
 };
 export type WorkerWithDisplay = Worker & {
     initials: string;
@@ -54,7 +57,9 @@ export declare class TasksService {
         ended: number;
     }>;
     private recomputeTaskStatuses;
+    private closeTask;
     completeTask(taskId: string): Promise<Task>;
+    cancelTask(taskId: string): Promise<Task>;
     completedTasks(): Promise<Array<TaskWithRelations & {
         workers: WorkerMini[];
         totalMinutes: number;

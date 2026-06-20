@@ -89,7 +89,22 @@ let TasksService = class TasksService {
         const itemIds = [...new Set(tasks.map((t) => t.quoteItemId).filter((id) => !!id))];
         const items = itemIds.length ? await this.quoteItemRepo.find({ where: { id: (0, typeorm_2.In)(itemIds) } }) : [];
         const sectionByItem = new Map(items.map((i) => [i.id, i.sectionName]));
-        return enriched.map((t) => ({ ...t, section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null }));
+        const allAssignments = await this.assignmentRepo.find({ where: { taskId: (0, typeorm_2.In)(tasks.map((t) => t.id)) } });
+        const histWorkerIds = [...new Set(allAssignments.map((a) => a.workerId))];
+        const histWorkers = histWorkerIds.length ? await this.workerRepo.find({ where: { id: (0, typeorm_2.In)(histWorkerIds) } }) : [];
+        const histWorkerById = new Map(histWorkers.map((w) => [w.id, w]));
+        const minutesOf = (a) => a.endedAt && a.startedAt ? Math.max(0, Math.round((+a.endedAt - +a.startedAt) / 60000)) : 0;
+        return enriched.map((t) => {
+            const list = allAssignments.filter((a) => a.taskId === t.id);
+            const wids = [...new Set(list.map((a) => a.workerId))];
+            return {
+                ...t,
+                section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null,
+                workedBy: wids.map((id) => histWorkerById.get(id)).filter((w) => !!w).map((w) => this.toMini(w)),
+                totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
+                overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+            };
+        });
     }
     async generateFromQuote(quoteId) {
         const quote = await this.dataSource.getRepository(quote_entity_1.Quote).findOne({ where: { id: quoteId } });
@@ -239,7 +254,7 @@ let TasksService = class TasksService {
             }
         }
     }
-    async completeTask(taskId) {
+    async closeTask(taskId, status) {
         const task = await this.repo.findOne({ where: { id: taskId } });
         if (!task)
             throw new common_1.NotFoundException('Không tìm thấy công việc');
@@ -251,9 +266,11 @@ let TasksService = class TasksService {
         }
         if (actives.length)
             await this.assignmentRepo.save(actives);
-        task.status = 'completed';
+        task.status = status;
         return this.repo.save(task);
     }
+    completeTask(taskId) { return this.closeTask(taskId, 'completed'); }
+    cancelTask(taskId) { return this.closeTask(taskId, 'cancelled'); }
     async completedTasks() {
         const tasks = await this.repo.find({ where: { status: 'completed' }, order: { updatedAt: 'DESC' } });
         if (tasks.length === 0)
