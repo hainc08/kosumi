@@ -176,6 +176,34 @@ export class TasksService {
     return this.enrichMany(tasks)
   }
 
+  /** Công nhân theo hạng mục: đường dẫn Dự án / Đầu mục / Hạng mục + số người đang làm. */
+  async workerAllocation(): Promise<Array<{ taskId: string; projectName: string; section: string | null; title: string; workerCount: number }>> {
+    const actives = await this.assignmentRepo.find({ where: { isActive: true } })
+    if (actives.length === 0) return []
+    const countByTask = new Map<string, Set<string>>()
+    for (const a of actives) {
+      if (!countByTask.has(a.taskId)) countByTask.set(a.taskId, new Set())
+      countByTask.get(a.taskId)!.add(a.workerId)
+    }
+    const taskIds = [...countByTask.keys()]
+    const tasks = await this.repo.find({ where: { id: In(taskIds) } })
+    const projectIds = [...new Set(tasks.map((t) => t.projectId))]
+    const itemIds = [...new Set(tasks.map((t) => t.quoteItemId).filter((id): id is string => !!id))]
+    const [projects, items] = await Promise.all([
+      projectIds.length ? this.dataSource.getRepository(Project).find({ where: { id: In(projectIds) } }) : Promise.resolve([]),
+      itemIds.length ? this.quoteItemRepo.find({ where: { id: In(itemIds) } }) : Promise.resolve([]),
+    ])
+    const projectName = new Map(projects.map((p) => [p.id, p.name]))
+    const sectionByItem = new Map(items.map((i) => [i.id, i.sectionName]))
+    return tasks.map((t) => ({
+      taskId: t.id,
+      projectName: projectName.get(t.projectId) ?? '—',
+      section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null,
+      title: t.title,
+      workerCount: countByTask.get(t.id)!.size,
+    })).sort((a, b) => a.projectName.localeCompare(b.projectName, 'vi'))
+  }
+
   /**
    * Công nhân sẵn sàng nhận việc (đang làm việc & chưa bận).
    * GHI CHÚ: giống prototype, `siteId` được nhận nhưng KHÔNG dùng để lọc.

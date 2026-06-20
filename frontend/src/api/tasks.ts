@@ -191,6 +191,29 @@ export function completedTasksFromDb(): CompletedTask[] {
   })
 }
 
+export interface WorkerAllocationRow { taskId: string; projectName: string; section: string | null; title: string; workerCount: number }
+
+/** Công nhân theo hạng mục (Dự án/Đầu mục/Hạng mục) từ assignment active. */
+export function workerAllocationFromDb(): WorkerAllocationRow[] {
+  const byTask = new Map<string, Set<string>>()
+  db.taskAssignments.filter((a) => a.isActive).forEach((a) => {
+    if (!byTask.has(a.taskId)) byTask.set(a.taskId, new Set())
+    byTask.get(a.taskId)!.add(a.workerId)
+  })
+  return [...byTask.entries()].map(([taskId, wset]) => {
+    const t = db.tasks.find((x) => x.id === taskId)
+    const project = t ? db.projects.find((p) => p.id === t.projectId) : undefined
+    const item = t?.quoteItemId ? db.quoteItems.find((qi) => qi.id === t.quoteItemId) : undefined
+    return {
+      taskId,
+      projectName: project?.name ?? '—',
+      section: item?.sectionName ?? null,
+      title: t?.title ?? '—',
+      workerCount: wset.size,
+    }
+  }).sort((a, b) => a.projectName.localeCompare(b.projectName, 'vi'))
+}
+
 // ─── HOOKS ───────────────────────────────────────────────────────────────────
 
 export function useQuoteTasks(quoteId: string | null) {
@@ -306,6 +329,16 @@ export function useCompletedTasks() {
     queryFn: () => USE_MOCK
       ? mockRequest(() => completedTasksFromDb())
       : apiGet<CompletedTask[]>('/tasks/completed'),
+  })
+}
+
+/** Công nhân theo hạng mục (cho Dashboard). */
+export function useWorkerAllocation() {
+  return useQuery<WorkerAllocationRow[]>({
+    queryKey: ['tasks', 'worker-allocation'],
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => workerAllocationFromDb())
+      : apiGet<WorkerAllocationRow[]>('/tasks/worker-allocation'),
   })
 }
 

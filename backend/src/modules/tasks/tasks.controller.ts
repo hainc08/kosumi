@@ -19,6 +19,9 @@ export class TasksController {
   // Danh sách hạng mục đã hoàn thành (ai làm / tổng giờ / OT).
   @Get('completed') completed() { return this.svc.completedTasks() }
 
+  // Công nhân theo hạng mục (Dự án / Đầu mục / Hạng mục).
+  @Get('worker-allocation') workerAllocation() { return this.svc.workerAllocation() }
+
   // Tan ca thủ công: kết thúc các assignment ca thường đang active.
   @Post('clock-out') clockOut() { return this.svc.endOfShiftClockOut(new Date()) }
 

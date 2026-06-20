@@ -185,4 +185,15 @@ describe('Tasks (e2e)', () => {
     expect(typeof t.totalMinutes).toBe('number')
     expect(typeof t.overtimeMinutes).toBe('number')
   })
+
+  it('GET /tasks/worker-allocation trả Dự án/Đầu mục/Hạng mục + số người', async () => {
+    await request(app.getHttpServer()).post(`/api/tasks/${unassignedTaskId}/assign`).send({ workerId: freeWorkerId }).expect(201)
+    const res = await request(app.getHttpServer()).get('/api/tasks/worker-allocation').expect(200)
+    expect(Array.isArray(res.body.data)).toBe(true)
+    const row = res.body.data.find((x: { taskId: string }) => x.taskId === unassignedTaskId)
+    expect(row).toBeTruthy()
+    expect(typeof row.projectName).toBe('string')
+    expect(typeof row.title).toBe('string')
+    expect(row.workerCount).toBeGreaterThanOrEqual(1)
+  })
 })
