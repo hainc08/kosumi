@@ -154,6 +154,34 @@ let TasksService = class TasksService {
         const tasks = await this.repo.find();
         return this.enrichMany(tasks);
     }
+    async workerAllocation() {
+        const actives = await this.assignmentRepo.find({ where: { isActive: true } });
+        if (actives.length === 0)
+            return [];
+        const countByTask = new Map();
+        for (const a of actives) {
+            if (!countByTask.has(a.taskId))
+                countByTask.set(a.taskId, new Set());
+            countByTask.get(a.taskId).add(a.workerId);
+        }
+        const taskIds = [...countByTask.keys()];
+        const tasks = await this.repo.find({ where: { id: (0, typeorm_2.In)(taskIds) } });
+        const projectIds = [...new Set(tasks.map((t) => t.projectId))];
+        const itemIds = [...new Set(tasks.map((t) => t.quoteItemId).filter((id) => !!id))];
+        const [projects, items] = await Promise.all([
+            projectIds.length ? this.dataSource.getRepository(project_entity_1.Project).find({ where: { id: (0, typeorm_2.In)(projectIds) } }) : Promise.resolve([]),
+            itemIds.length ? this.quoteItemRepo.find({ where: { id: (0, typeorm_2.In)(itemIds) } }) : Promise.resolve([]),
+        ]);
+        const projectName = new Map(projects.map((p) => [p.id, p.name]));
+        const sectionByItem = new Map(items.map((i) => [i.id, i.sectionName]));
+        return tasks.map((t) => ({
+            taskId: t.id,
+            projectName: projectName.get(t.projectId) ?? '—',
+            section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null,
+            title: t.title,
+            workerCount: countByTask.get(t.id).size,
+        })).sort((a, b) => a.projectName.localeCompare(b.projectName, 'vi'));
+    }
     async availableWorkers(_siteId) {
         const busy = await this.assignmentRepo.find({ where: { isActive: true } });
         const busyIds = new Set(busy.map((a) => a.workerId));

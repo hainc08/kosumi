@@ -18,6 +18,13 @@ export declare class TasksController {
         totalMinutes: number;
         overtimeMinutes: number;
     })[]>;
+    workerAllocation(): Promise<{
+        taskId: string;
+        projectName: string;
+        section: string | null;
+        title: string;
+        workerCount: number;
+    }[]>;
     clockOut(): Promise<{
         ended: number;
     }>;
