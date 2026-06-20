@@ -1,122 +1,141 @@
 import { useMemo } from 'react'
-import { format } from 'date-fns'
 import {
-  IconBuildingFactory2, IconUsers, IconBuilding, IconFileInvoice, IconActivity,
+  IconBuildingFactory2, IconUsers, IconBuildingWarehouse, IconCurrencyDong, IconChecklist,
 } from '@tabler/icons-react'
 import { useSites } from '@/api/sites'
 import { useWorkers } from '@/api/workers'
 import { useProjects } from '@/api/projects'
 import { useQuotes } from '@/api/quotes'
-import { useActiveTasks } from '@/api/tasks'
-import { deadlineState } from '@/utils/deadline'
+import { useWorkerAllocation } from '@/api/tasks'
+import { formatCurrency } from '@/utils/format'
 import { PageShell } from '@/components/layout/PageShell'
 import { KpiCard } from '@/components/ui/KpiCard'
-import { ProgressBar } from '@/components/ui/ProgressBar'
+import { RevenueBarChart } from '@/components/dashboard/RevenueBarChart'
 import './Dashboard.css'
 
-type Activity = { time: string; title: string; tone: 'done' | 'pending' | 'open' }
-
-function relTime(iso: string): string {
-  const d = new Date(iso)
-  const now = new Date()
-  const yest = new Date(now); yest.setDate(now.getDate() - 1)
-  const hm = format(d, 'HH:mm')
-  if (d.toDateString() === now.toDateString()) return `${hm} hôm nay`
-  if (d.toDateString() === yest.toDateString()) return `Hôm qua ${hm}`
-  return format(d, 'dd/MM/yyyy')
-}
+const RUNNING = ['in_progress', 'near_deadline']
+const PAUSED = ['paused', 'planning']
 
 export default function DashboardPage() {
   const { data: sites = [] } = useSites({})
   const { data: workers = [] } = useWorkers({})
   const { data: projects = [] } = useProjects()
   const { data: quotes = [] } = useQuotes({})
-  const { data: tasks = [] } = useActiveTasks()
+  const { data: allocation = [] } = useWorkerAllocation()
 
-  const kpis = useMemo(() => {
-    const ym = new Date().toISOString().slice(0, 7)
+  const year = new Date().getFullYear()
+
+  // ── Dự án: Nhà máy = tất cả; Công trường = dự án có lắp đặt ──
+  const projectStats = useMemo(() => {
+    const grp = (list: typeof projects) => ({
+      total: list.length,
+      running: list.filter((p) => RUNNING.includes(p.status)).length,
+      paused: list.filter((p) => PAUSED.includes(p.status)).length,
+    })
     return {
-      sites: sites.length,
-      sitesActive: sites.filter((s) => s.status === 'active').length,
-      workers: workers.length,
-      working: workers.filter((w) => w.status === 'working').length,
-      running: projects.filter((p) => p.status === 'in_progress' || p.status === 'near_deadline').length,
-      nearDue: projects.filter((p) => p.status !== 'completed' && p.status !== 'cancelled' && deadlineState(p.deadline) !== 'ok').length,
-      quotesMonth: quotes.filter((q) => q.quoteDate?.slice(0, 7) === ym).length,
+      factory: grp(projects),
+      construction: grp(projects.filter((p) => p.hasInstallation)),
     }
-  }, [sites, workers, projects, quotes])
+  }, [projects])
 
-  // Hoạt động gần đây — tổng hợp từ giao việc, báo giá, dự án
-  const activities = useMemo<Activity[]>(() => {
-    const out: Activity[] = []
-    tasks.forEach((t) => (t.assignments ?? []).forEach((a) => {
-      if (a.worker) out.push({ time: a.assignedAt, tone: 'done', title: `${a.worker.fullName} được giao: ${t.title}` })
-    }))
-    quotes.forEach((q) => out.push({ time: q.createdAt, tone: 'open', title: `Tạo báo giá ${q.code} · ${q.project?.name ?? q.customer?.name ?? ''}` }))
-    projects.forEach((p) => out.push({ time: p.updatedAt, tone: 'pending', title: `Cập nhật tiến độ ${p.name} (${p.progressPct}%)` }))
-    return out.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 6)
-  }, [tasks, quotes, projects])
+  // ── Công nhân theo nơi làm / nghỉ ──
+  const workerStats = useMemo(() => {
+    const siteType = new Map(sites.map((s) => [s.id, s.type]))
+    return {
+      total: workers.filter((w) => w.status !== 'resigned').length,
+      atConstruction: workers.filter((w) => w.status === 'working' && w.siteId && siteType.get(w.siteId) === 'construction').length,
+      atFactory: workers.filter((w) => w.status === 'working' && w.siteId && siteType.get(w.siteId) === 'factory').length,
+      off: workers.filter((w) => w.status === 'on_leave' || w.status === 'absent').length,
+    }
+  }, [workers, sites])
 
-  const byStatus = useMemo(() => ({
-    inProgress: projects.filter((p) => p.status === 'in_progress').length,
-    nearDeadline: projects.filter((p) => p.status === 'near_deadline').length,
-    completed: projects.filter((p) => p.status === 'completed').length,
-    paused: projects.filter((p) => p.status === 'paused').length,
-  }), [projects])
+  // ── Doanh thu (báo giá đã duyệt) ──
+  const revenue = useMemo(() => {
+    const approved = quotes.filter((q) => q.status === 'approved' || q.status === 'po_received')
+    const yearTotal = approved
+      .filter((q) => new Date(q.quoteDate).getFullYear() === year)
+      .reduce((s, q) => s + (q.totalAmount || 0), 0)
 
-  const totalWorkers = workers.length || 1
+    const byMonth = Array.from({ length: 12 }, (_, m) => ({ label: `T${m + 1}`, value: 0 }))
+    approved.forEach((q) => {
+      const d = new Date(q.quoteDate)
+      if (d.getFullYear() === year) byMonth[d.getMonth()].value += q.totalAmount || 0
+    })
+
+    const yMap = new Map<number, number>()
+    approved.forEach((q) => {
+      const y = new Date(q.quoteDate).getFullYear()
+      yMap.set(y, (yMap.get(y) || 0) + (q.totalAmount || 0))
+    })
+    const byYear = [...yMap.entries()].sort((a, b) => a[0] - b[0]).map(([y, v]) => ({ label: String(y), value: v }))
+
+    return { yearTotal, byMonth, byYear }
+  }, [quotes, year])
 
   return (
-    <PageShell title="Dashboard" subtitle="Tổng quan hôm nay">
+    <PageShell title="Dashboard" subtitle="Tổng quan Kosumi Management Software">
+      {/* KPI tổng */}
       <div className="kpi-row">
-        <KpiCard label="Công trường" value={kpis.sites} icon={<IconBuildingFactory2 size={16} />} iconColor="var(--color-blue)" change={`${kpis.sitesActive} đang hoạt động`} changeType="up" />
-        <KpiCard label="Nhân viên hôm nay" value={kpis.workers} icon={<IconUsers size={16} />} iconColor="var(--color-green)" change={`${kpis.working} đang làm việc`} changeType="up" />
-        <KpiCard label="Dự án đang chạy" value={kpis.running} icon={<IconBuilding size={16} />} iconColor="var(--color-amber)" change={`${kpis.nearDue} sắp đến hạn`} />
-        <KpiCard label="Báo giá tháng này" value={kpis.quotesMonth} icon={<IconFileInvoice size={16} />} iconColor="var(--color-purple)" />
+        <KpiCard label={`Doanh thu năm ${year}`} value={formatCurrency(revenue.yearTotal)} icon={<IconCurrencyDong size={16} />} iconColor="var(--color-purple)" change="Báo giá đã duyệt" />
+        <KpiCard label="Dự án (nhà máy)" value={projectStats.factory.total} icon={<IconBuildingFactory2 size={16} />} iconColor="var(--color-blue)" change={`${projectStats.factory.running} đang triển khai`} />
+        <KpiCard label="Dự án có lắp đặt (công trường)" value={projectStats.construction.total} icon={<IconBuildingWarehouse size={16} />} iconColor="var(--color-amber)" change={`${projectStats.construction.running} đang triển khai`} />
+        <KpiCard label="Tổng công nhân" value={workerStats.total} icon={<IconUsers size={16} />} iconColor="var(--color-green)" change={`${workerStats.off} đang nghỉ`} />
       </div>
 
-      <div className="dash-split">
-        {/* Hoạt động gần đây */}
-        <div className="dash-card">
-          <div className="dash-card__title"><IconActivity size={15} color="var(--color-blue)" /> Hoạt động gần đây</div>
-          <ul className="dash-timeline">
-            {activities.map((a, i) => (
-              <li key={i} className="dash-tl">
-                <span className={`dash-tl__dot dash-tl__dot--${a.tone}`} />
-                <div>
-                  <div className="dash-tl__title">{a.title}</div>
-                  <div className="dash-tl__time">{relTime(a.time)}</div>
-                </div>
-              </li>
-            ))}
-            {activities.length === 0 && <li className="dash-empty">Chưa có hoạt động</li>}
-          </ul>
+      {/* Công trường / Nhà máy / Công nhân */}
+      <div className="dash-grid3">
+        <div className="dash-card dash-card--pad">
+          <div className="dash-mini-title"><IconBuildingWarehouse size={14} color="var(--color-amber)" /> Công trường (có lắp đặt)</div>
+          <div className="dash-stat-grid">
+            <div className="dash-stat"><div className="dash-stat__val">{projectStats.construction.total}</div><div className="dash-stat__label">Tổng dự án</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-blue)' }}>{projectStats.construction.running}</div><div className="dash-stat__label">Đang triển khai</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-text-3)' }}>{projectStats.construction.paused}</div><div className="dash-stat__label">Tạm dừng / chưa bắt đầu</div></div>
+          </div>
         </div>
-
-        <div className="dash-col">
-          {/* Công nhân theo xưởng */}
-          <div className="dash-card dash-card--pad">
-            <div className="dash-mini-title">Nhân viên theo xưởng</div>
-            {sites.map((s, i) => (
-              <div key={s.id} className="dash-bar">
-                <div className="dash-bar__top"><span>{s.name}</span><strong>{s.workerCount ?? 0} người</strong></div>
-                <ProgressBar value={Math.round(((s.workerCount ?? 0) / totalWorkers) * 100)}
-                  color={i % 2 === 0 ? 'var(--color-blue)' : 'var(--color-purple)'} size="sm" />
-              </div>
-            ))}
-            {sites.length === 0 && <div className="dash-empty">Chưa có xưởng</div>}
+        <div className="dash-card dash-card--pad">
+          <div className="dash-mini-title"><IconBuildingFactory2 size={14} color="var(--color-blue)" /> Nhà máy (tất cả dự án)</div>
+          <div className="dash-stat-grid">
+            <div className="dash-stat"><div className="dash-stat__val">{projectStats.factory.total}</div><div className="dash-stat__label">Tổng dự án</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-blue)' }}>{projectStats.factory.running}</div><div className="dash-stat__label">Đang triển khai</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-text-3)' }}>{projectStats.factory.paused}</div><div className="dash-stat__label">Tạm dừng / chưa bắt đầu</div></div>
           </div>
-
-          {/* Trạng thái dự án */}
-          <div className="dash-card dash-card--pad">
-            <div className="dash-mini-title">Trạng thái dự án</div>
-            <div className="dash-stat-grid">
-              <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-blue)' }}>{byStatus.inProgress}</div><div className="dash-stat__label">Đang thi công</div></div>
-              <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-amber)' }}>{byStatus.nearDeadline}</div><div className="dash-stat__label">Sắp bàn giao</div></div>
-              <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-green)' }}>{byStatus.completed}</div><div className="dash-stat__label">Hoàn thành</div></div>
-              <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-text-3)' }}>{byStatus.paused}</div><div className="dash-stat__label">Tạm dừng</div></div>
-            </div>
+        </div>
+        <div className="dash-card dash-card--pad">
+          <div className="dash-mini-title"><IconUsers size={14} color="var(--color-green)" /> Công nhân</div>
+          <div className="dash-stat-grid">
+            <div className="dash-stat"><div className="dash-stat__val">{workerStats.total}</div><div className="dash-stat__label">Tổng</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-amber)' }}>{workerStats.atConstruction}</div><div className="dash-stat__label">Tại công trường</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-blue)' }}>{workerStats.atFactory}</div><div className="dash-stat__label">Tại nhà máy</div></div>
+            <div className="dash-stat"><div className="dash-stat__val" style={{ color: 'var(--color-red)' }}>{workerStats.off}</div><div className="dash-stat__label">Đang nghỉ</div></div>
           </div>
+        </div>
+      </div>
+
+      {/* Công nhân theo hạng mục */}
+      <div className="dash-card dash-card--pad">
+        <div className="dash-mini-title"><IconChecklist size={14} color="var(--color-purple)" /> Công nhân theo hạng mục</div>
+        <ul className="dash-alloc">
+          {allocation.map((a) => (
+            <li key={a.taskId} className="dash-alloc__row">
+              <span className="dash-alloc__path">
+                {a.projectName}<span className="dash-alloc__sep"> / </span>{a.section || '—'}<span className="dash-alloc__sep"> / </span>{a.title}
+              </span>
+              <strong className="dash-alloc__count">{a.workerCount} người</strong>
+            </li>
+          ))}
+          {allocation.length === 0 && <li className="dash-empty">Chưa có công nhân đang làm việc</li>}
+        </ul>
+      </div>
+
+      {/* Biểu đồ doanh thu */}
+      <div className="dash-split">
+        <div className="dash-card dash-card--pad">
+          <div className="dash-mini-title">Doanh thu theo tháng — năm {year}</div>
+          <RevenueBarChart data={revenue.byMonth} color="var(--color-blue)" />
+        </div>
+        <div className="dash-card dash-card--pad">
+          <div className="dash-mini-title">Doanh thu theo các năm</div>
+          <RevenueBarChart data={revenue.byYear} color="var(--color-purple)" />
         </div>
       </div>
     </PageShell>
