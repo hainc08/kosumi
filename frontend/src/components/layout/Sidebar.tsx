@@ -24,7 +24,7 @@ export function Sidebar() {
   const groups = [...new Set(NAV.map((n) => n.group))]
   return (
     <aside className={`sidebar ${sidebarCollapsed ? 'sidebar--collapsed' : ''} ${mobileNavOpen ? 'sidebar--mobile-open' : ''}`}>
-      <div className="sidebar__brand">{sidebarCollapsed ? 'WS' : 'WorkShop Pro'}</div>
+      <div className="sidebar__brand">{sidebarCollapsed ? 'KMS' : 'Kosumi Management Software'}</div>
       <nav className="sidebar__nav">
         {groups.map((g) => (
           <div key={g} className="sidebar__group">

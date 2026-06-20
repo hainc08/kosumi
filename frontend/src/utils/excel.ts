@@ -5,7 +5,7 @@ import { CONTRACT_TYPE_LABELS } from '@/types'
 /** Xuất bảng chấm công tháng ra file .xlsx và kích hoạt tải về. */
 export async function exportTimesheetXlsx(rows: MonthlySummary[], yearMonth: string, contractTypeOf: (id: string) => string) {
   const wb = new ExcelJS.Workbook()
-  wb.creator = 'WorkShop Pro'
+  wb.creator = 'Kosumi Management Software'
   const ws = wb.addWorksheet(`Chấm công ${yearMonth}`)
 
   ws.columns = [

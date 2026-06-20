@@ -86,7 +86,7 @@ export default function QuotePreviewPage() {
           <button className="qp-back" onClick={() => navigate(-1)}><IconArrowLeft size={15} /> Quay lại</button>
           <div className="qp-toolbar__logo">
             <span className="qp-toolbar__logo-icon"><IconFileInvoice size={15} /></span>
-            WorkShop Pro <span className="qp-toolbar__sep">/</span> <span className="qp-toolbar__sub">Báo giá</span>
+            Kosumi Management Software <span className="qp-toolbar__sep">/</span> <span className="qp-toolbar__sub">Báo giá</span>
           </div>
           <Badge variant={QUOTE_STATUS_VARIANT[quote.status]} dot>{QUOTE_STATUS_LABELS[quote.status]}</Badge>
         </div>
