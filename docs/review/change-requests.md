@@ -28,13 +28,6 @@
 
 ## Giao việc (Kanban)
 
-> ✅ **Đã xử lý** — Transfer Drawer "Chuyển công nhân" giờ là wizard 3 bước (Công trường → Dự án → Hạng mục) có tabs + "vị trí hiện tại", lọc dữ liệu theo từng bước. Đã build + 39 test PASS + kiểm tra trình duyệt.
-
-- Giao việc 
- Chuyển công nhân
- khi chuyển công nhân hiện thị từng bước 
- chọn công trường -> dự án -> hạng mục như trong file workshop_pro.html
- không hiển thị hết như hiện tại 
 
 ## Chấm công (Timesheet)
 
