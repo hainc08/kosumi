@@ -27,6 +27,9 @@ let TasksController = class TasksController {
     availableWorkers(siteId) {
         return this.svc.availableWorkers(siteId);
     }
+    completed() { return this.svc.completedTasks(); }
+    workerAllocation() { return this.svc.workerAllocation(); }
+    clockOut() { return this.svc.endOfShiftClockOut(new Date()); }
     tasks(quoteId, projectId) {
         if (projectId)
             return this.svc.tasksForProject(projectId);
@@ -41,14 +44,20 @@ let TasksController = class TasksController {
     transfer(dto) {
         return this.svc.transfer(dto.workerId, dto.fromTaskId, dto.toTaskId);
     }
-    saveAssignments(draft) {
-        return this.svc.saveAssignments(draft);
+    saveAssignments(body) {
+        return this.svc.saveAssignments(body.draft, body.otHours);
     }
     assign(id, dto) {
-        return this.svc.assign(id, dto.workerId);
+        return this.svc.assign(id, dto.workerId, dto.otHours);
     }
     unassign(id, dto) {
         return this.svc.unassign(id, dto.workerId);
+    }
+    complete(id) {
+        return this.svc.completeTask(id);
+    }
+    cancel(id) {
+        return this.svc.cancelTask(id);
     }
 };
 exports.TasksController = TasksController;
@@ -65,6 +74,24 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "availableWorkers", null);
+__decorate([
+    (0, common_1.Get)('completed'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "completed", null);
+__decorate([
+    (0, common_1.Get)('worker-allocation'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "workerAllocation", null);
+__decorate([
+    (0, common_1.Post)('clock-out'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "clockOut", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('quoteId')),
@@ -117,6 +144,20 @@ __decorate([
     __metadata("design:paramtypes", [String, assign_worker_dto_1.AssignWorkerDto]),
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "unassign", null);
+__decorate([
+    (0, common_1.Post)(':id/complete'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "complete", null);
+__decorate([
+    (0, common_1.Post)(':id/cancel'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "cancel", null);
 exports.TasksController = TasksController = __decorate([
     (0, common_1.Controller)('tasks'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

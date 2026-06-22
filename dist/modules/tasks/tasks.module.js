@@ -15,6 +15,7 @@ const worker_entity_1 = require("../workers/entities/worker.entity");
 const quote_item_entity_1 = require("../quotes/entities/quote-item.entity");
 const tasks_service_1 = require("./tasks.service");
 const tasks_controller_1 = require("./tasks.controller");
+const shift_scheduler_1 = require("./shift.scheduler");
 let TasksModule = class TasksModule {
 };
 exports.TasksModule = TasksModule;
@@ -22,7 +23,7 @@ exports.TasksModule = TasksModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([task_entity_1.Task, task_assignment_entity_1.TaskAssignment, worker_entity_1.Worker, quote_item_entity_1.QuoteItem])],
         controllers: [tasks_controller_1.TasksController],
-        providers: [tasks_service_1.TasksService],
+        providers: [tasks_service_1.TasksService, shift_scheduler_1.ShiftScheduler],
     })
 ], TasksModule);
 //# sourceMappingURL=tasks.module.js.map

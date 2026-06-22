@@ -23,7 +23,7 @@ const quote_entity_1 = require("../quotes/entities/quote.entity");
 const task_entity_1 = require("../tasks/entities/task.entity");
 const task_assignment_entity_1 = require("../tasks/entities/task-assignment.entity");
 const code_util_1 = require("../../common/utils/code.util");
-const ZERO_AGG = { quoteCount: 0, workerCount: 0, quotes: [] };
+const ZERO_AGG = { quoteCount: 0, workerCount: 0, hasInstallation: false, quotes: [] };
 let ProjectsService = class ProjectsService {
     repo;
     siteRepo;
@@ -38,7 +38,7 @@ let ProjectsService = class ProjectsService {
     async loadAggregates(ids) {
         const map = new Map();
         for (const id of ids)
-            map.set(id, { quoteCount: 0, workerCount: 0, quotes: [] });
+            map.set(id, { quoteCount: 0, workerCount: 0, hasInstallation: false, quotes: [] });
         if (ids.length === 0)
             return map;
         const [quoteRows, workerRows] = await Promise.all([
@@ -47,6 +47,7 @@ let ProjectsService = class ProjectsService {
                 .addSelect('q.code', 'code')
                 .addSelect('q.title', 'title')
                 .addSelect('q.status', 'status')
+                .addSelect('q.hasInstallation', 'has_installation')
                 .addSelect('q.projectId', 'pid')
                 .where('q.projectId IN (:...ids)', { ids })
                 .andWhere('q.deletedAt IS NULL')
@@ -66,6 +67,8 @@ let ProjectsService = class ProjectsService {
             if (a) {
                 a.quotes.push({ id: r.id, code: r.code, title: r.title, status: r.status });
                 a.quoteCount += 1;
+                if (Number(r.has_installation) === 1)
+                    a.hasInstallation = true;
             }
         }
         for (const r of workerRows) {
@@ -88,6 +91,7 @@ let ProjectsService = class ProjectsService {
             customer: customer ? { id: customer.id, name: customer.name } : undefined,
             quoteCount: agg.quoteCount,
             workerCount: agg.workerCount,
+            hasInstallation: agg.hasInstallation,
             quotes: agg.quotes,
         };
     }
@@ -113,6 +117,7 @@ let ProjectsService = class ProjectsService {
                 customer: customer ? { id: customer.id, name: customer.name } : undefined,
                 quoteCount: agg.quoteCount,
                 workerCount: agg.workerCount,
+                hasInstallation: agg.hasInstallation,
                 quotes: agg.quotes,
             };
         });

@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateWorkerDto = void 0;
 const class_validator_1 = require("class-validator");
+const worker_positions_1 = require("../worker-positions");
 class CreateWorkerDto {
     fullName;
     gender;
@@ -61,7 +62,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateWorkerDto.prototype, "address", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(['team_leader', 'senior_worker', 'worker', 'apprentice', 'technician', 'supervisor', 'other']),
+    (0, class_validator_1.IsEnum)(worker_positions_1.ALL_POSITIONS),
     __metadata("design:type", String)
 ], CreateWorkerDto.prototype, "position", void 0);
 __decorate([

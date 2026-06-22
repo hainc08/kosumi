@@ -26,6 +26,7 @@ class CreateQuoteDto {
     validityDays;
     deliveryDays;
     paymentTerms;
+    hasInstallation;
     warrantyNote;
     contractorNote;
     notes;
@@ -83,6 +84,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateQuoteDto.prototype, "paymentTerms", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateQuoteDto.prototype, "hasInstallation", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),

@@ -1,2 +1,0 @@
-[     171ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=a4e576dc:21550
-[     459ms] [ERROR] Query data cannot be undefined. Please make sure to return a value other than undefined from your query function. Affected query key: ["quotes","q-1"] @ http://localhost:5174/node_modules/.vite/deps/@tanstack_react-query.js?v=a4e576dc:1347

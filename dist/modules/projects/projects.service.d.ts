@@ -22,6 +22,7 @@ export type ProjectWithRelations = Project & {
     };
     quoteCount: number;
     workerCount: number;
+    hasInstallation: boolean;
     quotes: QuoteMini[];
 };
 export declare class ProjectsService {

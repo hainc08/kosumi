@@ -1,5 +1,5 @@
 export declare class ClientLogEvent {
-    level?: 'debug' | 'info' | 'warn' | 'error' | string;
+    level?: string;
     event: string;
     sessionId?: string;
     ts?: string;

@@ -17,6 +17,9 @@ export type TaskWithRelations = Task & {
     assignments: TaskAssignmentWithWorker[];
     activeWorkers: WorkerMini[];
     section?: string | null;
+    workedBy?: WorkerMini[];
+    totalMinutes?: number;
+    overtimeMinutes?: number;
 };
 export type WorkerWithDisplay = Worker & {
     initials: string;
@@ -42,9 +45,31 @@ export declare class TasksService {
         created: number;
     }>;
     activeTasksAll(): Promise<TaskWithRelations[]>;
+    workerAllocation(): Promise<Array<{
+        taskId: string;
+        projectName: string;
+        section: string | null;
+        title: string;
+        workerCount: number;
+    }>>;
     availableWorkers(_siteId?: string): Promise<WorkerWithDisplay[]>;
-    assign(taskId: string, workerId: string): Promise<TaskAssignment>;
+    assign(taskId: string, workerId: string, otHours?: number): Promise<TaskAssignment>;
     unassign(taskId: string, workerId: string): Promise<void>;
     transfer(workerId: string, fromTaskId: string, toTaskId: string): Promise<TaskAssignment>;
-    saveAssignments(draft: Record<string, string[]>): Promise<number>;
+    saveAssignments(draft: Record<string, string[]>, otHours?: number): Promise<number>;
+    endOfShiftClockOut(now?: Date): Promise<{
+        ended: number;
+    }>;
+    sweepExpiredOvertime(now?: Date): Promise<{
+        ended: number;
+    }>;
+    private recomputeTaskStatuses;
+    private closeTask;
+    completeTask(taskId: string): Promise<Task>;
+    cancelTask(taskId: string): Promise<Task>;
+    completedTasks(): Promise<Array<TaskWithRelations & {
+        workers: WorkerMini[];
+        totalMinutes: number;
+        overtimeMinutes: number;
+    }>>;
 }

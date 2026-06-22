@@ -18,7 +18,7 @@ async function seedWorkers(ds) {
             worker: {
                 fullName: 'Nguyễn Văn Hùng', gender: 'male', dateOfBirth: '1990-05-12',
                 idNumber: '001090012345', phone: '0901234567', address: 'Đông Anh, Hà Nội',
-                position: 'senior_worker', specialty: 'Hàn kết cấu', status: 'working', notes: null,
+                position: 'worker', specialty: 'Hàn kết cấu', status: 'working', notes: null,
                 siteId: siteIdByCode.get('CS001') ?? null,
             },
             contract: {
@@ -68,14 +68,14 @@ async function seedWorkers(ds) {
         },
         {
             worker: {
-                fullName: 'Hoàng Thị Lan', gender: 'female', dateOfBirth: '1997-07-25',
-                idNumber: '001197078899', phone: '0945678901', address: 'Hoàng Mai, Hà Nội',
-                position: 'apprentice', specialty: 'Phụ việc', status: 'working', notes: null,
+                fullName: 'Hoàng Minh Khải', gender: 'male', dateOfBirth: '1975-07-25',
+                idNumber: '001175078899', phone: '0945678901', address: 'Hoàng Mai, Hà Nội',
+                position: 'director', specialty: 'Quản trị doanh nghiệp', status: 'working', notes: null,
                 siteId: siteIdByCode.get('CS002') ?? null,
             },
             contract: {
-                contractType: 'probation', startDate: '2026-02-10', endDate: '2026-05-10', baseSalary: 5500000,
-                allowanceResponsibility: null, allowanceAttendance: 200000,
+                contractType: 'official', startDate: '2026-01-01', endDate: null, baseSalary: 35000000,
+                allowanceResponsibility: 5000000, allowanceAttendance: null,
                 ratePerUnit: null, unitName: null, isActive: true,
             },
         },
@@ -83,7 +83,7 @@ async function seedWorkers(ds) {
             worker: {
                 fullName: 'Đỗ Minh Khang', gender: 'male', dateOfBirth: '1985-11-02',
                 idNumber: '001085033445', phone: '0956789012', address: 'Bình Tân, TP.HCM',
-                position: 'supervisor', specialty: 'Giám sát thi công', status: 'working', notes: null,
+                position: 'foreman', specialty: 'Giám sát thi công', status: 'working', notes: null,
                 siteId: siteIdByCode.get('CS003') ?? null,
             },
             contract: {
@@ -94,14 +94,14 @@ async function seedWorkers(ds) {
         },
         {
             worker: {
-                fullName: 'Vũ Thị Hồng', gender: 'female', dateOfBirth: '1993-04-17',
-                idNumber: '001193044556', phone: '0967890123', address: 'Bình Tân, TP.HCM',
-                position: 'technician', specialty: 'Vận hành CNC', status: 'working', notes: null,
+                fullName: 'Vũ Thị Hồng', gender: 'female', dateOfBirth: '1983-04-17',
+                idNumber: '001183044556', phone: '0967890123', address: 'Bình Tân, TP.HCM',
+                position: 'chief_accountant', specialty: 'Kế toán tài chính', status: 'working', notes: null,
                 siteId: siteIdByCode.get('CS003') ?? null,
             },
             contract: {
-                contractType: 'official', startDate: '2026-02-15', endDate: null, baseSalary: 13000000,
-                allowanceResponsibility: 1000000, allowanceAttendance: 500000,
+                contractType: 'official', startDate: '2026-02-15', endDate: null, baseSalary: 20000000,
+                allowanceResponsibility: 2000000, allowanceAttendance: 500000,
                 ratePerUnit: null, unitName: null, isActive: true,
             },
         },

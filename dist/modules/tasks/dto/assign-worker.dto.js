@@ -13,6 +13,7 @@ exports.AssignWorkerDto = void 0;
 const class_validator_1 = require("class-validator");
 class AssignWorkerDto {
     workerId;
+    otHours;
 }
 exports.AssignWorkerDto = AssignWorkerDto;
 __decorate([
@@ -20,4 +21,9 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AssignWorkerDto.prototype, "workerId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], AssignWorkerDto.prototype, "otHours", void 0);
 //# sourceMappingURL=assign-worker.dto.js.map
