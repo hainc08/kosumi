@@ -9,7 +9,7 @@ import { Quote } from '../quotes/entities/quote.entity'
 import { Project } from '../projects/entities/project.entity'
 import { deriveInitials, avatarColorFor } from '../../common/utils/worker-display.util'
 import { STAFF_POSITIONS } from '../workers/worker-positions'
-import { computeOtEndAt, SHIFT_END_HOUR, SHIFT_END_MIN, OT_START_HOUR, OT_START_MIN, formatHm } from './shift'
+import { computeOtEndAt, SHIFT_END_HOUR, SHIFT_END_MIN, OT_START_HOUR, OT_START_MIN, formatHm, otMinutesOf } from './shift'
 
 export type WorkerMini = { id: string; code: string; fullName: string; initials: string; avatarColor: string }
 
@@ -112,7 +112,10 @@ export class TasksService {
         section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null,
         workedBy: wids.map((id) => histWorkerById.get(id)).filter((w): w is Worker => !!w).map((w) => this.toMini(w)),
         totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
-        overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+        overtimeMinutes: list.reduce(
+          (s, a) => s + (a.isOvertime && a.startedAt && a.endedAt ? otMinutesOf(a.startedAt, a.endedAt) : 0),
+          0,
+        ),
       }
     })
   }
@@ -348,7 +351,10 @@ export class TasksService {
       const list = all.filter((a) => a.taskId === t.id)
       const wids = [...new Set(list.map((a) => a.workerId))]
       const totalMinutes = list.reduce((s, a) => s + minutesOf(a), 0)
-      const overtimeMinutes = list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0)
+      const overtimeMinutes = list.reduce(
+        (s, a) => s + (a.isOvertime && a.startedAt && a.endedAt ? otMinutesOf(a.startedAt, a.endedAt) : 0),
+        0,
+      )
       return {
         ...t, assignments: [], activeWorkers: [],
         workers: wids.map((id) => workerById.get(id)).filter((w): w is Worker => !!w).map((w) => this.toMini(w)),

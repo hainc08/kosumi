@@ -166,6 +166,18 @@ describe('Tasks (e2e)', () => {
     expect(typeof row.overtimeMinutes).toBe('number')
   })
 
+  it('GET /completed: overtimeMinutes là số (kẹp mốc OT)', async () => {
+    const draft = { [unassignedTaskId]: [freeWorkerId] }
+    await request(app.getHttpServer()).post('/api/tasks/assignments/bulk')
+      .send({ draft, otHoursByWorker: { [freeWorkerId]: 1 } }).expect(201)
+    await request(app.getHttpServer()).post(`/api/tasks/${unassignedTaskId}/complete`).expect(201)
+    const done = await request(app.getHttpServer()).get('/api/tasks/completed').expect(200)
+    const row = done.body.data.find((x: { id: string }) => x.id === unassignedTaskId)
+    expect(row).toBeTruthy()
+    expect(typeof row.overtimeMinutes).toBe('number')
+    expect(row.overtimeMinutes).toBeGreaterThanOrEqual(0)
+  })
+
   it('POST /:id/cancel -> task cancelled, assignment đóng', async () => {
     await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/assign`).send({ workerId: freeWorkerId }).expect(201)
     const r = await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/cancel`).expect(201)
