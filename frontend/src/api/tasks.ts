@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mockRequest } from './client'
 import { apiGet, apiPost } from './http'
 import { db, nextId } from '@/mocks/db'
-import type { Task, TaskAssignment, Worker, CompletedTask } from '@/types'
+import type { Task, TaskAssignment, Worker, CompletedTask, ShiftConfig } from '@/types'
 import { STAFF_POSITIONS } from '@/types'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
@@ -177,6 +177,14 @@ export function cancelTaskInDb(taskId: string): Task | undefined { return closeT
 export function completedTasksFromDb(): CompletedTask[] {
   const minutesOf = (a: TaskAssignment) =>
     a.endedAt && a.startedAt ? Math.max(0, Math.round((+new Date(a.endedAt) - +new Date(a.startedAt)) / 60000)) : 0
+  // Phút OT kẹp mốc 17:15 (đồng bộ BE otMinutesOf).
+  const otMinutesInDb = (a: TaskAssignment): number => {
+    if (!a.isOvertime || !a.startedAt || !a.endedAt) return 0
+    const start = new Date(a.startedAt)
+    const otStart = new Date(start); otStart.setHours(17, 15, 0, 0)
+    const from = start > otStart ? start : otStart
+    return Math.max(0, Math.round((+new Date(a.endedAt) - +from) / 60000))
+  }
   return db.tasks.filter((t) => t.status === 'completed').map((t) => {
     const list = db.taskAssignments.filter((a) => a.taskId === t.id)
     const wids = [...new Set(list.map((a) => a.workerId))]
@@ -186,7 +194,7 @@ export function completedTasksFromDb(): CompletedTask[] {
       ...t,
       workers,
       totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
-      overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+      overtimeMinutes: list.reduce((s, a) => s + otMinutesInDb(a), 0),
     }
   })
 }
@@ -339,6 +347,17 @@ export function useWorkerAllocation() {
     queryFn: () => USE_MOCK
       ? mockRequest(() => workerAllocationFromDb())
       : apiGet<WorkerAllocationRow[]>('/tasks/worker-allocation'),
+  })
+}
+
+/** Mốc giờ ca (giờ tan ca / bắt đầu OT) cho FE. */
+export function useShiftConfig() {
+  return useQuery<ShiftConfig>({
+    queryKey: ['tasks', 'shift-config'],
+    queryFn: () => USE_MOCK
+      ? mockRequest(() => ({ shiftEnd: '17:00', otStart: '17:15' }))
+      : apiGet<ShiftConfig>('/tasks/shift-config'),
+    staleTime: Infinity,
   })
 }
 

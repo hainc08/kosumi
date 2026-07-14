@@ -420,6 +420,9 @@ export interface CompletedTask extends Task {
   overtimeMinutes: number
 }
 
+/** Mốc giờ ca (giờ tan ca / bắt đầu OT). */
+export interface ShiftConfig { shiftEnd: string; otStart: string }
+
 // ─── TIMESHEET ───────────────────────────────────────────────────────────────
 
 export type DayType       = 'workday' | 'leave_paid' | 'leave_unpaid' | 'holiday' | 'absent'
