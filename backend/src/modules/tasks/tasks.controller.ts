@@ -19,6 +19,9 @@ export class TasksController {
   // Danh sách hạng mục đã hoàn thành (ai làm / tổng giờ / OT).
   @Get('completed') completed() { return this.svc.completedTasks() }
 
+  // Mốc giờ ca (giờ tan ca / bắt đầu OT) cho FE.
+  @Get('shift-config') shiftConfig() { return this.svc.shiftConfig() }
+
   // Công nhân theo hạng mục (Dự án / Đầu mục / Hạng mục).
   @Get('worker-allocation') workerAllocation() { return this.svc.workerAllocation() }
 
@@ -44,8 +47,8 @@ export class TasksController {
     return this.svc.transfer(dto.workerId, dto.fromTaskId, dto.toTaskId)
   }
 
-  @Post('assignments/bulk') saveAssignments(@Body() body: { draft: Record<string, string[]>; otHours?: number }) {
-    return this.svc.saveAssignments(body.draft, body.otHours)
+  @Post('assignments/bulk') saveAssignments(@Body() body: { draft: Record<string, string[]>; otHoursByWorker?: Record<string, number> }) {
+    return this.svc.saveAssignments(body.draft, body.otHoursByWorker)
   }
 
   @Post(':id/assign') assign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AssignWorkerDto) {

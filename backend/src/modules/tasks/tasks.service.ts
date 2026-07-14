@@ -9,7 +9,7 @@ import { Quote } from '../quotes/entities/quote.entity'
 import { Project } from '../projects/entities/project.entity'
 import { deriveInitials, avatarColorFor } from '../../common/utils/worker-display.util'
 import { STAFF_POSITIONS } from '../workers/worker-positions'
-import { computeOtEndAt } from './shift'
+import { computeOtEndAt, SHIFT_END_HOUR, SHIFT_END_MIN, OT_START_HOUR, OT_START_MIN, formatHm } from './shift'
 
 export type WorkerMini = { id: string; code: string; fullName: string; initials: string; avatarColor: string }
 
@@ -266,16 +266,21 @@ export class TasksService {
     return this.assignmentRepo.save(assignment)
   }
 
-  /** Lưu toàn bộ phân công nháp (taskId -> danh sách workerId). Trả về số lượt giao. */
-  async saveAssignments(draft: Record<string, string[]>, otHours?: number): Promise<number> {
+  /** Lưu phân công nháp; OT theo TỪNG NV: otHoursByWorker[workerId] (giờ). Trả về số lượt giao. */
+  async saveAssignments(draft: Record<string, string[]>, otHoursByWorker?: Record<string, number>): Promise<number> {
     let count = 0
     for (const [taskId, workerIds] of Object.entries(draft)) {
       for (const workerId of workerIds) {
-        await this.assign(taskId, workerId, otHours)
+        await this.assign(taskId, workerId, otHoursByWorker?.[workerId])
         count += 1
       }
     }
     return count
+  }
+
+  /** Mốc giờ ca cho FE (đọc từ hằng số shift.ts). */
+  shiftConfig(): { shiftEnd: string; otStart: string } {
+    return { shiftEnd: formatHm(SHIFT_END_HOUR, SHIFT_END_MIN), otStart: formatHm(OT_START_HOUR, OT_START_MIN) }
   }
 
   /** Tan ca: kết thúc mọi assignment active KHÔNG phải OT. Trả số lượt đã đóng. */

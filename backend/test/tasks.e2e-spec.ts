@@ -196,4 +196,25 @@ describe('Tasks (e2e)', () => {
     expect(typeof row.title).toBe('string')
     expect(row.workerCount).toBeGreaterThanOrEqual(1)
   })
+
+  it('GET /shift-config trả mốc giờ ca (mặc định 17:00 / 17:15)', async () => {
+    const r = await request(app.getHttpServer()).get('/api/tasks/shift-config').expect(200)
+    expect(r.body.data.shiftEnd).toBe('17:00')
+    expect(r.body.data.otStart).toBe('17:15')
+  })
+
+  it('POST /assignments/bulk với otHoursByWorker -> assignment OT theo từng NV', async () => {
+    // đảm bảo worker rảnh trước khi test
+    await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/unassign`).send({ workerId: freeWorkerId }).expect(201)
+    const draft = { [anotherUnassignedTaskId]: [freeWorkerId] }
+    await request(app.getHttpServer()).post('/api/tasks/assignments/bulk')
+      .send({ draft, otHoursByWorker: { [freeWorkerId]: 2 } }).expect(201)
+    const active = await request(app.getHttpServer()).get('/api/tasks/active').expect(200)
+    const t = active.body.data.find((x: { id: string }) => x.id === anotherUnassignedTaskId)
+    const a = t.assignments.find((x: { workerId: string }) => x.workerId === freeWorkerId) as { isOvertime: boolean; otEndAt: string | null }
+    expect(a.isOvertime).toBe(true)
+    expect(a.otEndAt).toBeTruthy()
+    // dọn dẹp
+    await request(app.getHttpServer()).post(`/api/tasks/${anotherUnassignedTaskId}/unassign`).send({ workerId: freeWorkerId }).expect(201)
+  })
 })
