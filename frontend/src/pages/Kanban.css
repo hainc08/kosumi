@@ -184,3 +184,12 @@
 .ct-av { width:22px; height:22px; border-radius:50%; color:#fff; font-size:10px; display:inline-flex; align-items:center; justify-content:center; }
 .ct-row__time { display:flex; gap:8px; align-items:center; font-size:13px; font-weight:600; }
 .ct-ot { color:var(--color-amber); font-size:12px; }
+
+/* ── Overtime dialog (per-worker) ── */
+.ot-list { display: flex; flex-direction: column; gap: 8px; }
+.ot-row { display: flex; align-items: center; gap: 8px; }
+.ot-row__av { width: 26px; height: 26px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.ot-row__name { flex: 1 1 auto; font-size: 13px; }
+.ot-row__input { width: 64px; text-align: right; }
+.ot-row__input[aria-invalid="true"] { border-color: var(--color-red); }
+.ot-row__unit { color: var(--color-text-2); font-size: 12px; }

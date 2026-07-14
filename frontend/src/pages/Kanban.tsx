@@ -13,7 +13,7 @@ import { useProjects } from '@/api/projects'
 import { useQuotes } from '@/api/quotes'
 import {
   useQuoteTasks, useAvailableWorkers, useSaveAssignments, useUnassignWorker,
-  useCompleteTask, useClockOut,
+  useCompleteTask, useClockOut, useShiftConfig,
 } from '@/api/tasks'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/Button'
 import { StepsBar } from '@/components/kanban/StepsBar'
 import { LiveTimer } from '@/components/kanban/LiveTimer'
 import { TransferDrawer, type TransferContext } from '@/components/kanban/TransferDrawer'
-import { OvertimeDialog } from '@/components/kanban/OvertimeDialog'
+import { OvertimeDialog, type OtWorker } from '@/components/kanban/OvertimeDialog'
 import { CompletedTasksPanel } from '@/components/kanban/CompletedTasksPanel'
 import { useToastStore } from '@/stores/toastStore'
 import './Kanban.css'
@@ -49,6 +49,7 @@ export default function KanbanPage() {
   const unassign = useUnassignWorker()
   const completeTask = useCompleteTask()
   const clockOut = useClockOut()
+  const { data: shiftConfig } = useShiftConfig()
 
   const site = sites.find((s) => s.id === siteId)
   const project = projects.find((p) => p.id === projectId)
@@ -75,6 +76,13 @@ export default function KanbanPage() {
   }, [availableWorkers, draftWorkerIds, search])
 
   const draftCount = draftWorkerIds.size
+  const draftWorkers: OtWorker[] = useMemo(() => {
+    const ids = [...new Set(Object.values(draft).flat())]
+    return ids
+      .map((id) => workerMap.get(id))
+      .filter((w): w is NonNullable<typeof w> => !!w)
+      .map((w) => ({ id: w.id, fullName: w.fullName, initials: w.initials, avatarColor: w.avatarColor }))
+  }, [draft, workerMap])
 
   // ── Điều hướng wizard ──
   const goTo = (n: number) => setStep(n)
@@ -107,15 +115,21 @@ export default function KanbanPage() {
     toast(`Đã rút ${name} khỏi hạng mục`, 'info')
   }
 
-  const doSave = async (otHours?: number) => {
-    const n = await saveAssignments.mutateAsync({ draft, otHours })
+  const doSave = async (otHoursByWorker?: Record<string, number>) => {
+    const n = await saveAssignments.mutateAsync({ draft, otHoursByWorker })
     setDraft({}); setOtOpen(false)
-    toast(`✓ Đã lưu ${n} lượt giao việc${otHours ? ` (tăng ca ${otHours}h)` : ''}`)
+    const otCount = otHoursByWorker ? Object.keys(otHoursByWorker).length : 0
+    toast(`✓ Đã lưu ${n} lượt giao việc${otCount ? ` (tăng ca ${otCount} người)` : ''}`)
   }
 
-  // Giao việc sau 17:00 -> hỏi giờ tăng ca; ngược lại lưu ngay.
+  // Giao việc sau giờ tan ca -> hỏi giờ tăng ca (mốc lấy từ shift-config); ngược lại lưu ngay.
+  const isAfterShiftEnd = () => {
+    const [h, m] = (shiftConfig?.shiftEnd ?? '17:00').split(':').map(Number)
+    const now = new Date()
+    return now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m)
+  }
   const handleSave = async () => {
-    if (new Date().getHours() >= 17) setOtOpen(true)
+    if (isAfterShiftEnd()) setOtOpen(true)
     else await doSave()
   }
 
@@ -345,7 +359,7 @@ export default function KanbanPage() {
       </div>
 
       <TransferDrawer context={transferCtx} onClose={() => setTransferCtx(null)} />
-      <OvertimeDialog open={otOpen} onCancel={() => setOtOpen(false)} onConfirm={(h) => doSave(h)} />
+      <OvertimeDialog open={otOpen} workers={draftWorkers} onCancel={() => setOtOpen(false)} onConfirm={(map) => doSave(map)} />
     </PageShell>
   )
 }

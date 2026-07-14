@@ -106,10 +106,15 @@ export function availableWorkersAtSite(_siteId: string): Worker[] {
 
 export function assignWorkerInDb(taskId: string, workerId: string, otHours?: number): TaskAssignment {
   const overtime = typeof otHours === 'number' && otHours > 0
+  let otEnd: string | null = null
+  if (overtime) {
+    const d = new Date(); d.setHours(17, 15, 0, 0); d.setMinutes(d.getMinutes() + Math.round((otHours as number) * 60))
+    otEnd = d.toISOString()
+  }
   const a: TaskAssignment = {
     id: nextId('ta'), taskId, workerId,
     assignedAt: now(), startedAt: now(), endedAt: null, isActive: true,
-    isOvertime: overtime, otEndAt: null,
+    isOvertime: overtime, otEndAt: otEnd,
     createdAt: now(), updatedAt: now(),
   }
   db.taskAssignments.push(a)
@@ -134,11 +139,11 @@ export function transferWorkerInDb(workerId: string, fromTaskId: string, toTaskI
   return a
 }
 
-/** Lưu toàn bộ phân công nháp (taskId -> danh sách workerId). Trả về số lượt giao. */
-export function saveAssignmentsInDb(draft: Record<string, string[]>, otHours?: number): number {
+/** Lưu phân công nháp (taskId -> workerIds); OT theo từng NV. Trả về số lượt giao. */
+export function saveAssignmentsInDb(draft: Record<string, string[]>, otHoursByWorker?: Record<string, number>): number {
   let count = 0
   for (const [taskId, workerIds] of Object.entries(draft)) {
-    for (const workerId of workerIds) { assignWorkerInDb(taskId, workerId, otHours); count += 1 }
+    for (const workerId of workerIds) { assignWorkerInDb(taskId, workerId, otHoursByWorker?.[workerId]); count += 1 }
   }
   return count
 }
@@ -384,9 +389,9 @@ export function useTransferWorker() {
 export function useSaveAssignments() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ draft, otHours }: { draft: Record<string, string[]>; otHours?: number }) => USE_MOCK
-      ? mockRequest(() => saveAssignmentsInDb(draft, otHours))
-      : apiPost('/tasks/assignments/bulk', { draft, otHours }),
+    mutationFn: ({ draft, otHoursByWorker }: { draft: Record<string, string[]>; otHoursByWorker?: Record<string, number> }) => USE_MOCK
+      ? mockRequest(() => saveAssignmentsInDb(draft, otHoursByWorker))
+      : apiPost('/tasks/assignments/bulk', { draft, otHoursByWorker }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
   })
 }
