@@ -20,6 +20,7 @@ import { Badge, type BadgeVariant } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { StepsBar } from '@/components/kanban/StepsBar'
 import { LiveTimer } from '@/components/kanban/LiveTimer'
+import { ShiftCountdown } from '@/components/kanban/ShiftCountdown'
 import { TransferDrawer, type TransferContext } from '@/components/kanban/TransferDrawer'
 import { OvertimeDialog, type OtWorker } from '@/components/kanban/OvertimeDialog'
 import { CompletedTasksPanel } from '@/components/kanban/CompletedTasksPanel'
@@ -259,6 +260,7 @@ export default function KanbanPage() {
                     <button className="kb-back" onClick={() => goTo(3)}><IconArrowLeft size={16} /></button>
                     <span className="kb-page__title">Phân công nhân viên</span>
                     <span className="kb-crumb">{quote?.code} · {quote?.title}</span>
+                    {shiftConfig && <ShiftCountdown shiftEnd={shiftConfig.shiftEnd} />}
                   </div>
                   <div className="kb-notice"><IconDragDrop size={16} /> Kéo nhân viên từ bảng bên trái thả vào hạng mục. Nhấn <strong>×</strong> để rút người ra, <strong>⇄</strong> để chuyển sang việc khác.</div>
 
@@ -286,6 +288,11 @@ export default function KanbanPage() {
                               <span className="chip__av" style={{ background: a.worker?.avatarColor }}>{a.worker?.initials}</span>
                               <span className="chip__name">{a.worker?.fullName}</span>
                               <LiveTimer since={a.assignedAt} />
+                              {a.isOvertime && a.otEndAt && (
+                                <span className="chip__ot" title="Tự về trạng thái chờ khi hết giờ tăng ca">
+                                  OT · về chờ {new Date(a.otEndAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              )}
                               <button className="chip__btn" title="Chuyển việc" onClick={() => setTransferCtx({
                                 workerId: a.workerId, workerName: a.worker?.fullName ?? '', workerInitials: a.worker?.initials ?? '',
                                 workerColor: a.worker?.avatarColor ?? '#888', fromTaskId: t.id, fromTaskTitle: t.title,
