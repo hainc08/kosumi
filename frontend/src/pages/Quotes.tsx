@@ -1,20 +1,24 @@
 import { useMemo, useState } from 'react'
 import {
   IconFileInvoice, IconCircleCheck, IconClock, IconCurrencyDollar, IconPlus,
+  IconEye, IconPrinter, IconCopy, IconEdit, IconSend, IconCheck, IconX,
 } from '@tabler/icons-react'
 import { QUOTE_STATUS_LABELS, type Quote, type QuoteStatus } from '@/types'
-import { useQuotes } from '@/api/quotes'
+import { useQuotes, useUpdateQuoteStatus, useDuplicateQuote } from '@/api/quotes'
 import { useProjects } from '@/api/projects'
-import { formatCurrency } from '@/utils/format'
+import { useToastStore } from '@/stores/toastStore'
+import { formatCurrency, formatDate } from '@/utils/format'
 import { PageShell } from '@/components/layout/PageShell'
 import { KpiCard } from '@/components/ui/KpiCard'
+import { DataTable, type Column } from '@/components/ui/DataTable'
 import { SearchBox } from '@/components/ui/SearchBox'
 import { FilterSelect } from '@/components/ui/FilterSelect'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { FormModal } from '@/components/ui/FormModal'
+import { FormField } from '@/components/ui/FormField'
 import { QuoteForm } from '@/components/quotes/QuoteForm'
 import { QuoteDetailDrawer, QUOTE_STATUS_VARIANT } from '@/components/quotes/QuoteDetailDrawer'
-import { groupQuotes } from '@/components/quotes/groupQuotes'
 import './Quotes.css'
 
 export default function QuotesPage() {
@@ -26,12 +30,16 @@ export default function QuotesPage() {
   const [editing, setEditing] = useState<Quote | null>(null)
   const [selected, setSelected] = useState<Quote | null>(null)
 
+  const [rejectTarget, setRejectTarget] = useState<Quote | null>(null)
+  const [rejectReason, setRejectReason] = useState('')
+
   const { data: projects = [] } = useProjects()
   const { data: all = [] } = useQuotes({})
   const { data: quotes = [], isLoading } = useQuotes({ search, status, projectId })
 
-  const groups = useMemo(() => groupQuotes(quotes), [quotes])
-  const quoteById = useMemo(() => new Map(quotes.map((q) => [q.id, q])), [quotes])
+  const updateStatus = useUpdateQuoteStatus()
+  const duplicateQuote = useDuplicateQuote()
+  const toast = useToastStore((s) => s.show)
 
   const kpis = useMemo(() => {
     const total = all.length
@@ -45,6 +53,66 @@ export default function QuotesPage() {
   }, [all])
 
   const openAdd = () => { setEditing(null); setFormOpen(true) }
+  const openEdit = (q: Quote) => { setSelected(null); setEditing(q); setFormOpen(true) }
+  const openPreview = (q: Quote) => window.open(`/quotes/${q.id}/preview`, '_blank')
+
+  const handleStatus = async (q: Quote, next: QuoteStatus, reason?: string) => {
+    await updateStatus.mutateAsync({ id: q.id, status: next, rejectReason: reason })
+    toast(`✓ Đã chuyển trạng thái: ${QUOTE_STATUS_LABELS[next]}`)
+  }
+  const handleDuplicate = async (q: Quote) => {
+    await duplicateQuote.mutateAsync(q.id)
+    toast('✓ Đã nhân bản báo giá')
+  }
+  const confirmReject = async () => {
+    if (!rejectTarget) return
+    await handleStatus(rejectTarget, 'rejected', rejectReason)
+    setRejectTarget(null); setRejectReason('')
+  }
+
+  // Nút hành động theo trạng thái (khớp workshop_pro.html) — chặn nổi bọt để không mở drawer.
+  const ActBtn = ({ title, color, onClick, children }: {
+    title: string; color?: string; onClick: () => void; children: React.ReactNode
+  }) => (
+    <div className="act-btn" title={title} style={color ? { color } : undefined}
+      onClick={(e) => { e.stopPropagation(); onClick() }}>
+      {children}
+    </div>
+  )
+
+  const renderActions = (q: Quote) => {
+    const canEdit = q.status === 'draft' || q.status === 'rejected'
+    return (
+      <div className="td-actions">
+        {q.status === 'draft' && (
+          <ActBtn title="Gửi duyệt" color="var(--amber)" onClick={() => handleStatus(q, 'pending')}><IconSend size={13} /></ActBtn>
+        )}
+        {q.status === 'pending' && (
+          <>
+            <ActBtn title="Phê duyệt" color="var(--green)" onClick={() => handleStatus(q, 'approved')}><IconCheck size={13} /></ActBtn>
+            <ActBtn title="Từ chối" color="var(--red)" onClick={() => { setRejectReason(''); setRejectTarget(q) }}><IconX size={13} /></ActBtn>
+          </>
+        )}
+        <ActBtn title="Nhân bản" color="var(--purple)" onClick={() => handleDuplicate(q)}><IconCopy size={13} /></ActBtn>
+        {canEdit && (
+          <ActBtn title="Sửa" onClick={() => openEdit(q)}><IconEdit size={13} /></ActBtn>
+        )}
+        <ActBtn title="Chi tiết" onClick={() => setSelected(q)}><IconEye size={13} /></ActBtn>
+        <ActBtn title="Xem trước" color="var(--blue)" onClick={() => openPreview(q)}><IconPrinter size={13} /></ActBtn>
+      </div>
+    )
+  }
+
+  const columns: Column<Quote>[] = [
+    { key: 'code', header: 'Số báo giá', width: '110px', render: (q) => <span className="cell-quote__num">{q.code}</span> },
+    { key: 'title', header: 'Đầu mục', render: (q) => <span className="td-main">{q.title}</span> },
+    { key: 'project', header: 'Dự án', render: (q) => q.project?.name ?? '—' },
+    { key: 'items', header: 'Hạng mục', align: 'center', render: (q) => `${q.itemCount ?? q.items?.length ?? 0} hạng mục` },
+    { key: 'date', header: 'Ngày tạo', render: (q) => formatDate(q.quoteDate) },
+    { key: 'value', header: 'Giá trị', align: 'right', render: (q) => formatCurrency(q.totalAmount ?? 0) },
+    { key: 'status', header: 'Trạng thái', render: (q) => <Badge variant={QUOTE_STATUS_VARIANT[q.status]} dot>{QUOTE_STATUS_LABELS[q.status]}</Badge> },
+    { key: 'actions', header: '', align: 'right', render: renderActions },
+  ]
 
   return (
     <PageShell
@@ -59,55 +127,17 @@ export default function QuotesPage() {
       </div>
 
       <div className="toolbar">
-        <SearchBox value={search} onChange={setSearch} placeholder="Tìm đầu mục, số BG..." width="260px" />
+        <SearchBox value={search} onChange={setSearch} placeholder="Tìm số BG, đầu mục..." width="260px" />
         <FilterSelect value={status} onChange={setStatus} placeholder="Tất cả trạng thái"
           options={(Object.keys(QUOTE_STATUS_LABELS) as QuoteStatus[]).map((k) => ({ value: k, label: QUOTE_STATUS_LABELS[k] }))} />
         <FilterSelect value={projectId} onChange={setProjectId} placeholder="Tất cả dự án"
           options={projects.map((p) => ({ value: p.id, label: p.name }))} />
       </div>
 
-      {isLoading ? (
-        <div className="dash-empty">Đang tải…</div>
-      ) : groups.length === 0 ? (
-        <div className="dash-empty">Không tìm thấy báo giá nào</div>
-      ) : (
-        <div className="q-groups">
-          {groups.map((g) => (
-            <div key={g.projectId} className="q-group">
-              <div className="q-group__head">
-                <span className="q-group__name">{g.projectName}</span>
-                {g.hasInstallation && (
-                  <Badge variant="blue">Có lắp đặt</Badge>
-                )}
-                <span className="q-group__meta">{g.quoteCount} báo giá</span>
-              </div>
-              {g.sections.map((sec) => (
-                <div key={sec.sectionName} className="q-sec">
-                  <div className="q-sec__name">{sec.sectionName}</div>
-                  <table className="q-itable">
-                    <tbody>
-                      {sec.items.map((it, idx) => {
-                        const q = quoteById.get(it.quoteId)
-                        if (!q) return null
-                        return (
-                          <tr key={it.quoteId + idx} onClick={() => setSelected(q)} className="q-irow">
-                            <td className="q-irow__name">{it.itemName}</td>
-                            <td>{it.quantity} {it.unit}</td>
-                            <td>{formatCurrency(it.unitPrice)}</td>
-                            <td className="q-irow__amt">{formatCurrency(it.amount)}</td>
-                            <td><span style={{ color: 'var(--blue)' }}>{it.quoteCode}</span></td>
-                            <td><Badge variant={QUOTE_STATUS_VARIANT[it.status as QuoteStatus]} dot>{QUOTE_STATUS_LABELS[it.status as QuoteStatus]}</Badge></td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      <DataTable
+        columns={columns} data={quotes} loading={isLoading} rowKey={(q) => q.id}
+        onRowClick={(q) => setSelected(q)} emptyText="Không tìm thấy báo giá nào"
+      />
 
       <QuoteForm open={formOpen} quote={editing} onClose={() => setFormOpen(false)} />
       <QuoteDetailDrawer
@@ -115,8 +145,28 @@ export default function QuotesPage() {
         open={!!selected}
         onClose={() => setSelected(null)}
         onEdit={(q) => { setSelected(null); setEditing(q); setFormOpen(true) }}
-        onPreview={(q) => window.open(`/quotes/${q.id}/preview`, '_blank')}
+        onPreview={openPreview}
       />
+
+      <FormModal
+        open={!!rejectTarget}
+        onClose={() => setRejectTarget(null)}
+        title="Từ chối báo giá"
+        footer={
+          <>
+            <Button onClick={() => setRejectTarget(null)}>Hủy</Button>
+            <Button variant="primary" style={{ background: 'var(--red)', borderColor: 'var(--red)' }}
+              onClick={confirmReject} disabled={!rejectReason.trim()}
+            >
+              Xác nhận từ chối
+            </Button>
+          </>
+        }
+      >
+        <FormField label="Lý do từ chối" required>
+          <textarea rows={3} value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="Nhập lý do chi tiết..." />
+        </FormField>
+      </FormModal>
     </PageShell>
   )
 }

@@ -286,14 +286,44 @@ export class TasksService {
     return { shiftEnd: formatHm(SHIFT_END_HOUR, SHIFT_END_MIN), otStart: formatHm(OT_START_HOUR, OT_START_MIN) }
   }
 
-  /** Tan ca: kết thúc mọi assignment active KHÔNG phải OT. Trả số lượt đã đóng. */
+  /** Tan ca: kết thúc mọi assignment active KHÔNG phải OT (gọi thủ công). */
   async endOfShiftClockOut(now: Date = new Date()): Promise<{ ended: number }> {
     const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: false } })
     if (actives.length === 0) return { ended: 0 }
-    for (const a of actives) { a.isActive = false; a.endedAt = now }
+    for (const a of actives) {
+      a.isActive = false
+      if (a.startedAt) {
+        const shiftEnd = new Date(a.startedAt)
+        shiftEnd.setHours(SHIFT_END_HOUR, SHIFT_END_MIN, 0, 0)
+        a.endedAt = now > shiftEnd ? shiftEnd : now
+      } else {
+        a.endedAt = now
+      }
+    }
     await this.assignmentRepo.save(actives)
     await this.recomputeTaskStatuses([...new Set(actives.map((a) => a.taskId))])
     return { ended: actives.length }
+  }
+
+  /** Tự động quét và đóng các phân công đã qua giờ tan ca (17:00) */
+  async sweepStaleAssignments(now: Date = new Date()): Promise<{ ended: number }> {
+    const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: false } })
+    const stale = actives.filter((a) => {
+      if (!a.startedAt) return false
+      const shiftEnd = new Date(a.startedAt)
+      shiftEnd.setHours(SHIFT_END_HOUR, SHIFT_END_MIN, 0, 0)
+      return now >= shiftEnd
+    })
+    if (stale.length === 0) return { ended: 0 }
+    for (const a of stale) {
+      const shiftEnd = new Date(a.startedAt!)
+      shiftEnd.setHours(SHIFT_END_HOUR, SHIFT_END_MIN, 0, 0)
+      a.isActive = false
+      a.endedAt = shiftEnd
+    }
+    await this.assignmentRepo.save(stale)
+    await this.recomputeTaskStatuses([...new Set(stale.map((a) => a.taskId))])
+    return { ended: stale.length }
   }
 
   /** Đóng các block OT đã tới hạn (otEndAt <= now). */

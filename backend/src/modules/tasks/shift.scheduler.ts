@@ -25,13 +25,8 @@ export class ShiftScheduler implements OnModuleInit, OnModuleDestroy {
   async tick(now: Date): Promise<void> {
     try {
       await this.svc.sweepExpiredOvertime(now)
-      const today = now.toISOString().slice(0, 10)
-      const pastShiftEnd = now.getHours() > SHIFT_END_HOUR || (now.getHours() === SHIFT_END_HOUR && now.getMinutes() >= SHIFT_END_MIN)
-      if (pastShiftEnd && this.lastClockOutDay !== today) {
-        this.lastClockOutDay = today
-        const r = await this.svc.endOfShiftClockOut(now)
-        if (r.ended > 0) this.logger.log(`Tan ca 17:00: đóng ${r.ended} lượt giao việc`)
-      }
+      const r = await this.svc.sweepStaleAssignments(now)
+      if (r.ended > 0) this.logger.log(`Auto Tan ca: đóng ${r.ended} lượt giao việc quá hạn 17:00`)
     } catch (e) {
       this.logger.error('Lỗi scheduler ca làm', e as Error)
     }
