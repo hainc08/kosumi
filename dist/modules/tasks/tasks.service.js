@@ -102,7 +102,7 @@ let TasksService = class TasksService {
                 section: t.quoteItemId ? (sectionByItem.get(t.quoteItemId) ?? null) : null,
                 workedBy: wids.map((id) => histWorkerById.get(id)).filter((w) => !!w).map((w) => this.toMini(w)),
                 totalMinutes: list.reduce((s, a) => s + minutesOf(a), 0),
-                overtimeMinutes: list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0),
+                overtimeMinutes: list.reduce((s, a) => s + (a.isOvertime && a.startedAt && a.endedAt ? (0, shift_1.otMinutesOf)(a.startedAt, a.endedAt) : 0), 0),
             };
         });
     }
@@ -235,15 +235,18 @@ let TasksService = class TasksService {
         assignment.transferredFromTaskId = fromTaskId;
         return this.assignmentRepo.save(assignment);
     }
-    async saveAssignments(draft, otHours) {
+    async saveAssignments(draft, otHoursByWorker) {
         let count = 0;
         for (const [taskId, workerIds] of Object.entries(draft)) {
             for (const workerId of workerIds) {
-                await this.assign(taskId, workerId, otHours);
+                await this.assign(taskId, workerId, otHoursByWorker?.[workerId]);
                 count += 1;
             }
         }
         return count;
+    }
+    shiftConfig() {
+        return { shiftEnd: (0, shift_1.formatHm)(shift_1.SHIFT_END_HOUR, shift_1.SHIFT_END_MIN), otStart: (0, shift_1.formatHm)(shift_1.OT_START_HOUR, shift_1.OT_START_MIN) };
     }
     async endOfShiftClockOut(now = new Date()) {
         const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: false } });
@@ -251,11 +254,39 @@ let TasksService = class TasksService {
             return { ended: 0 };
         for (const a of actives) {
             a.isActive = false;
-            a.endedAt = now;
+            if (a.startedAt) {
+                const shiftEnd = new Date(a.startedAt);
+                shiftEnd.setHours(shift_1.SHIFT_END_HOUR, shift_1.SHIFT_END_MIN, 0, 0);
+                a.endedAt = now > shiftEnd ? shiftEnd : now;
+            }
+            else {
+                a.endedAt = now;
+            }
         }
         await this.assignmentRepo.save(actives);
         await this.recomputeTaskStatuses([...new Set(actives.map((a) => a.taskId))]);
         return { ended: actives.length };
+    }
+    async sweepStaleAssignments(now = new Date()) {
+        const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: false } });
+        const stale = actives.filter((a) => {
+            if (!a.startedAt)
+                return false;
+            const shiftEnd = new Date(a.startedAt);
+            shiftEnd.setHours(shift_1.SHIFT_END_HOUR, shift_1.SHIFT_END_MIN, 0, 0);
+            return now >= shiftEnd;
+        });
+        if (stale.length === 0)
+            return { ended: 0 };
+        for (const a of stale) {
+            const shiftEnd = new Date(a.startedAt);
+            shiftEnd.setHours(shift_1.SHIFT_END_HOUR, shift_1.SHIFT_END_MIN, 0, 0);
+            a.isActive = false;
+            a.endedAt = shiftEnd;
+        }
+        await this.assignmentRepo.save(stale);
+        await this.recomputeTaskStatuses([...new Set(stale.map((a) => a.taskId))]);
+        return { ended: stale.length };
     }
     async sweepExpiredOvertime(now = new Date()) {
         const actives = await this.assignmentRepo.find({ where: { isActive: true, isOvertime: true } });
@@ -313,7 +344,7 @@ let TasksService = class TasksService {
             const list = all.filter((a) => a.taskId === t.id);
             const wids = [...new Set(list.map((a) => a.workerId))];
             const totalMinutes = list.reduce((s, a) => s + minutesOf(a), 0);
-            const overtimeMinutes = list.filter((a) => a.isOvertime).reduce((s, a) => s + minutesOf(a), 0);
+            const overtimeMinutes = list.reduce((s, a) => s + (a.isOvertime && a.startedAt && a.endedAt ? (0, shift_1.otMinutesOf)(a.startedAt, a.endedAt) : 0), 0);
             return {
                 ...t, assignments: [], activeWorkers: [],
                 workers: wids.map((id) => workerById.get(id)).filter((w) => !!w).map((w) => this.toMini(w)),
