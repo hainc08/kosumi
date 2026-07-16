@@ -13,7 +13,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShiftScheduler = void 0;
 const common_1 = require("@nestjs/common");
 const tasks_service_1 = require("./tasks.service");
-const shift_1 = require("./shift");
 let ShiftScheduler = ShiftScheduler_1 = class ShiftScheduler {
     svc;
     logger = new common_1.Logger(ShiftScheduler_1.name);
@@ -33,14 +32,9 @@ let ShiftScheduler = ShiftScheduler_1 = class ShiftScheduler {
     async tick(now) {
         try {
             await this.svc.sweepExpiredOvertime(now);
-            const today = now.toISOString().slice(0, 10);
-            const pastShiftEnd = now.getHours() > shift_1.SHIFT_END_HOUR || (now.getHours() === shift_1.SHIFT_END_HOUR && now.getMinutes() >= shift_1.SHIFT_END_MIN);
-            if (pastShiftEnd && this.lastClockOutDay !== today) {
-                this.lastClockOutDay = today;
-                const r = await this.svc.endOfShiftClockOut(now);
-                if (r.ended > 0)
-                    this.logger.log(`Tan ca 17:00: đóng ${r.ended} lượt giao việc`);
-            }
+            const r = await this.svc.sweepStaleAssignments(now);
+            if (r.ended > 0)
+                this.logger.log(`Auto Tan ca: đóng ${r.ended} lượt giao việc quá hạn 17:00`);
         }
         catch (e) {
             this.logger.error('Lỗi scheduler ca làm', e);

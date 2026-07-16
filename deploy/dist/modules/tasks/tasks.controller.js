@@ -28,6 +28,7 @@ let TasksController = class TasksController {
         return this.svc.availableWorkers(siteId);
     }
     completed() { return this.svc.completedTasks(); }
+    shiftConfig() { return this.svc.shiftConfig(); }
     workerAllocation() { return this.svc.workerAllocation(); }
     clockOut() { return this.svc.endOfShiftClockOut(new Date()); }
     tasks(quoteId, projectId) {
@@ -45,7 +46,7 @@ let TasksController = class TasksController {
         return this.svc.transfer(dto.workerId, dto.fromTaskId, dto.toTaskId);
     }
     saveAssignments(body) {
-        return this.svc.saveAssignments(body.draft, body.otHours);
+        return this.svc.saveAssignments(body.draft, body.otHoursByWorker);
     }
     assign(id, dto) {
         return this.svc.assign(id, dto.workerId, dto.otHours);
@@ -80,6 +81,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "completed", null);
+__decorate([
+    (0, common_1.Get)('shift-config'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "shiftConfig", null);
 __decorate([
     (0, common_1.Get)('worker-allocation'),
     __metadata("design:type", Function),

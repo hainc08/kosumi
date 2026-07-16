@@ -18,6 +18,10 @@ export declare class TasksController {
         totalMinutes: number;
         overtimeMinutes: number;
     })[]>;
+    shiftConfig(): {
+        shiftEnd: string;
+        otStart: string;
+    };
     workerAllocation(): Promise<{
         taskId: string;
         projectName: string;
@@ -38,7 +42,7 @@ export declare class TasksController {
     transfer(dto: TransferWorkerDto): Promise<import("./entities/task-assignment.entity").TaskAssignment>;
     saveAssignments(body: {
         draft: Record<string, string[]>;
-        otHours?: number;
+        otHoursByWorker?: Record<string, number>;
     }): Promise<number>;
     assign(id: string, dto: AssignWorkerDto): Promise<import("./entities/task-assignment.entity").TaskAssignment>;
     unassign(id: string, dto: AssignWorkerDto): Promise<void>;

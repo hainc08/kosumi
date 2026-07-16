@@ -56,8 +56,15 @@ export declare class TasksService {
     assign(taskId: string, workerId: string, otHours?: number): Promise<TaskAssignment>;
     unassign(taskId: string, workerId: string): Promise<void>;
     transfer(workerId: string, fromTaskId: string, toTaskId: string): Promise<TaskAssignment>;
-    saveAssignments(draft: Record<string, string[]>, otHours?: number): Promise<number>;
+    saveAssignments(draft: Record<string, string[]>, otHoursByWorker?: Record<string, number>): Promise<number>;
+    shiftConfig(): {
+        shiftEnd: string;
+        otStart: string;
+    };
     endOfShiftClockOut(now?: Date): Promise<{
+        ended: number;
+    }>;
+    sweepStaleAssignments(now?: Date): Promise<{
         ended: number;
     }>;
     sweepExpiredOvertime(now?: Date): Promise<{
