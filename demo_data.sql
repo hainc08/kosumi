@@ -1,4 +1,4 @@
-USE u774510961_kosumi;
+-- USE u774510961_kosumi;
 -- =========================================================================
 -- DỮ LIỆU DEMO KOSUMI APP (NGÀNH XƯỞNG ĐÚC) — BẢN ĐẦY ĐỦ (~100+ bản ghi/bảng chính)
 -- Sinh tự động bởi scripts/gen-demo.js. Mốc thời gian: 2026-06-17.

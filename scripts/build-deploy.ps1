@@ -28,7 +28,12 @@ Copy-Item (Join-Path $root 'backend/dist/*')  (Join-Path $deploy 'dist')   -Recu
 Copy-Item (Join-Path $root 'frontend/dist/*') (Join-Path $deploy 'client') -Recurse -Force
 
 Write-Host '==> [4/4] Cập nhật package.json + lock' -ForegroundColor Cyan
-Copy-Item (Join-Path $root 'backend/package.json')      (Join-Path $deploy 'package.json')      -Force
+$pkgJsonPath = Join-Path $root 'backend/package.json'
+$deployPkgPath = Join-Path $deploy 'package.json'
+$pkg = Get-Content $pkgJsonPath -Raw | ConvertFrom-Json
+$pkg.scripts.build = "echo `"Skipping build for Hostinger`""
+$pkg | ConvertTo-Json -Depth 10 | Set-Content $deployPkgPath
+
 Copy-Item (Join-Path $root 'backend/package-lock.json') (Join-Path $deploy 'package-lock.json') -Force
 
 Write-Host ''
